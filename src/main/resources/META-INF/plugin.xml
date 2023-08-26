@@ -30,5 +30,15 @@
             displayName="Digital Twin For CyberSecurity"
         />
         <applicationService serviceImplementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService"/>
+        <toolWindow factoryClass="it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowFactory"
+                    id="DigitalTwinForCyberSecurity" icon="AllIcons.Providers.ApacheDerby" anchor="bottom"/>
     </extensions>
+    <actions>
+        <group id="toolbarPlugin"/>
+        <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.VulnerabilitiesAnalysisAction"
+            id="AnalizzaVulnerabilità" text="Analizza Vulnerabilita" icon="AllIcons.Actions.Dump"
+                description="SDK action example">
+            <add-to-group group-id="toolbarPlugin"/>
+        </action>
+    </actions>
 </idea-plugin>
