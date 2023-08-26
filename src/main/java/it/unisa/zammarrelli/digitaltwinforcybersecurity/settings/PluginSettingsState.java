@@ -1,6 +1,6 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.settings;
 
-import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.Language;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
 
 public class PluginSettingsState {
     private String gptToken;

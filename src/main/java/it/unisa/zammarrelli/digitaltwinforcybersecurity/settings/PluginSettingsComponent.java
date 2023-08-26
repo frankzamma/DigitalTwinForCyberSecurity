@@ -3,7 +3,7 @@ package it.unisa.zammarrelli.digitaltwinforcybersecurity.settings;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
-import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.Language;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
 
 import javax.swing.*;
 
