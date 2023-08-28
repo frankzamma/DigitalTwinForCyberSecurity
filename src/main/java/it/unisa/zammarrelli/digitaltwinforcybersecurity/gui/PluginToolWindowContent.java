@@ -1,5 +1,6 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.gui;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -18,7 +19,6 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 public class PluginToolWindowContent extends SimpleToolWindowPanel {
-    private static final JPanel content = new JPanel();
     private final ActionManager actionManager = ActionManager.getInstance();
     private ActionToolbar actionToolbar;
     public PluginToolWindowContent(boolean vertical, boolean borderless) {
@@ -27,19 +27,15 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
                 (ActionGroup) actionManager.getAction("toolbarPlugin"),
                 true);
         super.setToolbar(actionToolbar.getComponent());
-        super.setContent(content);
+        super.setContent(new JPanel());
         revalidate();
 
     }
 
-    public JPanel getContent() {
-        return content;
-    }
     public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities) {
         JPanel verticalPanel =  new JPanel();
         verticalPanel.setLayout(new BoxLayout(verticalPanel, BoxLayout.Y_AXIS));
         JBScrollPane scrollPane = new JBScrollPane(verticalPanel);
-        content.add(scrollPane);
         for(Vulnerability v: vulnerabilities){
             JPanel rowPanel = new JPanel();
             rowPanel.setLayout(new BorderLayout());
@@ -96,5 +92,29 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         super.setContent(scrollPane);
+    }
+
+    public void displayError(String error){
+        JPanel panel = new JPanel();
+
+        JBLabel icon = new JBLabel(UIManager.getIcon("OptionPane.errorIcon"));
+        JBLabel errorLabel = new JBLabel( "Errore: " + error);
+
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(icon);
+        panel.add(errorLabel);
+        super.setContent(panel);
+    }
+
+    public void displayInformation(String information){
+        JPanel panel = new JPanel();
+
+        JBLabel icon = new JBLabel(UIManager.getIcon("OptionPane.informationIcon"));
+        JBLabel errorLabel = new JBLabel( "Informazione: " + information);
+
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(icon);
+        panel.add(errorLabel);
+        super.setContent(panel);
     }
 }

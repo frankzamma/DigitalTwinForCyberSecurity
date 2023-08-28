@@ -8,6 +8,8 @@ public class PluginSettingsState {
 
     public PluginSettingsState() {
         this.language = Language.ITALIAN;
+
+        this.gptToken = "";
     }
 
     public String getGptToken() {
