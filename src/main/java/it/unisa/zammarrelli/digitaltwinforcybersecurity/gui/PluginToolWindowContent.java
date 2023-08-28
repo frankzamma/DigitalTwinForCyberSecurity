@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.ColorChooserService;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.UIUtil;
@@ -40,7 +41,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             JPanel rowPanel = new JPanel();
             rowPanel.setLayout(new BorderLayout());
             rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth() -1 , 50));
-
+            rowPanel.setSize(rowPanel.getWidth(), 50);
             JPanel panelNorth =  new JPanel();
             panelNorth.setLayout( new GridLayout(1, 2));
 
@@ -76,8 +77,8 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    rowPanel.setBackground(Color.LIGHT_GRAY);
-                    panelNorth.setBackground(Color.LIGHT_GRAY);
+                    rowPanel.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
+                    panelNorth.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
 
                 }
 
