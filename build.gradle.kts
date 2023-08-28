@@ -12,6 +12,7 @@ repositories {
 
 dependencies{
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.theokanning.openai-gpt3-java:service:0.16.0")
 }
 
 // Configure Gradle IntelliJ Plugin
