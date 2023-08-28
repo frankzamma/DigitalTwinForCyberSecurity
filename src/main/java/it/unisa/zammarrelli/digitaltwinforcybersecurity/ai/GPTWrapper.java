@@ -32,6 +32,7 @@ public class GPTWrapper {
                 .model("gpt-3.5-turbo-16k")
                 .temperature(0.7d)
                 .maxTokens(1024)
+                .topP(0.5)
                 .messages(messages).build();
 
         ChatCompletionResult result = this.service.createChatCompletion(request);
