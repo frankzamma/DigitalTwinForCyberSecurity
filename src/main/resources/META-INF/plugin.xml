@@ -36,7 +36,7 @@
     <actions>
         <group id="toolbarPlugin"/>
         <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.VulnerabilitiesAnalysisAction"
-            id="AnalizzaVulnerabilità" text="Analizza Vulnerabilita" icon="AllIcons.Actions.Dump"
+            id="AnalizzaVulnerabilità" text="Analizza Vulnerabilita" icon="AllIcons.Actions.Search"
                 description="Analizza Vulnerabilità del file corrente">
             <add-to-group group-id="toolbarPlugin"/>
         </action>
