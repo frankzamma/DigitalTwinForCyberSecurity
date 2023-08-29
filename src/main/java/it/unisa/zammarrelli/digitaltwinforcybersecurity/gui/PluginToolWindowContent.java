@@ -1,6 +1,6 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.gui;
 
-import com.intellij.icons.AllIcons;
+
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -10,7 +10,11 @@ import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
+import com.intellij.openapi.ui.MessageDialogBuilder;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.ColorChooserService;
 import com.intellij.ui.JBColor;
@@ -22,6 +26,8 @@ import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -61,6 +67,38 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             panelNorth.add(labelLine);
 
             JButton button = new JButton("Dettagli");
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                  JPanel panelDetails = new JPanel(new GridLayout(3, 1));
+
+                  JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
+                  panelName.add(new JBLabel("Name:"));
+                  panelName.add(new JBLabel(v.getName()));
+
+                  panelDetails.add(panelName);
+
+                  JPanel panelDescription = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                  panelDescription.add(new JBLabel("Description:"));
+                  panelDescription.add(new JBLabel(v.getDescription()));
+
+                  panelDetails.add(panelDescription);
+
+                  JPanel panelLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                  panelLine.add(new JBLabel("Line:"));
+                  panelLine.add(new JBLabel(Integer.toString(v.getLine())));
+
+                  panelDetails.add(panelLine);
+
+                  JBPopup popup = JBPopupFactory.getInstance()
+                          .createComponentPopupBuilder(panelDetails, null).createPopup();
+
+                  popup.setCaption("Vulnerability " + v.getName());
+
+                  popup.showInFocusCenter();
+
+                }
+            });
             JPanel panelEast =  new JPanel();
             panelEast.add(button);
             rowPanel.add(panelEast, BorderLayout.EAST);
