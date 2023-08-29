@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -51,11 +52,11 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
 
                         Gson parser =  new Gson();
                         JsonArray array =  parser.fromJson(result, JsonArray.class).getAsJsonArray();
-                        List<Vulnerability> vulnerabilities = new ArrayList<>();
-
                         if(array.size() == 0){
                             content.displayInformation("Non sono presenti vulnerabilit\\u00E0!");
                         }else{
+
+                            List<Vulnerability> vulnerabilities = new ArrayList<>();
                             for(int i = 0; i < array.size(); i++){
                                 JsonObject employee = array.get(i).getAsJsonObject();
                                 vulnerabilities.add(new Vulnerability(employee.get("name").getAsString(),
@@ -63,7 +64,10 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                                         employee.get("line").getAsInt()));
                             }
 
-                            content.addVulnerabilitiesContent(vulnerabilities);
+                            FileEditorManager fileEditorManager = FileEditorManager.getInstance(e.getProject());
+
+
+                            content.addVulnerabilitiesContent(vulnerabilities, fileEditorManager, vf);
                         }
                     }catch (OpenAiHttpException exception){
                        content.displayError(exception.getMessage());

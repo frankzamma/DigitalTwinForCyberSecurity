@@ -4,7 +4,14 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.ColorChooserService;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
@@ -33,7 +40,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
 
     }
 
-    public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities) {
+    public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities, FileEditorManager manager, VirtualFile vf) {
         JPanel verticalPanel =  new JPanel();
         verticalPanel.setLayout(new BoxLayout(verticalPanel, BoxLayout.Y_AXIS));
         JBScrollPane scrollPane = new JBScrollPane(verticalPanel);
@@ -54,7 +61,9 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             panelNorth.add(labelLine);
 
             JButton button = new JButton("Dettagli");
-            rowPanel.add(button, BorderLayout.EAST);
+            JPanel panelEast =  new JPanel();
+            panelEast.add(button);
+            rowPanel.add(panelEast, BorderLayout.EAST);
 
 
             verticalPanel.add(rowPanel);
@@ -62,7 +71,17 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             rowPanel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    final FileEditor[] editor = manager.openFile(
+                            vf, true);
 
+                    if (editor.length > 0 && editor[0] instanceof TextEditor) {
+                        final LogicalPosition problemPos = new LogicalPosition(
+                                Math.max(v.getLine() - 1, 0), Math.max(1, 0));
+
+                        final Editor textEditor = ((TextEditor) editor[0]).getEditor();
+                        textEditor.getCaretModel().moveToLogicalPosition(problemPos);
+                        textEditor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
+                    }
                 }
 
                 @Override
@@ -79,6 +98,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
                 public void mouseEntered(MouseEvent e) {
                     rowPanel.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                     panelNorth.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
+                    panelEast.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
 
                 }
 
@@ -86,7 +106,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
                 public void mouseExited(MouseEvent e) {
                     rowPanel.setBackground(UIManager.getColor("Panel.background"));
                     panelNorth.setBackground(UIManager.getColor("Panel.background"));
-
+                    panelEast.setBackground(UIManager.getColor("Panel.background"));
                 }
             });
         }
