@@ -10,22 +10,19 @@ import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
-import com.intellij.openapi.ui.MessageDialogBuilder;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.ColorChooserService;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.util.ui.UIUtil;
+import com.intellij.ui.components.JBTextArea;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -56,21 +53,23 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth() -1 , 50));
             rowPanel.setSize(rowPanel.getWidth(), 50);
             JPanel panelNorth =  new JPanel();
-            panelNorth.setLayout( new GridLayout(1, 2));
+            panelNorth.setLayout( new GridLayout(1, 3));
 
             JBLabel labelName = new JBLabel(v.getName());
             panelNorth.add(labelName);
 
             rowPanel.add(panelNorth, BorderLayout.NORTH);
 
-            JBLabel labelLine = new JBLabel("Line: " + Integer.toString( v.getLine()));
+            JBLabel labelLine = new JBLabel("Line: " +  v.getLine());
             panelNorth.add(labelLine);
 
+            JBLabel labelLevel = new JBLabel("Level: " + v.getLevel());
+            panelNorth.add(labelLevel);
             JButton button = new JButton("Dettagli");
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                  JPanel panelDetails = new JPanel(new GridLayout(3, 1));
+                  JPanel panelDetails = new JPanel(new GridLayout(5, 1));
 
                   JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
                   panelName.add(new JBLabel("Name:"));
@@ -90,6 +89,53 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
 
                   panelDetails.add(panelLine);
 
+                  JPanel panelLevel =  new JPanel(new FlowLayout(FlowLayout.LEFT));
+                  panelLevel.add(new JBLabel("Level:"));
+                  panelLevel.add(new JBLabel(v.getLevel()));
+
+                  panelDetails.add(panelLevel);
+
+                  JPanel solution =  new JPanel(new BorderLayout());
+
+                  JPanel panelNorthSolution = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                  panelNorthSolution.add(new JBLabel("Possible solution"));
+
+                  solution.add(panelNorthSolution, BorderLayout.NORTH);
+
+                  JPanel solutionCenter = new JPanel(new GridLayout(1, 2));
+
+                  JBTextArea textAreaOldCode = new JBTextArea();
+                  textAreaOldCode.setText("//old code\n");
+                  textAreaOldCode.append(v.getCode());
+                  textAreaOldCode.setEditable(false);
+                  solutionCenter.add(textAreaOldCode);
+
+                  JBTextArea textAreaNewCode = new JBTextArea();
+                  textAreaNewCode.setText("//new code\n");
+                  textAreaNewCode.append(v.getNewCode());
+                  textAreaNewCode.setEditable(false);
+                  solutionCenter.add(textAreaNewCode);
+
+                  solution.add(solutionCenter, BorderLayout.CENTER);
+
+                  JPanel southPanelSolution = new JPanel(new FlowLayout());
+                  JButton copyButton = new JButton("Copy New Code");
+
+                  copyButton.addActionListener(new ActionListener() {
+                      @Override
+                      public void actionPerformed(ActionEvent e) {
+                          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+                          clipboard.setContents(new StringSelection(textAreaNewCode.getText()), null);
+                      }
+                  });
+
+                  southPanelSolution.add(copyButton);
+                  solution.add(southPanelSolution, BorderLayout.SOUTH);
+
+                  panelDetails.add(solution);
+
+
                   JBPopup popup = JBPopupFactory.getInstance()
                           .createComponentPopupBuilder(panelDetails, null).createPopup();
 
@@ -103,9 +149,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             panelEast.add(button);
             rowPanel.add(panelEast, BorderLayout.EAST);
 
-
             verticalPanel.add(rowPanel);
-
             rowPanel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -137,7 +181,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
                     rowPanel.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                     panelNorth.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                     panelEast.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
-
+                    button.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                 }
 
                 @Override
@@ -145,6 +189,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
                     rowPanel.setBackground(UIManager.getColor("Panel.background"));
                     panelNorth.setBackground(UIManager.getColor("Panel.background"));
                     panelEast.setBackground(UIManager.getColor("Panel.background"));
+                    button.setBackground(UIManager.getColor("ActionButton.background"));
                 }
             });
         }

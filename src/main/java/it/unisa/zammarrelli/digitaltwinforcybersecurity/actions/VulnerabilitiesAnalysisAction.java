@@ -47,21 +47,26 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                     content.displayError("Inserire GPT API keys nelle impostazioni!");
                 }else{
                     try{
-                        GPTWrapper gptWrapper = new GPTWrapper(token);
+
+                        GPTWrapper gptWrapper = new GPTWrapper(token,
+                                PluginSettingsStateService.getInstance().getState().getLanguage());
                         String result =  gptWrapper.analyze(document.getText());
 
                         Gson parser =  new Gson();
                         JsonArray array =  parser.fromJson(result, JsonArray.class).getAsJsonArray();
                         if(array.size() == 0){
-                            content.displayInformation("Non sono presenti vulnerabilit\\u00E0!");
+                            content.displayInformation("Non sono presenti vulnerabilit\u00E0!");
                         }else{
 
                             List<Vulnerability> vulnerabilities = new ArrayList<>();
                             for(int i = 0; i < array.size(); i++){
-                                JsonObject employee = array.get(i).getAsJsonObject();
-                                vulnerabilities.add(new Vulnerability(employee.get("name").getAsString(),
-                                        employee.get("description").getAsString(),
-                                        employee.get("line").getAsInt()));
+                                JsonObject vulnerability = array.get(i).getAsJsonObject();
+                                vulnerabilities.add(new Vulnerability(vulnerability.get("name").getAsString(),
+                                        vulnerability.get("description").getAsString(),
+                                        vulnerability.get("level").getAsString(),
+                                        vulnerability.get("code").getAsString(),
+                                        vulnerability.get("new_code").getAsString(),
+                                        vulnerability.get("line").getAsInt()));
                             }
 
                             FileEditorManager fileEditorManager = FileEditorManager.getInstance(e.getProject());
