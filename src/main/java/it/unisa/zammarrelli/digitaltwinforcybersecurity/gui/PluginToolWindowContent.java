@@ -1,6 +1,7 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.gui;
 
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -14,15 +15,13 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.components.JBTextArea;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -69,7 +68,7 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                  JPanel panelDetails = new JPanel(new GridLayout(5, 1));
+                  JPanel panelDetails = new JPanel(new GridLayout(4, 1));
 
                   JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
                   panelName.add(new JBLabel("Name:"));
@@ -94,47 +93,6 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
                   panelLevel.add(new JBLabel(v.getLevel()));
 
                   panelDetails.add(panelLevel);
-
-                  JPanel solution =  new JPanel(new BorderLayout());
-
-                  JPanel panelNorthSolution = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                  panelNorthSolution.add(new JBLabel("Possible solution"));
-
-                  solution.add(panelNorthSolution, BorderLayout.NORTH);
-
-                  JPanel solutionCenter = new JPanel(new GridLayout(1, 2));
-
-                  JBTextArea textAreaOldCode = new JBTextArea();
-                  textAreaOldCode.setText("//old code\n");
-                  textAreaOldCode.append(v.getCode());
-                  textAreaOldCode.setEditable(false);
-                  solutionCenter.add(textAreaOldCode);
-
-                  JBTextArea textAreaNewCode = new JBTextArea();
-                  textAreaNewCode.setText("//new code\n");
-                  textAreaNewCode.append(v.getNewCode());
-                  textAreaNewCode.setEditable(false);
-                  solutionCenter.add(textAreaNewCode);
-
-                  solution.add(solutionCenter, BorderLayout.CENTER);
-
-                  JPanel southPanelSolution = new JPanel(new FlowLayout());
-                  JButton copyButton = new JButton("Copy New Code");
-
-                  copyButton.addActionListener(new ActionListener() {
-                      @Override
-                      public void actionPerformed(ActionEvent e) {
-                          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-
-                          clipboard.setContents(new StringSelection(textAreaNewCode.getText()), null);
-                      }
-                  });
-
-                  southPanelSolution.add(copyButton);
-                  solution.add(southPanelSolution, BorderLayout.SOUTH);
-
-                  panelDetails.add(solution);
-
 
                   JBPopup popup = JBPopupFactory.getInstance()
                           .createComponentPopupBuilder(panelDetails, null).createPopup();
@@ -219,6 +177,30 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(icon);
         panel.add(errorLabel);
+        super.setContent(panel);
+    }
+
+
+    public void setLoading(){
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        AnimatedIcon icon = new AnimatedIcon(
+                250,
+                AllIcons.Process.Step_1,
+                AllIcons.Process.Step_2,
+                AllIcons.Process.Step_3,
+                AllIcons.Process.Step_4,
+                AllIcons.Process.Step_5,
+                AllIcons.Process.Step_6,
+                AllIcons.Process.Step_7,
+                AllIcons.Process.Step_8
+                );
+
+        JBLabel label = new JBLabel();
+        label.setIcon(icon);
+        JBLabel labelMessage = new JBLabel("I'm analyzing");
+        panel.add(label);
+        panel.add(labelMessage);
+
         super.setContent(panel);
     }
 }

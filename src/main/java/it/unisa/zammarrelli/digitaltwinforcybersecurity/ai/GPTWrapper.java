@@ -22,27 +22,23 @@ public class GPTWrapper {
     public String analyze(String code){
         List<ChatMessage> messages = new ArrayList<>();
 
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(), "Locate the vulnerabilities in the source code and output the result in JSON.\n" +
-                "The answer must be a JSON Array of objects they have six fields: \"name\", \"description\", \"line\", \"code\", \"new_code\" and \"level\"\n" +
-                "\n" +
-                " \"name\" is the name of the vulnerability.\n" +
-                " \"description\" is a short description of the vulnerability.\n" +
-                " \"line\" is the number of the line of code that contains the vulnerability.\n" +
-                " \"code\" is the vulnerable code.\n" +
-                " \"new_code\" is correct commented code without vulnerability and without new methods.\n" +
-                "\"level\": level of vulnerability (potential, real, serious)\n" +
-                " \n" +
-                " If there aren't any vulnerabilities, return an empty JSON array.\n" +
-                "\n" +
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
+                "Individua le vulnerabilità visibili presenti nel codice sorgente.\n" +
+                        "La risposta deve essere un Array JSON che contiene degli oggetti con 5 campi:\n" +
+                        " \"name\": nome della vulnerabilità.\n" +
+                        " \"description\" : descrizione della vulnerabilità.\n" +
+                        " \"line\":  il numero della riga in cui la vulnerabilità è stata individuata\n" +
+                        " \"code\": il codice vulnerabile\n" +
+                        "\"level\": il livello di gravità della vulnerabilità (basso, medio e alto)"+
                 "Name and Description will in "+ language.toString()+ "."));
 
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), code));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model("gpt-3.5-turbo-16k")
-                .temperature(0.7d)
+                .model("gpt-3.5-turbo")
+                .temperature(1d)
                 .maxTokens(1024)
-                .topP(0.5)
+                .topP(1d)
                 .messages(messages).build();
 
         ChatCompletionResult result = this.service.createChatCompletion(request);
@@ -51,5 +47,10 @@ public class GPTWrapper {
         System.out.println(message.getContent());
 
         return message.getContent();
+    }
+
+
+    public String getSolutionCode(){
+        return "Potential Solution";
     }
 }
