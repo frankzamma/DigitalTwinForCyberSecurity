@@ -5,6 +5,7 @@ import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -12,20 +13,29 @@ import java.util.List;
 
 public class GPTWrapper {
     private OpenAiService service;
-
-    public GPTWrapper(String token) {
+    private Language language;
+    public GPTWrapper(String token, Language language) {
         this.service = new OpenAiService(token, Duration.ofSeconds(60));
+        this.language = language;
     }
 
     public String analyze(String code){
         List<ChatMessage> messages = new ArrayList<>();
 
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(), "Locate the vulnerabilities in the source code and output the result in JSON.\n" +
-                "The answer must be a JSON Array of objects they have three fields: \"name\", \"description\" and \"line\".\n" +
-                "\"name\" is the name of the vulnerability.\n" +
-                "\"description\" is a short description of the vulnerability.\n" +
-                "\"line\" is the number of the line of code that contains the vulnerability." +
-                "If there aren't any vulnerabilities, return an empty JSON array."));
+                "The answer must be a JSON Array of objects they have six fields: \"name\", \"description\", \"line\", \"code\", \"new_code\" and \"level\"\n" +
+                "\n" +
+                " \"name\" is the name of the vulnerability.\n" +
+                " \"description\" is a short description of the vulnerability.\n" +
+                " \"line\" is the number of the line of code that contains the vulnerability.\n" +
+                " \"code\" is the vulnerable code.\n" +
+                " \"new_code\" is correct commented code without vulnerability and without new methods.\n" +
+                "\"level\": level of vulnerability (potential, real, serious)\n" +
+                " \n" +
+                " If there aren't any vulnerabilities, return an empty JSON array.\n" +
+                "\n" +
+                "Name and Description will in "+ language.toString()+ "."));
+
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), code));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
@@ -41,48 +51,5 @@ public class GPTWrapper {
         System.out.println(message.getContent());
 
         return message.getContent();
-        // example
-        /*return "[" +
-                "{\"name\":\"Vulnerability 1\", \"description\":\"Lorem ipsum dolor sit amet, consectetur" +
-                " adipiscing elit. Mauris enim augue, dignissim quis imperdiet id, volutpat ut erat. " +
-                "Mauris quis quam elementum, tincidunt lectus at, gravida urna. " +
-                "Nulla iaculis dolor non pharetra tristique. Morbi faucibus orci erat, id finibus leo tempor vitae. I" +
-                "n justo augue, pulvinar vitae pulvinar facilisis, venenatis a nisl. Nulla consequat accumsan dapibus. " +
-                "Curabitur dictum est neque, id semper diam molestie vel. Nullam iaculis urna nec odio commodo, " +
-                "vel gravida magna porta. Praesent eu odio fringilla, vestibulum arcu vel, porta nibh. Mauris " +
-                "id suscipit ligula. Sed imperdiet tortor ut tortor sodales, " +
-                "et tincidunt purus congue. Duis tristique velit lectus, " +
-                "ut dictum augue venenatis vitae.\", \"line\":23}," +
-                "    {\"name\":\"Vulnerability 2\", \"description\":\"Lorem ipsum dolor sit amet, consectetur" +
-                " adipiscing elit. Mauris enim augue, dignissim quis imperdiet id, volutpat ut erat. " +
-                "Mauris quis quam elementum, tincidunt lectus at, gravida urna. " +
-                "Nulla iaculis dolor non pharetra tristique. Morbi faucibus orci erat, id finibus leo tempor vitae. I" +
-                "n justo augue, pulvinar vitae pulvinar facilisis, venenatis a nisl. Nulla consequat accumsan dapibus. " +
-                "Curabitur dictum est neque, id semper diam molestie vel. Nullam iaculis urna nec odio commodo, " +
-                "vel gravida magna porta. Praesent eu odio fringilla, vestibulum arcu vel, porta nibh. Mauris " +
-                "id suscipit ligula. Sed imperdiet tortor ut tortor sodales, " +
-                "et tincidunt purus congue. Duis tristique velit lectus, " +
-                "ut dictum augue venenatis vitae.\", \"line\":23}," +
-                "    {\"name\":\"Vulnerability 3\", \"description\":\"Lorem ipsum dolor sit amet, consectetur" +
-                " adipiscing elit. Mauris enim augue, dignissim quis imperdiet id, volutpat ut erat. " +
-                "Mauris quis quam elementum, tincidunt lectus at, gravida urna. " +
-                "Nulla iaculis dolor non pharetra tristique. Morbi faucibus orci erat, id finibus leo tempor vitae. I" +
-                "n justo augue, pulvinar vitae pulvinar facilisis, venenatis a nisl. Nulla consequat accumsan dapibus. " +
-                "Curabitur dictum est neque, id semper diam molestie vel. Nullam iaculis urna nec odio commodo, " +
-                "vel gravida magna porta. Praesent eu odio fringilla, vestibulum arcu vel, porta nibh. Mauris " +
-                "id suscipit ligula. Sed imperdiet tortor ut tortor sodales, " +
-                "et tincidunt purus congue. Duis tristique velit lectus, " +
-                "ut dictum augue venenatis vitae.\", \"line\":13}," +
-                "    {\"name\":\"Vulnerability 4\", \"description\":\"Lorem ipsum dolor sit amet, consectetur" +
-                " adipiscing elit. Mauris enim augue, dignissim quis imperdiet id, volutpat ut erat. " +
-                "Mauris quis quam elementum, tincidunt lectus at, gravida urna. " +
-                "Nulla iaculis dolor non pharetra tristique. Morbi faucibus orci erat, id finibus leo tempor vitae. I" +
-                "n justo augue, pulvinar vitae pulvinar facilisis, venenatis a nisl. Nulla consequat accumsan dapibus. " +
-                "Curabitur dictum est neque, id semper diam molestie vel. Nullam iaculis urna nec odio commodo, " +
-                "vel gravida magna porta. Praesent eu odio fringilla, vestibulum arcu vel, porta nibh. Mauris " +
-                "id suscipit ligula. Sed imperdiet tortor ut tortor sodales, " +
-                "et tincidunt purus congue. Duis tristique velit lectus, " +
-                "ut dictum augue venenatis vitae.\", \"line\":20}" +
-                "]";*/
     }
 }
