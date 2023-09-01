@@ -6,10 +6,13 @@ public class PluginSettingsState {
     private String gptToken;
     private Language language;
 
+    private boolean dynamicAnalysis;
+
     public PluginSettingsState() {
         this.language = Language.ITALIAN;
 
         this.gptToken = "";
+        this.dynamicAnalysis = false;
     }
 
     public String getGptToken() {
@@ -26,5 +29,13 @@ public class PluginSettingsState {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    public boolean isDynamicAnalysis() {
+        return dynamicAnalysis;
+    }
+
+    public void setDynamicAnalysis(boolean dynamicAnalysis) {
+        this.dynamicAnalysis = dynamicAnalysis;
     }
 }

@@ -1,6 +1,7 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.settings;
 
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
@@ -12,18 +13,21 @@ public class PluginSettingsComponent {
     private final JPanel mainPanel;
     private final ComboBox<Language> languageComboBox = new ComboBox<>(Language.values());
     private final JBTextField tokenGptTextField = new JBTextField();
-    private JLabel labelLanguage, labelToken;
+    private final JBCheckBox checkBox = new JBCheckBox();
+    private JLabel labelLanguage, labelToken, labelCheckBox;
 
 
     public PluginSettingsComponent(){
         languageComboBox.setSelectedItem(Language.ITALIAN);
         labelLanguage =  new JLabel();
         labelToken =  new JLabel();
+        labelCheckBox = new JLabel();
         updateLabel();
 
         mainPanel = FormBuilder.createFormBuilder()
                 .addLabeledComponent(labelLanguage, languageComboBox,false)
                 .addLabeledComponent(labelToken, tokenGptTextField,false)
+                .addLabeledComponent(labelCheckBox,  checkBox, false)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
         languageComboBox.addActionListener(a -> updateLabel());
@@ -44,19 +48,26 @@ public class PluginSettingsComponent {
         return tokenGptTextField.getText();
     }
 
+    public boolean isDynamicAnalysis(){
+        return checkBox.isSelected();
+    }
     private void updateLabel(){
         switch (this.getLanguage()){
             case ITALIAN:
                 labelLanguage.setText("Scegliere Lingua");
                 labelToken.setText("Inserire Token GPT");
+                labelCheckBox.setText("Analisi del codice durante la scrittura");
                 break;
             case ENGLISH:
                 labelLanguage.setText("Select Language");
                 labelToken.setText("Insert GPT Token");
+                labelCheckBox.setText("Code analysis during writing");
+
                 break;
             case FRENCH:
                 labelLanguage.setText("Choisir la langue");
                 labelToken.setText("Ins\u00E9rer un jeton GPT");
+                labelCheckBox.setText("Analyse du code lors de l'écriture");
                 break;
         }
     }
@@ -67,5 +78,9 @@ public class PluginSettingsComponent {
 
     public void setGptToken(String token){
         tokenGptTextField.setText(token);
+    }
+
+    public void setDynamicAnalysis(boolean dynamicAnalysis){
+        checkBox.setSelected(dynamicAnalysis);
     }
 }

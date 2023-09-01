@@ -28,44 +28,46 @@ public class WritingAnalysisHandler extends TypedHandlerDelegate {
 
     @Override
     public @NotNull Result charTyped(char c, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
-        String gptToken = PluginSettingsStateService.getInstance().getState().getGptToken();
 
-        if(gptToken.length() > 10){
-            CaretModel caretModel = editor.getCaretModel();
-            Document document = editor.getDocument();
-            LogicalPosition logicalPosition = caretModel.getLogicalPosition();
-            int start = document.getLineStartOffset(logicalPosition.line-1);
-            int end = document.getLineEndOffset(logicalPosition.line -1);
+        if(PluginSettingsStateService.getInstance().getState().isDynamicAnalysis()){
+            String gptToken = PluginSettingsStateService.getInstance().getState().getGptToken();
 
-            String line = editor.getDocument().getText(new TextRange(start, end));
-            if(!line.equals(last)){
-                this.last = line;
-                System.out.println(line);
-                try{
-                    GPTWrapper gptWrapper = new GPTWrapper(gptToken,PluginSettingsStateService.getInstance().getState().getLanguage());
+            if(gptToken.length() > 10){
+                CaretModel caretModel = editor.getCaretModel();
+                Document document = editor.getDocument();
+                LogicalPosition logicalPosition = caretModel.getLogicalPosition();
+                int start = document.getLineStartOffset(logicalPosition.line-1);
+                int end = document.getLineEndOffset(logicalPosition.line -1);
 
-                    String response = gptWrapper.analyzeLine(line);
-                    Gson parser = new Gson();
-                    JsonObject object = parser.fromJson(response, JsonObject.class);
-                    VulnerabilityLine vulnerabilityLine = new VulnerabilityLine();
-                    vulnerabilityLine.setVulnerable(object.get("vulnerable").getAsString().equalsIgnoreCase("yes"));
-                    vulnerabilityLine.setDescription(object.get("description").getAsString());
-                    vulnerabilityLine.setSeverity(object.get("severity").getAsString());
+                String line = editor.getDocument().getText(new TextRange(start, end));
+                if(!line.equals(last)){
+                    this.last = line;
+                    System.out.println(line);
+                    try{
+                        GPTWrapper gptWrapper = new GPTWrapper(gptToken,PluginSettingsStateService.getInstance().getState().getLanguage());
 
-                    if(vulnerabilityLine.isVulnerable()){
+                        String response = gptWrapper.analyzeLine(line);
+                        Gson parser = new Gson();
+                        JsonObject object = parser.fromJson(response, JsonObject.class);
+                        VulnerabilityLine vulnerabilityLine = new VulnerabilityLine();
+                        vulnerabilityLine.setVulnerable(object.get("vulnerable").getAsString().equalsIgnoreCase("yes"));
+                        vulnerabilityLine.setDescription(object.get("description").getAsString());
+                        vulnerabilityLine.setSeverity(object.get("severity").getAsString());
 
-                        NotificationGroupManager.getInstance().getNotificationGroup("vulnerabilityNotification")
-                                .createNotification("Attento hai inserito del codice vulnerabile!",
-                                        "Riga: " + logicalPosition.line+"\n"+ vulnerabilityLine.getDescription(), NotificationType.INFORMATION).notify(project);
-                    }
-                }catch (OpenAiHttpException exception){
+                        if(vulnerabilityLine.isVulnerable()){
+
+                            NotificationGroupManager.getInstance().getNotificationGroup("vulnerabilityNotification")
+                                    .createNotification("Attento hai inserito del codice vulnerabile!",
+                                            "Riga: " + logicalPosition.line+"\n"+ vulnerabilityLine.getDescription(), NotificationType.INFORMATION).notify(project);
+                        }
+                    }catch (OpenAiHttpException exception){
                         exception.printStackTrace();
+                    }
+
                 }
 
             }
-
         }
-
         return Result.STOP;
         }
 

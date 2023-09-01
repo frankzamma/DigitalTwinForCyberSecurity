@@ -32,7 +32,8 @@ public class PluginSettingsConfigurable implements Configurable {
         PluginSettingsState settingsState = PluginSettingsStateService.getInstance().getState();
 
         return (settingsState.getLanguage() != pluginSettingsComponent.getLanguage())
-                || (!settingsState.getGptToken().equals(pluginSettingsComponent.getGptToken()));
+                || (!settingsState.getGptToken().equals(pluginSettingsComponent.getGptToken())
+                || (settingsState.isDynamicAnalysis() != pluginSettingsComponent.isDynamicAnalysis() ));
     }
     @Override
     public void apply() throws ConfigurationException {
@@ -40,6 +41,7 @@ public class PluginSettingsConfigurable implements Configurable {
 
         settingsState.setLanguage(pluginSettingsComponent.getLanguage());
         settingsState.setGptToken(pluginSettingsComponent.getGptToken());
+        settingsState.setDynamicAnalysis(pluginSettingsComponent.isDynamicAnalysis());
     }
 
     @Override
@@ -48,5 +50,6 @@ public class PluginSettingsConfigurable implements Configurable {
 
         pluginSettingsComponent.setGptToken(settingsState.getGptToken());
         pluginSettingsComponent.setLanguage(settingsState.getLanguage());
+        pluginSettingsComponent.setDynamicAnalysis(settingsState.isDynamicAnalysis());
     }
 }
