@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
@@ -18,11 +17,8 @@ import com.theokanning.openai.OpenAiHttpException;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.ai.GPTWrapper;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowContent;
-import it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsState;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService;
-import net.minidev.json.JSONObject;
 import org.jetbrains.annotations.NotNull;
-import retrofit2.HttpException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,54 +46,49 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                     content.displayError("Inserire GPT API keys nelle impostazioni!");
                 }else {
                     content.setLoading();
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                GPTWrapper gptWrapper = new GPTWrapper(token,
-                                        PluginSettingsStateService.getInstance().getState().getLanguage());
-                                String result = gptWrapper.analyze(document.getText());
+                    Thread thread = new Thread(() -> {
+                        try {
+                            GPTWrapper gptWrapper = new GPTWrapper(token,
+                                    PluginSettingsStateService.getInstance().getState().getLanguage());
+                            String result = gptWrapper.analyzeFile(document.getText());
 
-                                Gson parser = new Gson();
-                                JsonArray array = parser.fromJson(result, JsonArray.class).getAsJsonArray();
-                                if (array.size() == 0) {
-                                    content.displayInformation("Non sono presenti vulnerabilit\u00E0!");
-                                } else {
+                            Gson parser = new Gson();
+                            JsonArray array = parser.fromJson(result, JsonArray.class).getAsJsonArray();
+                            if (array.size() == 0) {
+                                content.displayInformation("Non sono presenti vulnerabilit\u00E0!");
+                            } else {
 
-                                    List<Vulnerability> vulnerabilities = new ArrayList<>();
-                                    for (int i = 0; i < array.size(); i++) {
-                                        JsonObject vulnerability = array.get(i).getAsJsonObject();
-                                        Vulnerability v = new Vulnerability(vulnerability.get("name").getAsString(),
-                                                vulnerability.get("description").getAsString(),
-                                                vulnerability.get("level").getAsString(),
-                                                vulnerability.get("code").getAsString(),
-                                                vulnerability.get("line").getAsInt());
+                                List<Vulnerability> vulnerabilities = new ArrayList<>();
+                                for (int i = 0; i < array.size(); i++) {
+                                    JsonObject vulnerability = array.get(i).getAsJsonObject();
+                                    Vulnerability v = new Vulnerability(vulnerability.get("name").getAsString(),
+                                            vulnerability.get("description").getAsString(),
+                                            vulnerability.get("level").getAsString(),
+                                            vulnerability.get("code").getAsString(),
+                                            vulnerability.get("line").getAsInt());
 
-                                        List<String> lines = document.getText().lines().collect(Collectors.toList());
-                                        String firstLineOfCode = v.getCode().lines().collect(Collectors.toList()).get(0);
-                                        if (!lines.get(v.getLine()).equals(firstLineOfCode)) {
-                                            for (int j = v.getLine(); j < lines.size(); j++) {
-                                                if (lines.get(v.getLine()).equals(firstLineOfCode)) {
-                                                    v.setLine(j);
-                                                    break;
-                                                }
+                                    List<String> lines = document.getText().lines().collect(Collectors.toList());
+                                    String firstLineOfCode = v.getCode().lines().collect(Collectors.toList()).get(0);
+                                    if (!lines.get(v.getLine()).equals(firstLineOfCode)) {
+                                        for (int j = v.getLine(); j < lines.size(); j++) {
+                                            if (lines.get(v.getLine()).equals(firstLineOfCode)) {
+                                                v.setLine(j);
+                                                break;
                                             }
                                         }
-                                        vulnerabilities.add(v);
                                     }
-
-                                    FileEditorManager fileEditorManager = FileEditorManager.getInstance(e.getProject());
-
-
-                                    content.addVulnerabilitiesContent(vulnerabilities, fileEditorManager, vf);
+                                    vulnerabilities.add(v);
                                 }
-                            } catch (OpenAiHttpException exception) {
-                                content.displayError(exception.getMessage());
 
+                                FileEditorManager fileEditorManager = FileEditorManager.getInstance(e.getProject());
+
+
+                                content.addVulnerabilitiesContent(vulnerabilities, fileEditorManager, vf);
                             }
+                        } catch (OpenAiHttpException exception) {
+                            content.displayError(exception.getMessage());
+
                         }
-
-
                     });
 
                     thread.start();

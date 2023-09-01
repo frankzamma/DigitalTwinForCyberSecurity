@@ -32,6 +32,8 @@
         <applicationService serviceImplementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService"/>
         <toolWindow factoryClass="it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowFactory"
                     id="DigitalTwinForCyberSecurity" icon="AllIcons.Providers.ApacheDerby" anchor="bottom"/>
+        <typedHandler implementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.WritingAnalysisHandler"/>
+        <notificationGroup displayType="BALLOON" id="vulnerabilityNotification"/>
     </extensions>
     <actions>
         <group id="toolbarPlugin">

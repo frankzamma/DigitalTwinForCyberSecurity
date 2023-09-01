@@ -19,20 +19,34 @@ public class GPTWrapper {
         this.language = language;
     }
 
-    public String analyze(String code){
+    public String analyzeFile(String code){
+        return  analyze(   "Individua le vulnerabilità visibili presenti nel codice sorgente.\n" +
+                "La risposta deve essere un Array JSON che contiene degli oggetti con 5 campi:\n" +
+                " \"name\": nome della vulnerabilità.\n" +
+                " \"description\" : descrizione della vulnerabilità.\n" +
+                " \"line\":  il numero della riga in cui la vulnerabilità è stata individuata\n" +
+                " \"code\": il codice vulnerabile\n" +
+                "\"level\": il livello di gravità della vulnerabilità (basso, medio e alto)"+
+                "Name and Description will in "+ language.toString()+ ".", code);
+    }
+
+    public String analyzeLine(String line){
+
+        return analyze("Verify if the line of code is vulnerable.\n" +
+                "Answer must is a JSON Object that have two fields: \n" +
+                "- vulnerable: yes or no\n" +
+                "- description: a brief description of vulnerable. If vulnerable = no this field could be \"\".\n" +
+                "- severity: potential, medium, serious. If vulnerable = no this field could be \"\".\n" +
+                "\n" +
+                "Description must be in italian", line);
+    }
+
+
+    private String analyze(String systemMessage, String userMessage){
         List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(), systemMessage));
 
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
-                "Individua le vulnerabilità visibili presenti nel codice sorgente.\n" +
-                        "La risposta deve essere un Array JSON che contiene degli oggetti con 5 campi:\n" +
-                        " \"name\": nome della vulnerabilità.\n" +
-                        " \"description\" : descrizione della vulnerabilità.\n" +
-                        " \"line\":  il numero della riga in cui la vulnerabilità è stata individuata\n" +
-                        " \"code\": il codice vulnerabile\n" +
-                        "\"level\": il livello di gravità della vulnerabilità (basso, medio e alto)"+
-                "Name and Description will in "+ language.toString()+ "."));
-
-        messages.add(new ChatMessage(ChatMessageRole.USER.value(), code));
+        messages.add(new ChatMessage(ChatMessageRole.USER.value(), userMessage));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model("gpt-3.5-turbo")
@@ -44,12 +58,12 @@ public class GPTWrapper {
         ChatCompletionResult result = this.service.createChatCompletion(request);
 
         ChatMessage message = result.getChoices().get(0).getMessage();
+
         System.out.println(message.getContent());
 
         return message.getContent();
+
     }
-
-
     public String getSolutionCode(){
         return "Potential Solution";
     }
