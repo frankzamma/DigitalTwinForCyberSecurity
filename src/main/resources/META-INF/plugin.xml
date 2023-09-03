@@ -31,7 +31,7 @@
         />
         <applicationService serviceImplementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService"/>
         <toolWindow factoryClass="it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowFactory"
-                    id="DigitalTwinForCyberSecurity" icon="AllIcons.Providers.ApacheDerby" anchor="bottom"/>
+                    id="DigitalTwinForCyberSecurity" icon="AllIcons.Providers.ApacheDerby" anchor="bottom" />
         <typedHandler implementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.WritingAnalysisHandler"/>
         <notificationGroup displayType="BALLOON" id="vulnerabilityNotification"/>
     </extensions>
@@ -42,5 +42,8 @@
                     description="Analizza Vulnerabilità del file corrente">
             </action>
         </group>
+        <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.NotifyAction"
+                id="NotifyAction" text="Altri Dettagli">
+        </action>
     </actions>
 </idea-plugin>
