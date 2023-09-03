@@ -28,10 +28,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
-public class PluginToolWindowContent extends SimpleToolWindowPanel {
+public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWindowPanel {
     private final ActionManager actionManager = ActionManager.getInstance();
     private ActionToolbar actionToolbar;
-    public PluginToolWindowContent(boolean vertical, boolean borderless) {
+    public PluginToolWindowContentVulnerabilitiesAnalysis(boolean vertical, boolean borderless) {
         super(vertical, borderless);
         actionToolbar = actionManager.createActionToolbar("toolbar",
                 (ActionGroup) actionManager.getAction("toolbarPlugin"),
@@ -65,43 +65,40 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             JBLabel labelLevel = new JBLabel("Level: " + v.getLevel());
             panelNorth.add(labelLevel);
             JButton button = new JButton("Dettagli");
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                  JPanel panelDetails = new JPanel(new GridLayout(4, 1));
+            button.addActionListener(e -> {
+              JPanel panelDetails = new JPanel(new GridLayout(4, 1));
 
-                  JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
-                  panelName.add(new JBLabel("Name:"));
-                  panelName.add(new JBLabel(v.getName()));
+              JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
+              panelName.add(new JBLabel("Name:"));
+              panelName.add(new JBLabel(v.getName()));
 
-                  panelDetails.add(panelName);
+              panelDetails.add(panelName);
 
-                  JPanel panelDescription = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                  panelDescription.add(new JBLabel("Description:"));
-                  panelDescription.add(new JBLabel(v.getDescription()));
+              JPanel panelDescription = new JPanel(new FlowLayout(FlowLayout.LEFT));
+              panelDescription.add(new JBLabel("Description:"));
+              panelDescription.add(new JBLabel(v.getDescription()));
 
-                  panelDetails.add(panelDescription);
+              panelDetails.add(panelDescription);
 
-                  JPanel panelLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                  panelLine.add(new JBLabel("Line:"));
-                  panelLine.add(new JBLabel(Integer.toString(v.getLine())));
+              JPanel panelLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
+              panelLine.add(new JBLabel("Line:"));
+              panelLine.add(new JBLabel(Integer.toString(v.getLine())));
 
-                  panelDetails.add(panelLine);
+              panelDetails.add(panelLine);
 
-                  JPanel panelLevel =  new JPanel(new FlowLayout(FlowLayout.LEFT));
-                  panelLevel.add(new JBLabel("Level:"));
-                  panelLevel.add(new JBLabel(v.getLevel()));
+              JPanel panelLevel =  new JPanel(new FlowLayout(FlowLayout.LEFT));
+              panelLevel.add(new JBLabel("Level:"));
+              panelLevel.add(new JBLabel(v.getLevel()));
 
-                  panelDetails.add(panelLevel);
+              panelDetails.add(panelLevel);
 
-                  JBPopup popup = JBPopupFactory.getInstance()
-                          .createComponentPopupBuilder(panelDetails, null).createPopup();
+              JBPopup popup = JBPopupFactory.getInstance()
+                      .createComponentPopupBuilder(panelDetails, null).createPopup();
 
-                  popup.setCaption("Vulnerability " + v.getName());
+              popup.setCaption("Vulnerability " + v.getName());
 
-                  popup.showInFocusCenter();
+              popup.showInFocusCenter();
 
-                }
             });
             JPanel panelEast =  new JPanel();
             panelEast.add(button);
@@ -111,14 +108,13 @@ public class PluginToolWindowContent extends SimpleToolWindowPanel {
             rowPanel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    final FileEditor[] editor = manager.openFile(
-                            vf, true);
+                    FileEditor[] editor = manager.openFile(vf, true);
 
                     if (editor.length > 0 && editor[0] instanceof TextEditor) {
-                        final LogicalPosition problemPos = new LogicalPosition(
+                        LogicalPosition problemPos = new LogicalPosition(
                                 Math.max(v.getLine() - 1, 0), Math.max(1, 0));
 
-                        final Editor textEditor = ((TextEditor) editor[0]).getEditor();
+                        Editor textEditor = ((TextEditor) editor[0]).getEditor();
                         textEditor.getCaretModel().moveToLogicalPosition(problemPos);
                         textEditor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
                     }

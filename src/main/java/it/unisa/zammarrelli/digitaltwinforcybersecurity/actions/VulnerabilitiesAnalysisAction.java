@@ -16,7 +16,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.theokanning.openai.OpenAiHttpException;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.ai.GPTWrapper;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
-import it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowContent;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowContentVulnerabilitiesAnalysis;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +32,8 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
 
         ToolWindow window = ToolWindowManager.getInstance(e.getProject())
                 .getToolWindow("DigitalTwinForCyberSecurity");
-        PluginToolWindowContent content =
-                (PluginToolWindowContent) window.getContentManager().getContent(0).getComponent();
+        PluginToolWindowContentVulnerabilitiesAnalysis content =
+                (PluginToolWindowContentVulnerabilitiesAnalysis) window.getContentManager().getContent(0).getComponent();
 
 
         if(p != null){
