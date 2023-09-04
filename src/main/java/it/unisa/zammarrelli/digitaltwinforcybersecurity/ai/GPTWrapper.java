@@ -33,12 +33,13 @@ public class GPTWrapper {
     public String analyzeLine(String line){
 
         return analyze("Verify if the line of code is vulnerable.\n" +
-                "Answer must is a JSON Object that have two fields: \n" +
+                "Answer must is a JSON Object that have 5 fields: \n" +
                 "- vulnerable: yes or no\n" +
                 "- description: a brief description of vulnerable. If vulnerable = no this field could be \"\".\n" +
                 "- severity: potential, medium, serious. If vulnerable = no this field could be \"\".\n" +
-                "\n" +
-                "Description must be in italian", line);
+                "- solution:  a description to how to solve  . " +
+                "- example_code : An example of a solution code or \"\"" +
+                "Description and Solution must be in" + language.toString() , line);
     }
 
 

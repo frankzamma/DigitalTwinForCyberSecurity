@@ -63,6 +63,9 @@ public class WritingAnalysisHandler extends TypedHandlerDelegate {
                             vulnerabilityLine.setVulnerable(object.get("vulnerable").getAsString().equalsIgnoreCase("yes"));
                             vulnerabilityLine.setDescription(object.get("description").getAsString());
                             vulnerabilityLine.setSeverity(object.get("severity").getAsString());
+                            vulnerabilityLine.setLine(logicalPosition.line);
+                            vulnerabilityLine.setSolution(object.get("solution").getAsString());
+                            vulnerabilityLine.setExampleCode(object.get("example_code") == null ? "" : object.get("example_code").getAsString());
 
                             if(vulnerabilityLine.isVulnerable()){
                                 PluginToolWindowLogWritingAnalysis toolWindowLogWritingAnalysis =
