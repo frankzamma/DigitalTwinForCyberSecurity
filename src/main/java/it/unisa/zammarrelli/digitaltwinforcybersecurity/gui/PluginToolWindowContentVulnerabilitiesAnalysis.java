@@ -18,6 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.ui.JBDimension;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
@@ -50,7 +51,8 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
             JPanel rowPanel = new JPanel();
             rowPanel.setLayout(new BorderLayout());
             rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth() -1 , 50));
-            rowPanel.setSize(rowPanel.getWidth(), 50);
+            rowPanel.setMaximumSize(new Dimension(5000, 50));
+            rowPanel.setSize(super.getContent().getWidth() -1 , 50);
             JPanel panelNorth =  new JPanel();
             panelNorth.setLayout( new GridLayout(1, 3));
 
