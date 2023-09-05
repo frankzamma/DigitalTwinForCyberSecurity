@@ -12,6 +12,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.ui.JBDimension;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.VulnerabilityLine;
 
@@ -45,8 +46,10 @@ public class PluginToolWindowLogWritingAnalysis extends SimpleToolWindowPanel {
 
         JPanel rowPanel = new JPanel();
         rowPanel.setLayout(new GridLayout(1, 3));
-        rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth() -1 , 50));
+        rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth()  , 50));
         rowPanel.setSize(rowPanel.getWidth(), 50);
+        rowPanel.setMaximumSize(new JBDimension(10000, 50));
+        rowPanel.setSize(super.getContent().getWidth(), 50);
 
         JPanel linePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         linePanel.add(new JBLabel("Riga: " + vulnerability.getLine()));
