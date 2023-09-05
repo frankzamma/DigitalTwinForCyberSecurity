@@ -41,9 +41,14 @@
                 id="AnalizzaVulnerabilità" text="Analizza Vulnerabilita" icon="AllIcons.Actions.Search"
                     description="Analizza Vulnerabilità del file corrente">
             </action>
+            <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisHelpAction"
+                id="HelpAnalisiDinamica" text="Analisi Dinamica Help" icon="AllIcons.General.ShowInfos"
+                    description="Aiuto ad eseguire l'analisi dinamica per trovare eventuali vulnerabilità" >
+            </action>
         </group>
         <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.NotifyAction"
                 id="NotifyAction" text="Altri Dettagli">
         </action>
+
     </actions>
 </idea-plugin>

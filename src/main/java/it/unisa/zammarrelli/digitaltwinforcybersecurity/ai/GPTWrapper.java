@@ -9,7 +9,9 @@ import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GPTWrapper {
     private OpenAiService service;
@@ -65,6 +67,33 @@ public class GPTWrapper {
         return message.getContent();
 
     }
+
+    public List<String> getDynamicAnalysisTool(String language){
+        List<ChatMessage> messages = new ArrayList<>();
+
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
+                "Provide a list of  best free dynamic analysis tools" +
+                        "for security vulnerabilities of specified programming language.\n" +
+                        "Format list in this way: item1;item2;item3;item4;item5"));
+
+        messages.add(new ChatMessage(ChatMessageRole.USER.value(), "Example"));
+        messages.add(new ChatMessage(ChatMessageRole.ASSISTANT.value(), "tool1;tool2;tool3"));
+        messages.add(new ChatMessage(ChatMessageRole.USER.value(), language));
+
+        ChatCompletionRequest request = ChatCompletionRequest.builder()
+                .model("gpt-3.5-turbo")
+                .temperature(1d)
+                .maxTokens(256)
+                .topP(1d)
+                .messages(messages).build();
+
+        ChatCompletionResult result = this.service.createChatCompletion(request);
+
+        String[] resultStrings = result.getChoices().get(0).getMessage().getContent().split(";");
+
+        return new ArrayList<>(Arrays.stream(resultStrings).collect(Collectors.toList()));
+    }
+
     public String getSolutionCode(){
         return "Potential Solution";
     }
