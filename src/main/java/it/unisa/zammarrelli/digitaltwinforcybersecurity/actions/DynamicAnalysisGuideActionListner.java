@@ -35,6 +35,7 @@ public class DynamicAnalysisGuideActionListner implements ActionListener {
         });
 
         frameDynamicAnalysisGuide.setVisible(true);
+        frameDynamicAnalysisGuide.setThread(t);
 
         t.start();
     }

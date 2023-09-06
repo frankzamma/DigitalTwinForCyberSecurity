@@ -47,6 +47,9 @@ public class FrameDynamicAnalysisGuide extends JFrame {
         super.add(scrollPane);
         super.pack();
         super.setLocationRelativeTo(null);
+    }
 
+    public void setThread(Thread thread) {
+        super.addWindowListener(new WindowListerForDynamicAnalysisFrame(thread));
     }
 }

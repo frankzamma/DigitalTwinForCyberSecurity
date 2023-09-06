@@ -36,6 +36,7 @@ public class DynamicAnalysisGuideAlternative extends MouseAdapter {
         });
 
         frameDynamicAnalysisGuide.setVisible(true);
+        frameDynamicAnalysisGuide.setThread(t);
 
         t.start();
     }
