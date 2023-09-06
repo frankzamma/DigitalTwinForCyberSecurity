@@ -119,14 +119,15 @@ public class GPTWrapper {
     public String getGuideForDynamicAnalysis(String programmingLanguage){
         return generateGuide("Create a step-by-step guide to perform dynamic analysis for vulnerabilities of a software written in specified language.\n" +
                 "It explains how to install the tools, configure them and run the analysis.\n" +
-                "The software project is already configurated on a one of JetBrains products.\n" +
+                "The software project is already configured on a one of JetBrains products.\n" +
                 "Format the response in HTML.", programmingLanguage);
     }
 
     public String getGuideForDynamicAnalysis(String tool, String programmingLanguage){
-
-
-        return "";
+        return generateGuide("Create a step-by-step guide to perform dynamic analysis for vulnerabilities of a software written in specified language.\n" +
+                "It explains how to install "+ tool + ", configure them and run the analysis.\n" +
+                "The software project is already configured on a one of JetBrains products.\n" +
+                "Format the response in HTML.", programmingLanguage);
     }
 
     private String generateGuide(String prompt, String programmingLanguage){

@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.DynamicActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.UIUtil;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisGuideActionListner;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisGuideAlternative;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisHelpAction;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
@@ -18,7 +19,6 @@ import java.util.List;
 public class FrameDynamicaAnalysisHelp extends JFrame {
     private List<String> tools;
     private String sdkLanguage;
-
 
     private Language language;
 
@@ -47,12 +47,14 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
             centerMain.add(panelNorth,BorderLayout.NORTH);
 
             JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JFrame thisReference = this;
+
 
             for(int i = 0; i < Math.min(tools.size(), 5); i++){
                 JButton btn = new JButton(tools.get(i));
 
-                int index = i;
-                btn.addActionListener(e-> System.out.println("Hai selezionato" + tools.get(index)));
+                btn.addActionListener(new DynamicAnalysisGuideActionListner(tools.get(i), sdkLanguage));
+                btn.addActionListener(e -> thisReference.setVisible(false));
                 center.add(btn);
             }
 
@@ -64,7 +66,7 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
             JBLabel cliccaQuiLabel = new JBLabel("<html>clicca qui</html>");
             cliccaQuiLabel.setForeground(Color.MAGENTA);
             cliccaQuiLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            JFrame thisReference = this;
+
             cliccaQuiLabel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
