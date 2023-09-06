@@ -25,12 +25,18 @@ public class DynamicAnalysisGuideAlternative extends MouseAdapter {
         String gptToken = settingsState.getGptToken();
         Language language = settingsState.getLanguage();
 
-        GPTWrapper gptWrapper = new GPTWrapper(gptToken, language);
+        FrameDynamicAnalysisGuide frameDynamicAnalysisGuide = new FrameDynamicAnalysisGuide();
 
-        String guide = gptWrapper.getGuideForDynamicAnalysis(programmingLanguage);
+        Thread t = new Thread(()->{
+            GPTWrapper gptWrapper = new GPTWrapper(gptToken, language);
 
-        FrameDynamicAnalysisGuide frameDynamicAnalysisGuide = new FrameDynamicAnalysisGuide(guide);
+            String guide = gptWrapper.getGuideForDynamicAnalysis(programmingLanguage);
+            System.out.println(guide);
+            frameDynamicAnalysisGuide.createPanel(guide);
+        });
 
         frameDynamicAnalysisGuide.setVisible(true);
+
+        t.start();
     }
 }
