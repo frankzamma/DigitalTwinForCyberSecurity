@@ -72,9 +72,10 @@ public class GPTWrapper {
         List<ChatMessage> messages = new ArrayList<>();
 
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
-                "Provide a list of  best free dynamic analysis tools" +
-                        "for security vulnerabilities of specified programming language.\n" +
-                        "Format list in this way: item1;item2;item3;item4;item5"));
+                "Write the best free dynamic analysis tools for security vulnerabilities of specified programming language.\n" +
+                        "Format answer in this way:\n" +
+                        "tool1;tool2;tool3\n"+
+                "If there aren't any tools answer [-]"));
 
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), "Example"));
         messages.add(new ChatMessage(ChatMessageRole.ASSISTANT.value(), "tool1;tool2;tool3"));
@@ -88,10 +89,10 @@ public class GPTWrapper {
                 .messages(messages).build();
 
         ChatCompletionResult result = this.service.createChatCompletion(request);
+        String answer = result.getChoices().get(0).getMessage().getContent();
 
-        String[] resultStrings = result.getChoices().get(0).getMessage().getContent().split(";");
-
-        return new ArrayList<>(Arrays.stream(resultStrings).collect(Collectors.toList()));
+            String[] resultStrings = answer.equals("[-]") ? new String[]{}: answer.split(";");
+            return new ArrayList<>(Arrays.stream(resultStrings).collect(Collectors.toList()));
     }
 
     public String getSolutionCode(){
