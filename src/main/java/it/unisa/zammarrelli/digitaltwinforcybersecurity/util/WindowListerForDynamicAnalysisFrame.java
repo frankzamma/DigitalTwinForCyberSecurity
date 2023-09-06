@@ -1,5 +1,8 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.util;
 
+import com.intellij.openapi.actionSystem.ActionManager;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisHelpAction;
+
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -16,7 +19,9 @@ public class WindowListerForDynamicAnalysisFrame implements WindowListener {
 
     @Override
     public void windowClosed(WindowEvent e) {
+        DynamicAnalysisHelpAction dynamicActionGroup = (DynamicAnalysisHelpAction) ActionManager.getInstance().getAction("HelpAnalisiDinamica");
 
+        dynamicActionGroup.setStatus(true);
     }
 
     @Override
