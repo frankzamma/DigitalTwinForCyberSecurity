@@ -68,60 +68,78 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
 
     private void createPanel(){
         JPanel panelMain = new JPanel(new BorderLayout());
+        JPanel panelLanguage = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JBLabel labelLanguage = new JBLabel("<html>Il progetto a cui sta lavorando \u00E8 basato su <b>" + sdkLanguage + "</b><html>");
+        panelLanguage.add(labelLanguage);
+        panelMain.add(panelLanguage, BorderLayout.NORTH);
 
-        panelMain.add(labelLanguage, BorderLayout.NORTH);
-        JPanel centerMain = new JPanel(new BorderLayout());
+        if(tools.size() > 0){
+            JPanel centerMain = new JPanel(new BorderLayout());
 
-        JBLabel labelNorth = new JBLabel("Puoi usare uno dei seguenti strumenti per l'analisi dinamica:");
-        centerMain.add(labelNorth,BorderLayout.NORTH);
-        JPanel center = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JBLabel labelNorth = new JBLabel("Puoi usare uno dei seguenti strumenti per l'analisi dinamica:");
+            JPanel panelNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panelNorth.add(labelNorth);
+            centerMain.add(panelNorth,BorderLayout.NORTH);
 
-        for(int i = 0; i < Math.min(tools.size(), 5); i++){
-            JButton btn = new JButton(tools.get(i));
+            JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-            int index = i;
-            btn.addActionListener(e-> System.out.println("Hai selezionato" + tools.get(index)));
-            center.add(btn);
+            for(int i = 0; i < Math.min(tools.size(), 5); i++){
+                JButton btn = new JButton(tools.get(i));
+
+                int index = i;
+                btn.addActionListener(e-> System.out.println("Hai selezionato" + tools.get(index)));
+                center.add(btn);
+            }
+
+            panelMain.add(centerMain, BorderLayout.CENTER);
+            centerMain.add(center, BorderLayout.CENTER);
+
+            JPanel southPanel = new JPanel(new FlowLayout());
+            southPanel.add(new JBLabel("Se non conosci nessuno di questi strumenti"));
+            JBLabel cliccaQuiLabel = new JBLabel("<html>clicca qui</html>");
+            cliccaQuiLabel.setForeground(Color.MAGENTA);
+            cliccaQuiLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            cliccaQuiLabel.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    System.out.println("Click Ulteriori informazioni");
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e){
+                    cliccaQuiLabel.setText("<html><u>clicca qui</u></html>");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    cliccaQuiLabel.setForeground(Color.MAGENTA);
+                    cliccaQuiLabel.setText("<html>clicca qui</html>");
+                }
+            });
+            southPanel.add(cliccaQuiLabel);
+            panelMain.add(southPanel, BorderLayout.SOUTH);
+        }else{
+            JPanel panelNothing = new JPanel();
+
+            panelNothing.setLayout(new BoxLayout(panelNothing, BoxLayout.Y_AXIS));
+            JBLabel labelError = new JBLabel("Sembra si sia verificato un errore nell'analisi dei possibili strumenti da utilizzare.");
+            JBLabel labelSolution = new JBLabel("Riprovare più tardi");
+
+            panelNothing.add(labelError);
+            labelSolution.add(labelSolution);
+            panelMain.add(panelNothing, BorderLayout.CENTER);
         }
 
-        panelMain.add(centerMain, BorderLayout.CENTER);
-        centerMain.add(center, BorderLayout.CENTER);
-
-        JPanel southPanel = new JPanel(new FlowLayout());
-        southPanel.add(new JBLabel("Se non conosci nessuno di questi strumenti"));
-        JBLabel cliccaQuiLabel = new JBLabel("<html>clicca qui</html>");
-        cliccaQuiLabel.setForeground(Color.MAGENTA);
-        cliccaQuiLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        cliccaQuiLabel.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("Click Ulteriori informazioni");
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e){
-                cliccaQuiLabel.setText("<html><u>clicca qui</u></html>");
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                cliccaQuiLabel.setForeground(Color.MAGENTA);
-                cliccaQuiLabel.setText("<html>clicca qui</html>");
-            }
-        });
-        southPanel.add(cliccaQuiLabel);
-        panelMain.add(southPanel, BorderLayout.SOUTH);
         this.add(panelMain);
         super.pack();
         super.setLocationRelativeTo(null);
