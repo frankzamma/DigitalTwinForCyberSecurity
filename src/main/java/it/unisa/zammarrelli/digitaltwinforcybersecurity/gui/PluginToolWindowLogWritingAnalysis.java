@@ -45,21 +45,24 @@ public class PluginToolWindowLogWritingAnalysis extends SimpleToolWindowPanel {
         }
 
         JPanel rowPanel = new JPanel();
-        rowPanel.setLayout(new GridLayout(1, 3));
+        rowPanel.setLayout(new BoxLayout(rowPanel, BoxLayout.X_AXIS));
         rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth()  , 50));
         rowPanel.setSize(rowPanel.getWidth(), 50);
         rowPanel.setMaximumSize(new JBDimension(10000, 50));
         rowPanel.setSize(super.getContent().getWidth(), 50);
 
+
         JPanel linePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         linePanel.add(new JBLabel("Riga: " + vulnerability.getLine()));
         rowPanel.add(linePanel);
 
+
         JPanel descriptionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        descriptionPanel.add(new JBLabel("<html>"+vulnerability.getDescription()+"</html>"));
+        descriptionPanel.add(new JBLabel("<html>"+vulnerability.getDescription()+"...</html>"));
         rowPanel.add(descriptionPanel);
 
-        JPanel severityPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        JPanel severityPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         severityPanel.add(new JBLabel("Severity: " + vulnerability.getSeverity()));
         rowPanel.add(severityPanel);
 
