@@ -5,8 +5,10 @@ import com.intellij.openapi.actionSystem.DynamicActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.UIUtil;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisGuideAlternative;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisHelpAction;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Language;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.WindowListerForDynamicAnalysisFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,44 +27,7 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
         this.sdkLanguage = sdkLanguange;
         this.language = language;
         super.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        super.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                DynamicAnalysisHelpAction dynamicActionGroup = (DynamicAnalysisHelpAction) ActionManager.getInstance().getAction("HelpAnalisiDinamica");
-
-                dynamicActionGroup.setStatus(true);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
+        super.addWindowListener(new WindowListerForDynamicAnalysisFrame());
         createPanel();
     }
 
@@ -99,10 +64,11 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
             JBLabel cliccaQuiLabel = new JBLabel("<html>clicca qui</html>");
             cliccaQuiLabel.setForeground(Color.MAGENTA);
             cliccaQuiLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            JFrame thisReference = this;
             cliccaQuiLabel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    System.out.println("Click Ulteriori informazioni");
+                   thisReference.setVisible(false);
                 }
 
                 @Override
@@ -126,6 +92,8 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
                     cliccaQuiLabel.setText("<html>clicca qui</html>");
                 }
             });
+
+            cliccaQuiLabel.addMouseListener(new DynamicAnalysisGuideAlternative(sdkLanguage));
             southPanel.add(cliccaQuiLabel);
             panelMain.add(southPanel, BorderLayout.SOUTH);
         }else{
@@ -144,7 +112,6 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
         super.pack();
         super.setLocationRelativeTo(null);
         super.setResizable(false);
-
     }
 
 }
