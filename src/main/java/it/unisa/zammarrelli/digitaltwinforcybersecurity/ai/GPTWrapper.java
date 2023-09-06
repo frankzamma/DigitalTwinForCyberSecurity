@@ -78,7 +78,7 @@ public class GPTWrapper {
                 "If there aren't any tools answer [-]"));
 
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), "Example"));
-        messages.add(new ChatMessage(ChatMessageRole.ASSISTANT.value(), "tool1;tool2;tool3"));
+        messages.add(new ChatMessage(ChatMessageRole.ASSISTANT.value(), "tool1;tool2;tool3;tool4;tool5"));
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), language));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
@@ -93,6 +93,26 @@ public class GPTWrapper {
 
             String[] resultStrings = answer.equals("[-]") ? new String[]{}: answer.split(";");
             return new ArrayList<>(Arrays.stream(resultStrings).collect(Collectors.toList()));
+    }
+
+
+    public String fixJson(String jsonString){
+        List<ChatMessage> messages = new ArrayList<>();
+
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),"Fix JSON formatting"));
+        messages.add(new ChatMessage(ChatMessageRole.USER.value(), jsonString));
+
+        ChatCompletionRequest request = ChatCompletionRequest.builder()
+                .model("gpt-3.5-turbo")
+                .temperature(1d)
+                .maxTokens(1024)
+                .topP(1d)
+                .messages(messages).build();
+
+
+        ChatCompletionResult result = this.service.createChatCompletion(request);
+
+        return result.getChoices().get(0).getMessage().getContent();
     }
 
     public String getSolutionCode(){

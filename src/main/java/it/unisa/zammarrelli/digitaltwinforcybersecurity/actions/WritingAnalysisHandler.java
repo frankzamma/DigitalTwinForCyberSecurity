@@ -2,6 +2,7 @@ package it.unisa.zammarrelli.digitaltwinforcybersecurity.actions;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
@@ -58,7 +59,13 @@ public class WritingAnalysisHandler extends TypedHandlerDelegate {
 
                             String response = gptWrapper.analyzeLine(line);
                             Gson parser = new Gson();
-                            JsonObject object = parser.fromJson(response, JsonObject.class);
+                            JsonObject object;
+                            try {
+                                 object = parser.fromJson(response, JsonObject.class);
+                            }catch (JsonSyntaxException e){
+                                String newJson = gptWrapper.fixJson(response);
+                                object = parser.fromJson(newJson, JsonObject.class);
+                            }
                             VulnerabilityLine vulnerabilityLine = new VulnerabilityLine();
                             vulnerabilityLine.setVulnerable(object.get("vulnerable").getAsString().equalsIgnoreCase("yes"));
                             vulnerabilityLine.setDescription(object.get("description").getAsString());
