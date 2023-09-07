@@ -72,7 +72,7 @@ public class GPTWrapper {
         List<ChatMessage> messages = new ArrayList<>();
 
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
-                "Write the best free tools for dynamic analysis of security vulnerabilities of specified programming language.\n" +
+                "Write the best free tools to perform dynamic analysis of security vulnerabilities of specified programming language.\n" +
                         "Format answer in this way:\n" +
                         "tool1;tool2;tool3\n"+
                 "If there aren't any tools answer [-]"));
@@ -117,16 +117,17 @@ public class GPTWrapper {
 
 
     public String getGuideForDynamicAnalysis(String programmingLanguage){
-        return generateGuide("Create a step-by-step guide to perform dynamic analysis for vulnerabilities of a software written in specified language.\n" +
-                "It explains how to install the tools, configure them and run the analysis.\n" +
-                "The software project is already configured on a one of JetBrains products.\n" +
+        return generateGuide("Create a guide in italian on what is dynamic analysis for vulnerabilities.\n" +
+                "It must include a detailed list of principals tools to execute analysis on a software based on specified language.\n" +
+                "The guide also include the motivations why It's important execute dynamic and a brief  guide to perform dynamic analysis.\n" +
                 "Format the response in HTML.", programmingLanguage);
     }
 
     public String getGuideForDynamicAnalysis(String tool, String programmingLanguage){
-        return generateGuide("Create a step-by-step guide to perform dynamic analysis for vulnerabilities of a software written in specified language.\n" +
+        return generateGuide("Create a step-by-step guide in"+this.language+"to perform dynamic analysis " +
+                "for vulnerabilities of a software written in specified language.\n" +
                 "It explains how to install "+ tool + ", configure them and run the analysis.\n" +
-                "The software project is already configured on a one of JetBrains products.\n" +
+                "The project it's already configured on Intellij\n" +
                 "Format the response in HTML.", programmingLanguage);
     }
 
@@ -139,7 +140,7 @@ public class GPTWrapper {
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model("gpt-3.5-turbo-16k")
                 .temperature(1d)
-                .maxTokens(1024)
+                .maxTokens(2048)
                 .topP(1d)
                 .messages(messages).build();
 
