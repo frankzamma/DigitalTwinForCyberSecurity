@@ -47,7 +47,6 @@ public class PluginToolWindowLogWritingAnalysis extends SimpleToolWindowPanel {
         JPanel rowPanel = new JPanel();
         rowPanel.setLayout(new BoxLayout(rowPanel, BoxLayout.X_AXIS));
         rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth()  , 50));
-        rowPanel.setSize(rowPanel.getWidth(), 50);
         rowPanel.setMaximumSize(new JBDimension(10000, 50));
         rowPanel.setSize(super.getContent().getWidth(), 50);
 

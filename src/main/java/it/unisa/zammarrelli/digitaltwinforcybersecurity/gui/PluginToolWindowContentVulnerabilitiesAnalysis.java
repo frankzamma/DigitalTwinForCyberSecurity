@@ -18,6 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.ui.JBDimension;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
@@ -46,78 +47,25 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
         JBScrollPane scrollPane = new JBScrollPane(verticalPanel);
         for(Vulnerability v: vulnerabilities){
             JPanel rowPanel = new JPanel();
-            rowPanel.setLayout(new BorderLayout());
-            rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth() -1 , 50));
-            rowPanel.setMaximumSize(new Dimension(5000, 50));
-            rowPanel.setSize(super.getContent().getWidth() -1 , 50);
-            JPanel panelNorth =  new JPanel();
-            panelNorth.setLayout( new GridLayout(1, 3));
+            rowPanel.setLayout(new BoxLayout(rowPanel, BoxLayout.X_AXIS));
+            rowPanel.setPreferredSize(new Dimension(super.getContent().getWidth()  , 50));
+            rowPanel.setSize(super.getContent().getWidth(), 50);
+            rowPanel.setMaximumSize(new JBDimension(10000, 50));
 
+            JPanel panelName = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JBLabel labelName = new JBLabel(v.getName());
-            panelNorth.add(labelName);
+            panelName.add(labelName);
+            rowPanel.add(panelName);
 
-            rowPanel.add(panelNorth, BorderLayout.NORTH);
-
+            JPanel panelLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JBLabel labelLine = new JBLabel("Line: " +  v.getLine());
-            panelNorth.add(labelLine);
+            panelLine.add(labelLine);
+            rowPanel.add(panelLine);
 
-            JBLabel labelLevel = new JBLabel("Severity: " + v.getSeverity());
-            panelNorth.add(labelLevel);
-            JButton button = new JButton("Dettagli");
-            button.addActionListener(e -> {
-              JPanel panelDetails = new JPanel();
-              panelDetails.setLayout(new BoxLayout(panelDetails, BoxLayout.Y_AXIS));
-
-              JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
-              panelName.add(new JBLabel("Name:"));
-              panelName.add(new JBLabel(v.getName()));
-
-              panelDetails.add(panelName);
-
-              JPanel panelDescription = new JPanel(new FlowLayout(FlowLayout.LEFT));
-              panelDescription.add(new JBLabel("Description:"));
-              panelDescription.add(new JBLabel(v.getDescription()));
-
-              panelDetails.add(panelDescription);
-
-              JPanel panelLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
-              panelLine.add(new JBLabel("Line:"));
-              panelLine.add(new JBLabel(Integer.toString(v.getLine())));
-
-              panelDetails.add(panelLine);
-
-              JPanel panelSeverity =  new JPanel(new FlowLayout(FlowLayout.LEFT));
-              panelSeverity.add(new JBLabel("Severity:"));
-              panelSeverity.add(new JBLabel(v.getSeverity()));
-
-              panelDetails.add(panelSeverity);
-
-
-              JPanel panelSolution = new JPanel(new FlowLayout(FlowLayout.LEFT));
-              panelSolution.add(new JBLabel("Solution:\n" + v.getSolution()));
-
-              panelDetails.add(panelSolution);
-
-              if(v.getExampleSolutionCode().length() > 0){
-                  JPanel panelExampleCodeSolution = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                  panelSolution.add(new JBLabel("<html>Example code solution:<br><code>"
-                          + v.getExampleSolutionCode().replaceAll("\n", "<br>") + "</html>"));
-
-                  panelDetails.add(panelExampleCodeSolution);
-              }
-
-
-              JBPopup popup = JBPopupFactory.getInstance()
-                   .createComponentPopupBuilder(panelDetails, null).createPopup();
-
-              popup.setCaption("Vulnerability " + v.getName());
-
-              popup.showInFocusCenter();
-
-            });
-            JPanel panelEast =  new JPanel();
-            panelEast.add(button);
-            rowPanel.add(panelEast, BorderLayout.EAST);
+            JPanel panelSeverity = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JBLabel labelSeverity = new JBLabel("Severity: " + v.getSeverity());
+            panelSeverity.add(labelSeverity);
+            rowPanel.add(panelSeverity);
 
             verticalPanel.add(rowPanel);
             rowPanel.addMouseListener(new MouseListener() {
@@ -132,6 +80,8 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
                         Editor textEditor = ((TextEditor) editor[0]).getEditor();
                         textEditor.getCaretModel().moveToLogicalPosition(problemPos);
                         textEditor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
+                        FrameDetailsVulnerabilityAnlysis frameDetailsVulnerabilityAnlysis = new FrameDetailsVulnerabilityAnlysis(v);
+                        frameDetailsVulnerabilityAnlysis.setVisible(true);
                     }
                 }
 
@@ -148,17 +98,18 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     rowPanel.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
-                    panelNorth.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
-                    panelEast.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
-                    button.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
+                    panelSeverity.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
+                    panelLine.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
+                    panelName.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     rowPanel.setBackground(UIManager.getColor("Panel.background"));
-                    panelNorth.setBackground(UIManager.getColor("Panel.background"));
-                    panelEast.setBackground(UIManager.getColor("Panel.background"));
-                    button.setBackground(UIManager.getColor("ActionButton.background"));
+                    panelSeverity.setBackground(UIManager.getColor("Panel.background"));
+                    panelLine.setBackground(UIManager.getColor("Panel.background"));
+                    panelName.setBackground(UIManager.getColor("Panel.background"));
+
                 }
             });
         }
