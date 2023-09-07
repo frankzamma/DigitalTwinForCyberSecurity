@@ -63,15 +63,19 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                                     JsonObject vulnerability = array.get(i).getAsJsonObject();
                                     Vulnerability v = new Vulnerability(vulnerability.get("name").getAsString(),
                                             vulnerability.get("description").getAsString(),
-                                            vulnerability.get("level").getAsString(),
+                                            vulnerability.get("severity").getAsString(),
                                             vulnerability.get("code").getAsString(),
+                                            vulnerability.get("solution").getAsString(),
+                                            vulnerability.get("example_solution_code") == null ?
+                                                    "": vulnerability.get("example_solution_code").getAsString(),
                                             vulnerability.get("line").getAsInt());
 
                                     List<String> lines = document.getText().lines().collect(Collectors.toList());
-                                    String firstLineOfCode = v.getCode().lines().collect(Collectors.toList()).get(0);
-                                    if (!lines.get(v.getLine()).equals(firstLineOfCode)) {
+                                    System.out.println("Numero righe di codice" + lines.size());
+
+                                    if (!lines.get(v.getLine()).equals(v.getCode())) {
                                         for (int j = v.getLine(); j < lines.size(); j++) {
-                                            if (lines.get(v.getLine()).equals(firstLineOfCode)) {
+                                            if (lines.get(j).equals(v.getCode())) {
                                                 v.setLine(j);
                                                 break;
                                             }
@@ -81,7 +85,6 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                                 }
 
                                 FileEditorManager fileEditorManager = FileEditorManager.getInstance(e.getProject());
-
 
                                 content.addVulnerabilitiesContent(vulnerabilities, fileEditorManager, vf);
                             }

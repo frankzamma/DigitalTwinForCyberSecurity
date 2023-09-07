@@ -22,14 +22,18 @@ public class GPTWrapper {
     }
 
     public String analyzeFile(String code){
-        return  analyze(   "Individua le vulnerabilità visibili presenti nel codice sorgente.\n" +
-                "La risposta deve essere un Array JSON che contiene degli oggetti con 5 campi:\n" +
-                " \"name\": nome della vulnerabilità.\n" +
-                " \"description\" : descrizione della vulnerabilità.\n" +
-                " \"line\":  il numero della riga in cui la vulnerabilità è stata individuata\n" +
-                " \"code\": il codice vulnerabile\n" +
-                "\"level\": il livello di gravità della vulnerabilità (basso, medio e alto)"+
-                "Name and Description will in "+ language.toString()+ ".", code);
+        return  analyze(   "Verify if the code contains vulnerability.\n" +
+                "The answer must is a JSON Array that contains a object that have this fields:\n" +
+                "\"name\": name of vulnerability.\n" +
+                "\"description\": a brief description of vulnerability.\n" +
+                "\"line\":  the line number of vulnerable code.\n" +
+                "\"code\": a copy of vulnerable code;\n" +
+                "\"severity\": potential, medium or serious\".\n" +
+                "\"solution\": a description to how to solve vulnerability.\n" +
+                "\"example_solution_code\": example code to solve vulnerability.\n" +
+                "\n" +
+                "If the code doesn't contain any vulnerabilities return an empty JSON array.\n" +
+                "name and description must be in " + this.language, code);
     }
 
     public String analyzeLine(String line){

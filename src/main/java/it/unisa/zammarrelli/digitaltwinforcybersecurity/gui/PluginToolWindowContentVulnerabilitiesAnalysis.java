@@ -18,13 +18,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.util.ui.JBDimension;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -64,11 +61,12 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
             JBLabel labelLine = new JBLabel("Line: " +  v.getLine());
             panelNorth.add(labelLine);
 
-            JBLabel labelLevel = new JBLabel("Level: " + v.getLevel());
+            JBLabel labelLevel = new JBLabel("Severity: " + v.getSeverity());
             panelNorth.add(labelLevel);
             JButton button = new JButton("Dettagli");
             button.addActionListener(e -> {
-              JPanel panelDetails = new JPanel(new GridLayout(4, 1));
+              JPanel panelDetails = new JPanel();
+              panelDetails.setLayout(new BoxLayout(panelDetails, BoxLayout.Y_AXIS));
 
               JPanel panelName =  new JPanel(new FlowLayout(FlowLayout.LEFT));
               panelName.add(new JBLabel("Name:"));
@@ -88,14 +86,29 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
 
               panelDetails.add(panelLine);
 
-              JPanel panelLevel =  new JPanel(new FlowLayout(FlowLayout.LEFT));
-              panelLevel.add(new JBLabel("Level:"));
-              panelLevel.add(new JBLabel(v.getLevel()));
+              JPanel panelSeverity =  new JPanel(new FlowLayout(FlowLayout.LEFT));
+              panelSeverity.add(new JBLabel("Severity:"));
+              panelSeverity.add(new JBLabel(v.getSeverity()));
 
-              panelDetails.add(panelLevel);
+              panelDetails.add(panelSeverity);
+
+
+              JPanel panelSolution = new JPanel(new FlowLayout(FlowLayout.LEFT));
+              panelSolution.add(new JBLabel("Solution:\n" + v.getSolution()));
+
+              panelDetails.add(panelSolution);
+
+              if(v.getExampleSolutionCode().length() > 0){
+                  JPanel panelExampleCodeSolution = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                  panelSolution.add(new JBLabel("<html>Example code solution:<br><code>"
+                          + v.getExampleSolutionCode().replaceAll("\n", "<br>") + "</html>"));
+
+                  panelDetails.add(panelExampleCodeSolution);
+              }
+
 
               JBPopup popup = JBPopupFactory.getInstance()
-                      .createComponentPopupBuilder(panelDetails, null).createPopup();
+                   .createComponentPopupBuilder(panelDetails, null).createPopup();
 
               popup.setCaption("Vulnerability " + v.getName());
 
