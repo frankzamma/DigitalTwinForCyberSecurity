@@ -44,8 +44,11 @@ public class FrameDynamicAnalysisGuide extends JFrame {
 
         JBScrollPane scrollPane = new JBScrollPane(editorPane);
         super.remove(content);
+
+
         super.add(scrollPane);
-        super.pack();
+        super.setMaximumSize(new Dimension(600, 300));
+        super.setSize(600, 300);
         super.setLocationRelativeTo(null);
     }
 
