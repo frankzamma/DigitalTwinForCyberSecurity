@@ -17,7 +17,7 @@ public class GPTWrapper {
     private OpenAiService service;
     private Language language;
     public GPTWrapper(String token, Language language) {
-        this.service = new OpenAiService(token, Duration.ofSeconds(60));
+        this.service = new OpenAiService(token, Duration.ofSeconds(120));
         this.language = language;
     }
 
@@ -76,7 +76,8 @@ public class GPTWrapper {
         List<ChatMessage> messages = new ArrayList<>();
 
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
-                "Write the best free tools to perform dynamic analysis of security vulnerabilities of specified programming language.\n" +
+                "Write the best free tools to perform dynamic analysis of security vulnerabilities" +
+                        " of specified programming language.\n" +
                         "Format answer in this way:\n" +
                         "tool1;tool2;tool3\n"+
                 "If there aren't any tools answer [-]"));
@@ -121,7 +122,7 @@ public class GPTWrapper {
 
 
     public String getGuideForDynamicAnalysis(String programmingLanguage){
-        return generateGuide("Create a guide in italian on what is dynamic analysis for vulnerabilities.\n" +
+        return generateGuide("Create a guide in "+ this.language +" on what is dynamic analysis for vulnerabilities.\n" +
                 "It must include a detailed list of principals tools to execute analysis on a software based on specified language.\n" +
                 "The guide also include the motivations why It's important execute dynamic and a brief  guide to perform dynamic analysis.\n" +
                 "Format the response in HTML.", programmingLanguage);
