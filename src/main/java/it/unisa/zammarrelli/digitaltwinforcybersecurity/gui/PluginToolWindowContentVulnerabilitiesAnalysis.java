@@ -41,7 +41,7 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
 
     }
 
-    public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities, FileEditorManager manager, VirtualFile vf) {
+    public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities, FileEditorManager manager) {
         JPanel verticalPanel =  new JPanel();
         verticalPanel.setLayout(new BoxLayout(verticalPanel, BoxLayout.Y_AXIS));
         JBScrollPane scrollPane = new JBScrollPane(verticalPanel);
@@ -67,11 +67,16 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
             panelSeverity.add(labelSeverity);
             rowPanel.add(panelSeverity);
 
+            JPanel panelFile = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panelFile.add(new JBLabel("File: " + v.getVirtualFile().getName()));
+            rowPanel.add(panelFile);
+
+
             verticalPanel.add(rowPanel);
             rowPanel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    FileEditor[] editor = manager.openFile(vf, true);
+                    FileEditor[] editor = manager.openFile(v.getVirtualFile(), true);
 
                     if (editor.length > 0 && editor[0] instanceof TextEditor) {
                         LogicalPosition problemPos = new LogicalPosition(
@@ -101,6 +106,7 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
                     panelSeverity.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                     panelLine.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                     panelName.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
+                    panelFile.setBackground(UIManager.getColor("ActionButton.hoverBackground"));
                 }
 
                 @Override
@@ -109,6 +115,7 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
                     panelSeverity.setBackground(UIManager.getColor("Panel.background"));
                     panelLine.setBackground(UIManager.getColor("Panel.background"));
                     panelName.setBackground(UIManager.getColor("Panel.background"));
+                    panelFile.setBackground(UIManager.getColor("Panel.background"));
 
                 }
             });
