@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VulnerabilityAnalysisProject extends AnAction {
+public class VulnerabilitiesAnalysisProjectAction extends AnAction {
     private static final String[] directoryNotAnlyze = {".", "..", "venv"};
 
     @Override
@@ -44,7 +44,6 @@ public class VulnerabilityAnalysisProject extends AnAction {
                 if(token.length() < 10){
                     content.displayError("Inserire GPT API keys nelle impostazioni!");
                 }else {
-                    content.setLoading();
 
                     List<VirtualFile> list = new ArrayList<>();
 
@@ -58,6 +57,7 @@ public class VulnerabilityAnalysisProject extends AnAction {
                         }
                     });
 
+                    content.setLoading((list.size() + 1));
                     List<Document> documents = new ArrayList<>();
 
                     for(VirtualFile vf : list){
@@ -70,6 +70,7 @@ public class VulnerabilityAnalysisProject extends AnAction {
                             List<Vulnerability> vulnerabilities = new ArrayList<>();
 
                             for(int i = 0 ; i < list.size(); i++){
+                                content.changeCount((i+1));
                                 FileAnalyzer analyzer = new FileAnalyzer(documents.get(i).getText(), token, list.get(i));
                                 vulnerabilities.addAll(analyzer.analyze());
                             }
