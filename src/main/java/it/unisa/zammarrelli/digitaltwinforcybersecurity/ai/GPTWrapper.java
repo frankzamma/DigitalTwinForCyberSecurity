@@ -55,9 +55,9 @@ public class GPTWrapper {
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), userMessage));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model("gpt-3.5-turbo-16k")
+                .model("gpt-3.5-turbo")
                 .temperature(0.65d)
-                .maxTokens(4096)
+                .maxTokens(2048)
                 .topP(0.7d)
                 .messages(messages).build();
 
@@ -144,7 +144,7 @@ public class GPTWrapper {
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model("gpt-3.5-turbo-16k")
                 .temperature(1d)
-                .maxTokens(2048)
+                .maxTokens(4096)
                 .topP(1d)
                 .messages(messages).build();
 
