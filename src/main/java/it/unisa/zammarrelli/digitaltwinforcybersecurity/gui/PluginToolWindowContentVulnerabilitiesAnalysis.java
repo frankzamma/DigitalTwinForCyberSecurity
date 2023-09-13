@@ -30,6 +30,8 @@ import java.util.List;
 public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWindowPanel {
     private final ActionManager actionManager = ActionManager.getInstance();
     private ActionToolbar actionToolbar;
+
+    private final JBLabel fileCountLabel =  new JBLabel();
     public PluginToolWindowContentVulnerabilitiesAnalysis(boolean vertical, boolean borderless) {
         super(vertical, borderless);
         actionToolbar = actionManager.createActionToolbar("toolbar",
@@ -171,5 +173,36 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
         panel.add(labelMessage);
 
         super.setContent(panel);
+    }
+
+    public void setLoading(int files){
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        AnimatedIcon icon = new AnimatedIcon(
+                250,
+                AllIcons.Process.Step_1,
+                AllIcons.Process.Step_2,
+                AllIcons.Process.Step_3,
+                AllIcons.Process.Step_4,
+                AllIcons.Process.Step_5,
+                AllIcons.Process.Step_6,
+                AllIcons.Process.Step_7,
+                AllIcons.Process.Step_8
+        );
+
+        JBLabel label = new JBLabel();
+        label.setIcon(icon);
+        JBLabel labelMessage = new JBLabel("I'm analyzing");
+        JBLabel labelCount =  new JBLabel("of " + files);
+        fileCountLabel.setText(" 1 ");
+        panel.add(label);
+
+        panel.add(labelMessage);
+        panel.add(fileCountLabel);
+        panel.add(labelCount);
+        super.setContent(panel);
+    }
+
+    public void changeCount(int newCount){
+        fileCountLabel.setText(" " + newCount + " ");
     }
 }
