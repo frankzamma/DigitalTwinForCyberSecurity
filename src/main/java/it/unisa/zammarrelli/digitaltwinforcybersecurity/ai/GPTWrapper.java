@@ -27,12 +27,11 @@ public class GPTWrapper {
                 "\"name\": name of vulnerability.\n" +
                 "\"description\": a brief description of vulnerability.\n" +
                 "\"line\":  the line number of vulnerable code.\n" +
-                "\"code\": a copy of vulnerable code;\n" +
                 "\"severity\": potential, medium or serious\".\n" +
                 "\"solution\": a description to how to solve vulnerability.\n" +
                 "\"example_solution_code\": example code to solve vulnerability.\n" +
                 "\n" +
-                "If the code doesn't contain any vulnerabilities return an empty JSON array.\n" +
+                "If the code doesn't contain any vulnerabilities return [].\n" +
                 "name and description must be in " + this.language, code);
     }
 
@@ -56,10 +55,10 @@ public class GPTWrapper {
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), userMessage));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model("gpt-3.5-turbo")
-                .temperature(1d)
-                .maxTokens(1024)
-                .topP(1d)
+                .model("gpt-3.5-turbo-16k")
+                .temperature(0.65d)
+                .maxTokens(4096)
+                .topP(0.7d)
                 .messages(messages).build();
 
         ChatCompletionResult result = this.service.createChatCompletion(request);

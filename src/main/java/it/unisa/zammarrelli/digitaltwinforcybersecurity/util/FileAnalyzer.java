@@ -49,16 +49,19 @@ public class FileAnalyzer {
         List<Vulnerability> vulnerabilities = new ArrayList<>();
         for (int i = 0; i < array.size(); i++) {
             JsonObject vulnerability = array.get(i).getAsJsonObject();
-            Vulnerability v = new Vulnerability(vulnerability.get("name").getAsString(),
-                    vulnerability.get("description").getAsString(),
-                    vulnerability.get("severity").getAsString(),
-                    vulnerability.get("code").getAsString(),
-                    vulnerability.get("solution").getAsString(),
-                    vulnerability.get("example_solution_code") == null ?
-                            "": vulnerability.get("example_solution_code").getAsString(),
-                    vulnerability.get("line").getAsInt(),
-                    file);
-            vulnerabilities.add(v);
+            if(!vulnerability.isEmpty()){
+                Vulnerability v = new Vulnerability(vulnerability.get("name").getAsString(),
+                        vulnerability.get("description").getAsString(),
+                        vulnerability.get("severity").getAsString(),
+                        vulnerability.get("solution").getAsString(),
+                        vulnerability.get("example_solution_code") == null ?
+                                "": vulnerability.get("example_solution_code").getAsString(),
+                        vulnerability.get("line").getAsInt(),
+                        file);
+                vulnerabilities.add(v);
+            }
+
+
         }
         return vulnerabilities;
     }
