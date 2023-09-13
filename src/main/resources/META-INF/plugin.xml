@@ -45,6 +45,10 @@
                 id="HelpAnalisiDinamica" text="Analisi Dinamica Help" icon="AllIcons.General.ShowInfos"
                     description="Aiuto ad eseguire l'analisi dinamica per trovare eventuali vulnerabilità" >
             </action>
+            <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.VulnerabilityAnalysisProject"
+                    id="ProjectAnalysis" text="Analisi Intero Progetto" icon="AllIcons.Actions.SearchWithHistory"
+                    description="Analizza tutto il progetto" >
+            </action>
         </group>
         <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.NotifyAction"
                 id="NotifyAction" text="Altri Dettagli">
