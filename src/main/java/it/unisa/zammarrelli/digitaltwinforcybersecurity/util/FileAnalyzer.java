@@ -21,30 +21,24 @@ import java.util.List;
 public class FileAnalyzer {
     private String text;
     private String token;
-
     private VirtualFile file;
+
     public FileAnalyzer(String text, String token, VirtualFile virtualFile) {
         this.text = text;
         this.token = token;
         this.file = virtualFile;
     }
 
-    public List<Vulnerability> analyze() throws OpenAiHttpException{
+    public List<Vulnerability> analyze(boolean bigModel) throws OpenAiHttpException{
         GPTWrapper gptWrapper = new GPTWrapper(token,
                 PluginSettingsStateService.getInstance().getState().getLanguage());
-        String result = gptWrapper.analyzeFile(text );
-        Gson parser = new Gson();
+        String result = gptWrapper.analyzeFile(text, bigModel);
         JsonArray array;
         try {
-            array = parser.fromJson(result, JsonArray.class).getAsJsonArray();
+            array = parser(gptWrapper, result);
         }catch (JsonSyntaxException exception){
-            String newJson = gptWrapper.fixJson(result);
-
-            if(newJson.startsWith("{") && newJson.endsWith("}")){
-                newJson = "[" + newJson + "]";
-            }
-            array = parser.fromJson(newJson, JsonArray.class).getAsJsonArray();
-
+            result = gptWrapper.analyzeFile(text, true);
+            array = parser(gptWrapper, result);
         }
         List<Vulnerability> vulnerabilities = new ArrayList<>();
         for (int i = 0; i < array.size(); i++) {
@@ -60,9 +54,26 @@ public class FileAnalyzer {
                         file);
                 vulnerabilities.add(v);
             }
-
-
         }
         return vulnerabilities;
     }
+
+    private JsonArray parser(GPTWrapper gptWrapper, String result) {
+        Gson parser = new Gson();
+        JsonArray array;
+        try {
+            array = parser.fromJson(result, JsonArray.class).getAsJsonArray();
+        } catch (JsonSyntaxException exception) {
+            String newJson = gptWrapper.fixJson(result);
+
+            if (newJson.startsWith("{") && newJson.endsWith("}")) {
+                newJson = "[" + newJson + "]";
+            }
+
+
+            array = parser.fromJson(newJson, JsonArray.class).getAsJsonArray();
+        }
+        return array;
+    }
 }
+

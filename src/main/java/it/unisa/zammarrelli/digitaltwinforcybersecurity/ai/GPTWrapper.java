@@ -21,7 +21,7 @@ public class GPTWrapper {
         this.language = language;
     }
 
-    public String analyzeFile(String code){
+    public String analyzeFile(String code, boolean bigModel){
         return  analyze(   "Verify if the code contains vulnerability.\n" +
                 "The answer must is a JSON Array that contains a object that have this fields:\n" +
                 "\"name\": name of vulnerability.\n" +
@@ -32,7 +32,7 @@ public class GPTWrapper {
                 "\"example_solution_code\": example code to solve vulnerability.\n" +
                 "\n" +
                 "If the code doesn't contain any vulnerabilities return [].\n" +
-                "name and description must be in " + this.language, code);
+                "name and description must be in " + this.language, code, bigModel);
     }
 
     public String analyzeLine(String line){
@@ -44,20 +44,20 @@ public class GPTWrapper {
                 "- severity: potential, medium, serious. If vulnerable = no this field could be \"\".\n" +
                 "- solution:  a description to how to solve  . " +
                 "- example_code : An example of a solution code or \"\"" +
-                "Description and Solution must be in" + language.toString() , line);
+                "Description and Solution must be in" + language.toString() , line, false);
     }
 
 
-    private String analyze(String systemMessage, String userMessage){
+    private String analyze(String systemMessage, String userMessage, boolean bigModel){
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(), systemMessage));
 
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), userMessage));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model("gpt-3.5-turbo")
+                .model(bigModel ? "gpt-3.5-turbo-16k":"gpt-3.5-turbo")
                 .temperature(0.65d)
-                .maxTokens(2048)
+                .maxTokens(bigModel ? 4096: 2048)
                 .topP(0.7d)
                 .messages(messages).build();
 

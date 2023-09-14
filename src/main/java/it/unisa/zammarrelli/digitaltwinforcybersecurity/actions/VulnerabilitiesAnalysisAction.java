@@ -49,7 +49,17 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                     Thread thread = new Thread(()->{
 
                         try {
-                            List<Vulnerability> vulnerabilities = analyzer.analyze();
+                            List<Vulnerability> vulnerabilities;
+                            try{
+                                vulnerabilities = analyzer.analyze(false);
+                            }catch (OpenAiHttpException exception){
+                                if(exception.code.equals("context_length_exceeded")){
+                                    vulnerabilities = analyzer.analyze(true);
+                                }else{
+                                    vulnerabilities = analyzer.analyze(false);
+                                }
+                            }
+
                             if (vulnerabilities.size() == 0) {
                                 content.displayInformation("Non sono presenti vulnerabilit\u00E0!");
                             } else {

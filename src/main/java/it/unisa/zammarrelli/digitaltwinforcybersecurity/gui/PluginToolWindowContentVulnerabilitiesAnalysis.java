@@ -132,7 +132,7 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
 
         JBLabel icon = new JBLabel(UIManager.getIcon("OptionPane.errorIcon"));
         JBLabel errorLabel = new JBLabel( "Errore: " + error);
-
+        errorLabel.setCopyable(true);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(icon);
         panel.add(errorLabel);

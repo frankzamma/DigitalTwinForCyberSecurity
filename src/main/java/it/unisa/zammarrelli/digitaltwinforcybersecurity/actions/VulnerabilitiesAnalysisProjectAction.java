@@ -12,6 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.theokanning.openai.OpenAiError;
 import com.theokanning.openai.OpenAiHttpException;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowContentVulnerabilitiesAnalysis;
@@ -72,7 +73,16 @@ public class VulnerabilitiesAnalysisProjectAction extends AnAction {
                             for(int i = 0 ; i < list.size(); i++){
                                 content.changeCount((i+1));
                                 FileAnalyzer analyzer = new FileAnalyzer(documents.get(i).getText(), token, list.get(i));
-                                vulnerabilities.addAll(analyzer.analyze());
+                                try{
+
+                                vulnerabilities.addAll(analyzer.analyze(false));
+                                }catch (OpenAiHttpException exception){
+                                    if(exception.code.equals("context_length_exceeded")){
+                                        vulnerabilities.addAll(analyzer.analyze(true));
+                                    }else{
+                                        vulnerabilities.addAll(analyzer.analyze(false));
+                                    }
+                                }
                             }
 
 
