@@ -30,9 +30,8 @@ public class GPTWrapper {
                 "\"severity\": potential, medium or serious\".\n" +
                 "\"solution\": a description to how to solve vulnerability.\n" +
                 "\"example_solution_code\": example code to solve vulnerability.\n" +
-                "\n" +
                 "If the code doesn't contain any vulnerabilities return [].\n" +
-                "name and description must be in " + this.language, code, bigModel);
+                "Name, description and solution must be in " + this.language, code, bigModel);
     }
 
     public String analyzeLine(String line){
@@ -152,9 +151,5 @@ public class GPTWrapper {
         ChatCompletionResult result = this.service.createChatCompletion(request);
 
         return result.getChoices().get(0).getMessage().getContent();
-    }
-
-    public String getSolutionCode(){
-        return "Potential Solution";
     }
 }

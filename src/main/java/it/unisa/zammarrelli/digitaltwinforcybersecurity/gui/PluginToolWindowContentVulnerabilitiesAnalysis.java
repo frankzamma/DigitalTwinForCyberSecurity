@@ -174,11 +174,8 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
                         textEditor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
                         FrameDetailsVulnerabilityAnlysis frameDetailsVulnerabilityAnlysis = new FrameDetailsVulnerabilityAnlysis(v);
                         frameDetailsVulnerabilityAnlysis.setVisible(true);
-
                     }
                 }
-
-
             }
         });
         panel.add(tree);
