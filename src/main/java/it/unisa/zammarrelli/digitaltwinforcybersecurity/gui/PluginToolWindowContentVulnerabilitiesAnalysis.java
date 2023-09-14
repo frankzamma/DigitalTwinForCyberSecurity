@@ -2,6 +2,7 @@ package it.unisa.zammarrelli.digitaltwinforcybersecurity.gui;
 
 
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -18,14 +19,21 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.JBTreeTable;
+import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.JBDimension;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWindowPanel {
     private final ActionManager actionManager = ActionManager.getInstance();
@@ -43,7 +51,7 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
 
     }
 
-    public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities, FileEditorManager manager) {
+   /*public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities, FileEditorManager manager) {
         JPanel verticalPanel =  new JPanel();
         verticalPanel.setLayout(new BoxLayout(verticalPanel, BoxLayout.Y_AXIS));
         JBScrollPane scrollPane = new JBScrollPane(verticalPanel);
@@ -125,6 +133,56 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         super.setContent(scrollPane);
+    }*/
+
+
+    public void addVulnerabilitiesContent(List<Vulnerability> vulnerabilities, FileEditorManager manager) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JScrollPane content = new JBScrollPane(panel);
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode( vulnerabilities.size() + " vulnerabilities");
+        Tree tree = new Tree(root);
+        List<VirtualFile> virtualFiles = vulnerabilities.stream().map(Vulnerability::getVirtualFile).distinct().collect(Collectors.toList());
+
+        for(VirtualFile vf : virtualFiles){
+            List<Vulnerability> vulnerabilitiesOfFile = vulnerabilities.stream()
+                    .filter(v->v.getVirtualFile().equals(vf))
+                    .collect(Collectors.toList());
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(vf.getName());
+            vulnerabilitiesOfFile.stream().forEach(v->{
+                        PersonalizedTreeNode vulnerabilityNode = new PersonalizedTreeNode(v.getName()+" Line:" + v.getLine(),v);
+                        node.add(vulnerabilityNode);
+                    }
+            );
+
+            root.add(node);
+        }
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                if(e.getNewLeadSelectionPath().getLastPathComponent() instanceof PersonalizedTreeNode){
+                    Vulnerability v = ((PersonalizedTreeNode) e.getPath().getLastPathComponent()).getVulnerability();
+
+                    FileEditor[] editor = manager.openFile(v.getVirtualFile(), true);
+
+                    if (editor.length > 0 && editor[0] instanceof TextEditor) {
+                        LogicalPosition problemPos = new LogicalPosition(
+                                Math.max(v.getLine() - 1, 0), Math.max(1, 0));
+
+                        Editor textEditor = ((TextEditor) editor[0]).getEditor();
+                        textEditor.getCaretModel().moveToLogicalPosition(problemPos);
+                        textEditor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
+                        FrameDetailsVulnerabilityAnlysis frameDetailsVulnerabilityAnlysis = new FrameDetailsVulnerabilityAnlysis(v);
+                        frameDetailsVulnerabilityAnlysis.setVisible(true);
+
+                    }
+                }
+
+
+            }
+        });
+        panel.add(tree);
+        super.setContent(content);
     }
 
     public void displayError(String error){
