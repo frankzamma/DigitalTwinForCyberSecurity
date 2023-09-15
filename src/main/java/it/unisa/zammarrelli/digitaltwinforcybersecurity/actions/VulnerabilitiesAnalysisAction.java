@@ -1,24 +1,41 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.actions;
 
+import com.github.hypfvieh.util.FileIoUtil;
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.theokanning.openai.OpenAiHttpException;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowContentVulnerabilitiesAnalysis;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.FileAnalyzer;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.ReportGenerator;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -46,6 +63,7 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                     content.setLoading();
                     FileAnalyzer analyzer = new FileAnalyzer(document.getText(), token, vf);
                     FileEditorManager fileEditorManager = FileEditorManager.getInstance(p);
+
                     Thread thread = new Thread(()->{
 
                         try {
@@ -64,6 +82,20 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                                 content.displayInformation("Non sono presenti vulnerabilit\u00E0!");
                             } else {
                                 content.addVulnerabilitiesContent(vulnerabilities, fileEditorManager);
+                                String html =   ReportGenerator.generate(vulnerabilities);
+
+                                try {
+                                    ProjectRootManager projectRootManager = ProjectRootManager.getInstance(p);
+                                    VirtualFile[] root = projectRootManager.getContentRoots();
+                                    File file = new File(root[0].getCanonicalPath()
+                                            + File.separator +"reports" + File.separator+"report - "+ LocalDateTime.now() +".html");
+
+                                    FileUtil.writeToFile(file, html);
+
+                                    System.out.println(file.getAbsolutePath());
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
                             }
                         } catch (OpenAiHttpException exception) {
                             content.displayError(exception.getMessage());

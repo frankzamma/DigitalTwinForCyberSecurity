@@ -17,7 +17,7 @@ public class GPTWrapper {
     private OpenAiService service;
     private Language language;
     public GPTWrapper(String token, Language language) {
-        this.service = new OpenAiService(token, Duration.ofSeconds(120));
+        this.service = new OpenAiService(token, Duration.ofSeconds(180));
         this.language = language;
     }
 
