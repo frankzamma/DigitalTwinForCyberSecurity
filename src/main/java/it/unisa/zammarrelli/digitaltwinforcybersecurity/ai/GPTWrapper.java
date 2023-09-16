@@ -130,7 +130,7 @@ public class GPTWrapper {
         return generateGuide("Create a step-by-step guide in"+this.language+"to perform dynamic analysis " +
                 "for vulnerabilities of a software written in specified language.\n" +
                 "It explains how to install "+ tool + ", configure them and run the analysis.\n" +
-                "The project it's already configured on Intellij\n" +
+                "The project it's already configured on Intellij.\n" +
                 "Format the response in HTML.", programmingLanguage);
     }
 
