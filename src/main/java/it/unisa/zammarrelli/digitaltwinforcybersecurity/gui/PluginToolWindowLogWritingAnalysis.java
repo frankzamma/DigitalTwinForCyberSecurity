@@ -1,5 +1,8 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.gui;
 
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.ScrollType;
@@ -27,12 +30,18 @@ public class PluginToolWindowLogWritingAnalysis extends SimpleToolWindowPanel {
     private final JPanel verticalPanel = new JPanel();
     private final JScrollPane scrollPane = new JBScrollPane(verticalPanel);
 
+    private final ActionManager actionManager = ActionManager.getInstance();
+    private ActionToolbar actionToolbar;
     private final JBLabel labelInitialLog =
             new JBLabel( "In questa scheda verr\u00E0 mostrato " +
                     "il log dell'analisi durante la scrittura (se attivo)");
 
     public PluginToolWindowLogWritingAnalysis(boolean vertical, boolean borderless) {
         super(vertical, borderless);
+        actionToolbar = actionManager.createActionToolbar("toolbar",
+                (ActionGroup) actionManager.getAction("small-toolbar"),
+                true);
+        super.setToolbar(actionToolbar.getComponent());
         verticalPanel.add(labelInitialLog);
         super.setContent(scrollPane);
     }
