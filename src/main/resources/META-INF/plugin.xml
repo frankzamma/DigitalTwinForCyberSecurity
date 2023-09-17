@@ -31,28 +31,29 @@
         />
         <applicationService serviceImplementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService"/>
         <toolWindow factoryClass="it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowFactory"
-                    id="DigitalTwinForCyberSecurity" icon="/iconToolWindow.svg" anchor="bottom" />
+                    id="DigitalTwinForCyberSecurity" icon="/icons/iconToolWindow.svg" anchor="bottom" />
         <typedHandler implementation="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.WritingAnalysisHandler"/>
         <notificationGroup displayType="BALLOON" id="vulnerabilityNotification"/>
     </extensions>
     <actions>
+        <group id="small-toolbar"/>
         <group id="toolbarPlugin">
             <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.VulnerabilitiesAnalysisAction"
-                id="AnalizzaVulnerabilità" text="Analizza Vulnerabilita" icon="AllIcons.Actions.Search"
+                id="AnalizzaVulnerabilità" text="Analizza Vulnerabilita" icon="/icons/document-search-icon.svg"
                     description="Analizza Vulnerabilità del file corrente">
+            </action>
+            <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.VulnerabilitiesAnalysisProjectAction"
+                    id="ProjectAnalysis" text="Analisi Intero Progetto" icon="/icons/documents-search-icon.svg"
+                    description="Analizza tutto il progetto" >
             </action>
             <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.DynamicAnalysisHelpAction"
                 id="HelpAnalisiDinamica" text="Analisi Dinamica Help" icon="AllIcons.General.ShowInfos"
                     description="Aiuto ad eseguire l'analisi dinamica per trovare eventuali vulnerabilità" >
-            </action>
-            <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.VulnerabilitiesAnalysisProjectAction"
-                    id="ProjectAnalysis" text="Analisi Intero Progetto" icon="AllIcons.Actions.SearchWithHistory"
-                    description="Analizza tutto il progetto" >
+                <add-to-group group-id="small-toolbar"/>
             </action>
         </group>
         <action class="it.unisa.zammarrelli.digitaltwinforcybersecurity.actions.NotifyAction"
                 id="NotifyAction" text="Altri Dettagli">
         </action>
-
     </actions>
 </idea-plugin>
