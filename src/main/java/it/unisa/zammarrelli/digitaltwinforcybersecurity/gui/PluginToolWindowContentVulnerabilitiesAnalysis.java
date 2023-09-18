@@ -2,7 +2,6 @@ package it.unisa.zammarrelli.digitaltwinforcybersecurity.gui;
 
 
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -13,25 +12,18 @@ import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.components.JBTreeTable;
 import com.intellij.ui.treeStructure.Tree;
-import com.intellij.util.ui.JBDimension;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.common.Vulnerability;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -172,8 +164,8 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
                         Editor textEditor = ((TextEditor) editor[0]).getEditor();
                         textEditor.getCaretModel().moveToLogicalPosition(problemPos);
                         textEditor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
-                        FrameDetailsVulnerabilityAnlysis frameDetailsVulnerabilityAnlysis = new FrameDetailsVulnerabilityAnlysis(v);
-                        frameDetailsVulnerabilityAnlysis.setVisible(true);
+                        FrameDetailsVulnerabilityAnalysis frameDetailsVulnerabilityAnalysis = new FrameDetailsVulnerabilityAnalysis(v);
+                        frameDetailsVulnerabilityAnalysis.setVisible(true);
                     }
                 }
             }
