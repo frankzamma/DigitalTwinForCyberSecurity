@@ -160,7 +160,7 @@ public class PluginToolWindowContentVulnerabilitiesAnalysis extends SimpleToolWi
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                if(e.getNewLeadSelectionPath().getLastPathComponent() instanceof PersonalizedTreeNode){
+                if(e.getNewLeadSelectionPath() != null && e.getNewLeadSelectionPath().getLastPathComponent() instanceof PersonalizedTreeNode){
                     Vulnerability v = ((PersonalizedTreeNode) e.getPath().getLastPathComponent()).getVulnerability();
 
                     FileEditor[] editor = manager.openFile(v.getVirtualFile(), true);
