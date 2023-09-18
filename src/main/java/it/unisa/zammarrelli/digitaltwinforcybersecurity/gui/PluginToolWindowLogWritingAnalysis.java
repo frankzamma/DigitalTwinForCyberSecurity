@@ -33,8 +33,7 @@ public class PluginToolWindowLogWritingAnalysis extends SimpleToolWindowPanel {
     private final ActionManager actionManager = ActionManager.getInstance();
     private ActionToolbar actionToolbar;
     private final JBLabel labelInitialLog =
-            new JBLabel( "In questa scheda verr\u00E0 mostrato " +
-                    "il log dell'analisi durante la scrittura (se attivo)");
+            new JBLabel( "In this tab there will be the analysis log during writing (if active)");
 
     public PluginToolWindowLogWritingAnalysis(boolean vertical, boolean borderless) {
         super(vertical, borderless);
@@ -61,7 +60,7 @@ public class PluginToolWindowLogWritingAnalysis extends SimpleToolWindowPanel {
 
 
         JPanel linePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        linePanel.add(new JBLabel("Riga: " + vulnerability.getLine()));
+        linePanel.add(new JBLabel("Line: " + vulnerability.getLine()));
         rowPanel.add(linePanel);
 
 

@@ -34,14 +34,14 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
     private void createPanel(){
         JPanel panelMain = new JPanel(new BorderLayout());
         JPanel panelLanguage = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JBLabel labelLanguage = new JBLabel("<html>Il progetto a cui sta lavorando \u00E8 basato su <b>" + sdkLanguage + "</b><html>");
+        JBLabel labelLanguage = new JBLabel("<html>The project you are working is based on Java>" + sdkLanguage + "</b><html>");
         panelLanguage.add(labelLanguage);
         panelMain.add(panelLanguage, BorderLayout.NORTH);
 
         if(tools.size() > 0){
             JPanel centerMain = new JPanel(new BorderLayout());
 
-            JBLabel labelNorth = new JBLabel("Puoi usare uno dei seguenti strumenti per l'analisi dinamica:");
+            JBLabel labelNorth = new JBLabel("You can use one of this instruments:");
             JPanel panelNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
             panelNorth.add(labelNorth);
             centerMain.add(panelNorth,BorderLayout.NORTH);
@@ -62,8 +62,8 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
             centerMain.add(center, BorderLayout.CENTER);
 
             JPanel southPanel = new JPanel(new FlowLayout());
-            southPanel.add(new JBLabel("Se non conosci nessuno di questi strumenti"));
-            JBLabel cliccaQuiLabel = new JBLabel("<html>clicca qui</html>");
+            southPanel.add(new JBLabel("If you don't know what is dynamic analysis"));
+            JBLabel cliccaQuiLabel = new JBLabel("<html>click here</html>");
             cliccaQuiLabel.setForeground(Color.MAGENTA);
             cliccaQuiLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -85,13 +85,13 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e){
-                    cliccaQuiLabel.setText("<html><u>clicca qui</u></html>");
+                    cliccaQuiLabel.setText("<html><u>click here</u></html>");
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     cliccaQuiLabel.setForeground(Color.MAGENTA);
-                    cliccaQuiLabel.setText("<html>clicca qui</html>");
+                    cliccaQuiLabel.setText("<html>click here</html>");
                 }
             });
 
@@ -102,8 +102,8 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
             JPanel panelNothing = new JPanel();
 
             panelNothing.setLayout(new BoxLayout(panelNothing, BoxLayout.Y_AXIS));
-            JBLabel labelError = new JBLabel("Sembra si sia verificato un errore nell'analisi dei possibili strumenti da utilizzare.");
-            JBLabel labelSolution = new JBLabel("Riprovare più tardi");
+            JBLabel labelError = new JBLabel("Sorry, it seems there was an error in the analysis of the possible tools to use");
+            JBLabel labelSolution = new JBLabel("Please, try again later");
 
             panelNothing.add(labelError);
             labelSolution.add(labelSolution);

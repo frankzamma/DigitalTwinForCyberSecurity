@@ -14,7 +14,7 @@ public class FramePiuDettagliAnalysisLine extends JFrame {
     private PluginToolWindowLogWritingAnalysis toolWindowLogWritingAnalysis;
 
     public FramePiuDettagliAnalysisLine(VulnerabilityLine v, JPanel panel, PluginToolWindowLogWritingAnalysis toolWindowLogWritingAnalysis) throws HeadlessException {
-        super("Vulnerability at row " + v.getLine());
+        super("Vulnerability at line " + v.getLine());
 
         this.vulnerabilityLine = v;
         this.associatedPanel = panel;
@@ -37,7 +37,7 @@ public class FramePiuDettagliAnalysisLine extends JFrame {
         constraints.gridwidth =3;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         JPanel panelFirst = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelFirst.add(new JBLabel("Riga: " + vulnerabilityLine.getLine()));
+        panelFirst.add(new JBLabel("Line: " + vulnerabilityLine.getLine()));
         panelFirst.add(new JBLabel("Severity: " + vulnerabilityLine.getSeverity()));
         panel.add(panelFirst, constraints);
 
@@ -93,7 +93,7 @@ public class FramePiuDettagliAnalysisLine extends JFrame {
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         if(vulnerabilityLine.getExampleCode().length() > 0){
-            JButton copiaCodiceButton = new JButton("Copia codice");
+            JButton copiaCodiceButton = new JButton("Copy code");
             copiaCodiceButton.addActionListener(e ->{
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(new StringSelection(vulnerabilityLine.getExampleCode()), null);
@@ -103,7 +103,7 @@ public class FramePiuDettagliAnalysisLine extends JFrame {
         }
 
 
-        JButton eliminaButton = new JButton("Elimina");
+        JButton eliminaButton = new JButton("Delete");
         panelButtons.add(eliminaButton);
 
 
