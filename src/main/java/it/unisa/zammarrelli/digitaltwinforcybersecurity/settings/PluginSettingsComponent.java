@@ -55,19 +55,19 @@ public class PluginSettingsComponent {
         switch (this.getLanguage()){
             case ITALIAN:
                 labelLanguage.setText("Scegliere Lingua");
-                labelToken.setText("Inserire Token GPT");
+                labelToken.setText("Inserire OpenAI API key");
                 labelCheckBox.setText("Analisi del codice durante la scrittura");
                 break;
             case ENGLISH:
                 labelLanguage.setText("Select Language");
-                labelToken.setText("Insert GPT Token");
+                labelToken.setText("Insert OpenAI API key");
                 labelCheckBox.setText("Code analysis during writing");
 
                 break;
             case FRENCH:
                 labelLanguage.setText("Choisir la langue");
-                labelToken.setText("Ins\u00E9rer un jeton GPT");
-                labelCheckBox.setText("Analyse du code lors de l'écriture");
+                labelToken.setText("Ins\u00E9rer OpenAI API key");
+                labelCheckBox.setText("Analyse du code lors de l'\u00E9criture");
                 break;
         }
     }
