@@ -85,8 +85,8 @@ public class WritingAnalysisHandler extends TypedHandlerDelegate {
                                         FileEditorManager.getInstance(project), file.getVirtualFile());
 
                                 NotificationGroupManager.getInstance().getNotificationGroup("vulnerabilityNotification")
-                                        .createNotification("Attento hai inserito del codice vulnerabile!",
-                                                "Riga: " + logicalPosition.line+"\n"+
+                                        .createNotification(getMessage(),
+                                                "Line: " + logicalPosition.line+"\n"+
                                                         vulnerabilityLine.getDescription(),
                                                 NotificationType.INFORMATION)
                                         .addAction(ActionManager.getInstance().getAction("NotifyAction")).notify(project);
@@ -103,6 +103,18 @@ public class WritingAnalysisHandler extends TypedHandlerDelegate {
             }
         }
         return Result.STOP;
+        }
+
+        private String getMessage(){
+            switch(PluginSettingsStateService.getInstance().getState().getLanguage()){
+                case ITALIAN:
+                    return "Attento hai inserito del codice vulnerabile!";
+                case FRENCH:
+                    return "Attention, vous avez entr\u00E8 du code vuln\u00E8rable!";
+                default:
+                    return  "Attention, you have insert vulnerable code!";
+            }
+
         }
 
 
