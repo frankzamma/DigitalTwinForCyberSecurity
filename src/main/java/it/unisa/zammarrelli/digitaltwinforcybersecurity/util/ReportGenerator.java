@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class ReportGenerator {
                 "<body>\n";
 
         int total = vulnerabilities.size();
-        html += "Report Static Analysis " + LocalDate.now();
+        html += "<h2>Report Static Analysis " + LocalDateTime.now() + "</h2>";
         html = html.concat("<p>Total of  vulnerabilities founded " + total +"</p>\n");
 
         List<VirtualFile> files =
@@ -34,11 +35,11 @@ public class ReportGenerator {
             for (Vulnerability v: vulnerabilityList){
                 html = html.concat("<li>" +v.getName());
                 html = html.concat("<ul>\n");
-                html = html.concat("<li>Line: " +v.getLine()+ ":</li>\n");
-                html = html.concat("<li>Severity: " +v.getSeverity()+ ":</li>\n");
-                html = html.concat("<li>Description: " +v.getDescription()+ ":</li>\n");
-                html = html.concat("<li>Solution: " +v.getSolution()+ ":</li>\n");
-                html = html.concat("<li>Example Code: " +v.getExampleSolutionCode()+ ":</li>\n");
+                html = html.concat("<li>Line: " +v.getLine()+ ";</li>\n");
+                html = html.concat("<li>Severity: " +v.getSeverity()+ ";</li>\n");
+                html = html.concat("<li>Description: " +v.getDescription()+ ";</li>\n");
+                html = html.concat("<li>Solution: " +v.getSolution()+ ";</li>\n");
+                html = html.concat("<li>Example Code:<code>" +v.getExampleSolutionCode()+ ".</code></li>\n");
                 html = html.concat("</ul>\n");
                 html =  html.concat("</li>\n");
             }
