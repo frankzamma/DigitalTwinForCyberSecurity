@@ -24,13 +24,13 @@ public class GPTWrapper {
     public String analyzeFile(String code, boolean bigModel){
         return  analyze(   "Verify if the code contains vulnerability.\n" +
                 "The answer must is a JSON Array that contains a object that have this fields:\n" +
-                "\"name\": name of vulnerability.\n" +
-                "\"description\": a brief description of vulnerability.\n" +
-                "\"line\":  the line number of vulnerable code.\n" +
-                "\"severity\": potential, medium or serious\".\n" +
-                "\"solution\": a description to how to solve vulnerability.\n" +
-                "\"example_solution_code\": example code to solve vulnerability.\n" +
-                "If the code doesn't contain any vulnerabilities return [].\n" +
+                "- name: name of vulnerability.\n" +
+                "- description: a brief description of vulnerability.\n" +
+                "- line:  the line number of vulnerable code.\n" +
+                "- severity: potential, medium or serious\".\n" +
+                "- solution: a description to how to solve vulnerability.\n" +
+                "- example_solution_code: example code to solve vulnerability.\n" +
+                "If there are not any vulnerabilities write [].\n" +
                 "Name, description and solution must be in " + this.language, code, bigModel);
     }
 
@@ -39,10 +39,10 @@ public class GPTWrapper {
         return analyze("Verify if the line of code is vulnerable.\n" +
                 "Answer must is a JSON Object that have 5 fields: \n" +
                 "- vulnerable: yes or no\n" +
-                "- description: a brief description of vulnerable. If vulnerable = no this field could be \"\".\n" +
                 "- severity: potential, medium, serious. If vulnerable = no this field could be \"\".\n" +
+                "- description: a brief description of vulnerable. If vulnerable = no this field could be \"\".\n" +
                 "- solution:  a description to how to solve  . " +
-                "- example_code : An example of a solution code or \"\"" +
+                "- example_code : example code to solve vulnerability" +
                 "Description and Solution must be in" + language.toString() , line, false);
     }
 
@@ -55,7 +55,7 @@ public class GPTWrapper {
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model(bigModel ? "gpt-3.5-turbo-16k":"gpt-3.5-turbo")
-                .temperature(0.65d)
+                .temperature(0.55d)
                 .maxTokens(bigModel ? 4096: 2048)
                 .topP(0.7d)
                 .messages(messages).build();
@@ -102,7 +102,7 @@ public class GPTWrapper {
     public String fixJson(String jsonString){
         List<ChatMessage> messages = new ArrayList<>();
 
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),"Fix JSON formatting"));
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),"Fix JSON formatting. If the text is plain text return []."));
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), jsonString));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()

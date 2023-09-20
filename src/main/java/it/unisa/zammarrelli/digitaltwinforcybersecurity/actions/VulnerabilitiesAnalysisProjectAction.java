@@ -117,7 +117,11 @@ public class VulnerabilitiesAnalysisProjectAction extends AnAction {
                             ProjectRootManager projectRootManager = ProjectRootManager.getInstance(p);
                             VirtualFile[] dir = projectRootManager.getContentRoots();
                             File file = new File(dir[0].getCanonicalPath()
-                                    + File.separator +"reports" + File.separator+"report - "+ LocalDateTime.now() +".html");
+                                    + File.separator +"reports" + File.separator+"report-"+
+                                    LocalDateTime.now().toString()
+                                            .replaceAll("T", "_")
+                                            .replaceAll(":", "")
+                                            .split("\\.")[0] +".html");
 
                             FileUtil.writeToFile(file, html);
 

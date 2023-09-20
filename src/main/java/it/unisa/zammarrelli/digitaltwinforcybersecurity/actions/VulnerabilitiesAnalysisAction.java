@@ -79,7 +79,7 @@ public class VulnerabilitiesAnalysisAction extends AnAction {
                             }
 
                             if (vulnerabilities.size() == 0) {
-                                content.displayInformation("Non sono presenti vulnerabilit\u00E0!");
+                                content.displayInformation("There aren't any vulnerabilities!");
                             } else {
                                 content.addVulnerabilitiesContent(vulnerabilities, fileEditorManager);
                                 String html =   ReportGenerator.generate(vulnerabilities);

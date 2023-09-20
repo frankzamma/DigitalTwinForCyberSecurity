@@ -1,9 +1,6 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -37,8 +34,8 @@ public class FileAnalyzer {
         try {
             array = parser(gptWrapper, result);
         }catch (JsonSyntaxException exception){
-            result = gptWrapper.analyzeFile(text, true);
-            array = parser(gptWrapper, result);
+                result = gptWrapper.analyzeFile(text, true);
+                array = parser(gptWrapper, result);
         }
         List<Vulnerability> vulnerabilities = new ArrayList<>();
         for (int i = 0; i < array.size(); i++) {
@@ -64,14 +61,19 @@ public class FileAnalyzer {
         try {
             array = parser.fromJson(result, JsonArray.class).getAsJsonArray();
         } catch (JsonSyntaxException exception) {
-            String newJson = gptWrapper.fixJson(result);
+           try{
+               JsonPrimitive primitive = parser.fromJson(result, JsonPrimitive.class);
+               return  new JsonArray();
+           }catch (JsonSyntaxException exception1){
+                String newJson = gptWrapper.fixJson(result);
 
-            if (newJson.startsWith("{") && newJson.endsWith("}")) {
-                newJson = "[" + newJson + "]";
+                if (newJson.startsWith("{") && newJson.endsWith("}")) {
+                    newJson = "[" + newJson + "]";
+                }
+
+                array = parser.fromJson(newJson, JsonArray.class).getAsJsonArray();
             }
 
-
-            array = parser.fromJson(newJson, JsonArray.class).getAsJsonArray();
         }
         return array;
     }
