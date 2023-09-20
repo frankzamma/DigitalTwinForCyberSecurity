@@ -41,7 +41,7 @@ public class GPTWrapper {
                 "- vulnerable: yes or no\n" +
                 "- severity: potential, medium, serious. If vulnerable = no this field could be \"\".\n" +
                 "- description: a brief description of vulnerable. If vulnerable = no this field could be \"\".\n" +
-                "- solution:  a description to how to solve  . " +
+                "- solution:  a description to how to solve. " +
                 "- example_code : example code to solve vulnerability" +
                 "Description and Solution must be in" + language.toString() , line, false);
     }
