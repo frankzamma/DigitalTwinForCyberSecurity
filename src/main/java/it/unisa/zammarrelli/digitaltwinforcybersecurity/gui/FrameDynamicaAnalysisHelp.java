@@ -34,7 +34,7 @@ public class FrameDynamicaAnalysisHelp extends JFrame {
     private void createPanel(){
         JPanel panelMain = new JPanel(new BorderLayout());
         JPanel panelLanguage = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JBLabel labelLanguage = new JBLabel("<html>The project you are working is based on Java>" + sdkLanguage + "</b><html>");
+        JBLabel labelLanguage = new JBLabel("<html>The project you are working is based on <b>" + sdkLanguage + "</b><html>");
         panelLanguage.add(labelLanguage);
         panelMain.add(panelLanguage, BorderLayout.NORTH);
 
