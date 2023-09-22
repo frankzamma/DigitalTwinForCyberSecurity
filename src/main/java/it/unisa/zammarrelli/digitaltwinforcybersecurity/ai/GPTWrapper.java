@@ -17,7 +17,7 @@ public class GPTWrapper {
     private OpenAiService service;
     private Language language;
     public GPTWrapper(String token, Language language) {
-        this.service = new OpenAiService(token, Duration.ofSeconds(180));
+        this.service = new OpenAiService(token, Duration.ofSeconds(0));
         this.language = language;
     }
 
@@ -56,7 +56,7 @@ public class GPTWrapper {
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model(bigModel ? "gpt-3.5-turbo-16k":"gpt-3.5-turbo")
                 .temperature(0.55d)
-                .maxTokens(bigModel ? 4096: 2048)
+                .maxTokens(bigModel ? 6000: 2048)
                 .topP(0.7d)
                 .messages(messages).build();
 

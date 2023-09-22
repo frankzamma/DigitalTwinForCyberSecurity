@@ -61,19 +61,17 @@ public class FileAnalyzer {
         try {
             array = parser.fromJson(result, JsonArray.class).getAsJsonArray();
         } catch (JsonSyntaxException exception) {
-           try{
-               JsonPrimitive primitive = parser.fromJson(result, JsonPrimitive.class);
-               return  new JsonArray();
-           }catch (JsonSyntaxException exception1){
-                String newJson = gptWrapper.fixJson(result);
+                if(result.startsWith("[") || result.startsWith("{")){
+                    String newJson = gptWrapper.fixJson(result);
 
-                if (newJson.startsWith("{") && newJson.endsWith("}")) {
-                    newJson = "[" + newJson + "]";
+                    if (newJson.startsWith("{") && newJson.endsWith("}")) {
+                        newJson = "[" + newJson + "]";
+                    }
+
+                    array = parser.fromJson(newJson, JsonArray.class).getAsJsonArray();
+                }else{
+                    array =  new JsonArray();
                 }
-
-                array = parser.fromJson(newJson, JsonArray.class).getAsJsonArray();
-            }
-
         }
         return array;
     }

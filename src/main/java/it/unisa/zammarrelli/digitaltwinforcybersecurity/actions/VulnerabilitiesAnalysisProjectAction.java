@@ -94,7 +94,6 @@ public class VulnerabilitiesAnalysisProjectAction extends AnAction {
                         content.changeCount((i+1));
                         FileAnalyzer analyzer = new FileAnalyzer(documents.get(i).getText(), token, list.get(i));
                         try{
-
                             vulnerabilities.addAll(analyzer.analyze(false));
                         }catch (OpenAiHttpException exception){
                             if(exception.code.equals("context_length_exceeded")){
