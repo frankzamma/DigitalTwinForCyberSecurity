@@ -1,5 +1,6 @@
 package it.unisa.zammarrelli.digitaltwinforcybersecurity.actions;
 
+import com.google.gson.Gson;
 import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -23,9 +24,11 @@ import it.unisa.zammarrelli.digitaltwinforcybersecurity.gui.PluginToolWindowCont
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.settings.PluginSettingsStateService;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.FileAnalyzer;
 import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.ReportGenerator;
+import it.unisa.zammarrelli.digitaltwinforcybersecurity.util.VulnerabilitySerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -123,8 +126,27 @@ public class VulnerabilitiesAnalysisProjectAction extends AnAction {
                                             .split("\\.")[0] +".html");
 
                             FileUtil.writeToFile(file, html);
-
                             System.out.println(file.getAbsolutePath());
+
+                            //saving for experimentation
+
+                            File fileExperimentation = new File(dir[0].getCanonicalPath()
+                                    + File.separator +"reports" + File.separator+ "report-"+
+                                    LocalDateTime.now().toString()
+                                            .replaceAll("T", "_")
+                                            .replaceAll(":", "")
+                                            .split("\\.")[0] +".txt");
+
+                            Gson parser = new Gson();
+                            ArrayList<VulnerabilitySerializable> vulnerabilitySerializables = new ArrayList<>();
+
+                            for(Vulnerability v: vulnerabilities){
+                                vulnerabilitySerializables.add(VulnerabilitySerializable.fromVulnerability(v));
+                            }
+
+                            String jsonString = parser.toJson(vulnerabilitySerializables);
+
+                            FileUtil.writeToFile(fileExperimentation,jsonString);
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
