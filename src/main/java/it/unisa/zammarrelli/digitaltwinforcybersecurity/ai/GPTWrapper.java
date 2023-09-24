@@ -94,15 +94,15 @@ public class GPTWrapper {
         ChatCompletionResult result = this.service.createChatCompletion(request);
         String answer = result.getChoices().get(0).getMessage().getContent();
 
-            String[] resultStrings = answer.equals("[-]") ? new String[]{}: answer.split(";");
-            return new ArrayList<>(Arrays.stream(resultStrings).collect(Collectors.toList()));
+        String[] resultStrings = answer.equals("[-]") ? new String[]{}: answer.split(";");
+        return new ArrayList<>(Arrays.stream(resultStrings).collect(Collectors.toList()));
     }
 
 
     public String fixJson(String jsonString){
         List<ChatMessage> messages = new ArrayList<>();
 
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),"Fix JSON formatting. If the text is plain text return []."));
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),"Fix JSON formatting"));
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), jsonString));
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
