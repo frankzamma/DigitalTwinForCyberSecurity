@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T16:16:37.382482900</h2><p>Total of  vulnerabilities founded 27</p>
+<ul>
+<li>
+inception_utils.py
+<ol>
+<li>Potenziale vulnerabilità di download di file non sicuro<ul>
+<li>Line: 24;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la libreria urllib per scaricare un file da una URL senza effettuare alcun controllo sulla sicurezza della connessione. Ciò potrebbe consentire a un attaccante di eseguire un attacco di tipo man-in-the-middle e sostituire il file scaricato con uno dannoso.;</li>
+<li>Solution: Utilizzare una libreria o un metodo che effettua controlli sulla sicurezza della connessione, come ad esempio la libreria requests in Python.;</li>
+<li>Example Code:<code>import requests
+
+response = requests.get(CHECKPOINT_URL, verify=True)
+checkpoint_source = 'inception_resnet_v2_2016_08_30.ckpt.tgz'
+with open(checkpoint_source, 'wb') as file:
+    file.write(response.content).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+inception_resnet_v2.py
+<ol>
+<li>Missing Input Validation<ul>
+<li>Line: 32;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non valida l'input prima di utilizzarlo, aprendo la porta a potenziali attacchi di tipo injection o XSS.;</li>
+<li>Solution: Validare sempre l'input prima di utilizzarlo. Utilizzare funzioni specifiche per validare l'input, come ad esempio la funzione 'tf.assert_type' per verificare il tipo dell'input.;</li>
+<li>Example Code:<code>tf.assert_type(net, tf.Tensor).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+labels.py
+<ol>
+<li>Injection<ul>
+<li>Line: 1;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice contiene una lista di stringhe che potrebbero essere utilizzate per eseguire un attacco di injection.;</li>
+<li>Solution: Utilizzare sempre parametri sicuri e validati per costruire query o comandi.;</li>
+<li>Example Code:<code>Utilizzare prepared statements o funzioni di escape per costruire query o comandi..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+resize.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 54;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses user input to execute a command without proper validation or sanitization, which can lead to command injection vulnerabilities.;</li>
+<li>Solution: To prevent command injection vulnerabilities, it is important to validate and sanitize all user input before using it in command execution. Use proper input validation techniques such as whitelisting or input sanitization to ensure that only expected and safe values are used in command execution.;</li>
+<li>Example Code:<code>import shlex
+
+filename = shlex.quote(filename)
+img = Image.open(join(self.source_dir, filename)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+shared.py
+<ol>
+<li>Creazione di cartelle senza controllo<ul>
+<li>Line: 4;</li>
+<li>Severity: potenziale;</li>
+<li>Description: La funzione maybe_create_folder crea una cartella senza controllare se la cartella esiste già.;</li>
+<li>Solution: Prima di creare la cartella, è necessario verificare se la cartella esiste già utilizzando la funzione os.path.exists().;</li>
+<li>Example Code:<code>if not os.path.exists(folder):
+    makedirs(folder, exist_ok=True).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+reader.py
+<ol>
+<li>TFRecord file path injection<ul>
+<li>Line: 17;</li>
+<li>Severity: serious;</li>
+<li>Description: The `tfrecord_pattern` parameter is not properly validated or sanitized before being used to build the file path. This can allow an attacker to inject malicious file paths and potentially read sensitive files from the system.;</li>
+<li>Solution: Ensure that the `tfrecord_pattern` parameter is properly validated and sanitized before being used to build the file path. Consider using a whitelist of allowed characters or a regular expression to validate the input.;</li>
+<li>Example Code:<code>import re
+
+# Validate tfrecord_pattern
+if not re.match(r'^[a-zA-Z0-9_-]+$', tfrecord_pattern):
+    raise ValueError('Invalid tfrecord_pattern')
+
+# Sanitize tfrecord_pattern
+tfrecord_pattern = tfrecord_pattern.replace('..', '')
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+writer.py
+<ol>
+<li>Importing modules without using absolute paths<ul>
+<li>Line: 1;</li>
+<li>Severity: medium;</li>
+<li>Description: The code imports the 'os.path' module using the 'import' statement without specifying an absolute path. This can lead to potential vulnerabilities if an attacker is able to manipulate the Python module search path.;</li>
+<li>Solution: Always use absolute paths when importing modules to avoid potential vulnerabilities. Instead of 'from os.path import join', use 'import os.path' and then refer to the 'join' function as 'os.path.join'.;</li>
+<li>Example Code:<code>import os.path
+
+join = os.path.join.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+batchable_reader.py
+<ol>
+<li>Utilizzo di multiprocessing senza precauzioni<ul>
+<li>Line: 5;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza il modulo multiprocessing senza prendere precauzioni per la gestione dei thread. Questo può portare a problemi di concorrenza e prestazioni ridotte.;</li>
+<li>Solution: Utilizzare il modulo multiprocessing in modo corretto, ad esempio utilizzando lock per gestire l'accesso concorrente alle risorse condivise.;</li>
+<li>Example Code:<code>import multiprocessing
+
+lock = multiprocessing.Lock()
+
+# Codice che utilizza il lock per gestire l'accesso concorrente alle risorse condivise.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+lab_image_record.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice importa la libreria 'numpy' ma non la utilizza in nessuna parte del codice.;</li>
+<li>Solution: Rimuovere l'import della libreria 'numpy' se non viene utilizzata.;</li>
+<li>Example Code:<code>import tensorflow as tf
+from skimage import color, transform
+
+from ..base import BatchableRecordReader, RecordWriter
+
+width = 224
+height = 224
+depth = 3
+img_shape = (width, height, depth)
+embedding_size = 1001
+
+
+class LabImageRecordWriter(RecordWriter):
+    img_shape = img_shape
+    embedding_size = embedding_size
+
+    def write_image(self, img_file, image, img_embedding):
+        img = transform.resize(image, img_shape, mode="constant")
+        lab = color.rgb2lab(img).astype(np.float32)
+        l_channel = 2 * lab[:, :, 0] / 100 - 1
+        ab_channels = lab[:, :, 1:] / 127
+        example = tf.train.Example(
+            features=tf.train.Features(
+                feature={
+                    "image_name": self._bytes_feature(img_file),
+                    "image_l": self._float32_list(l_channel.flatten()),
+                    "image_ab": self._float32_list(ab_channels.flatten()),
+                    "image_embedding": self._float32_list(img_embedding.flatten()),
+                }
+            )
+        )
+        self.write(example.SerializeToString())
+
+
+class LabImageRecordReader(BatchableRecordReader):
+    img_shape = img_shape
+    embedding_size = embedding_size
+
+    def _create_read_operation(self):
+        features = tf.parse_single_example(
+            self._tfrecord_serialized,
+            features={
+                "image_name": tf.FixedLenFeature([], tf.string),
+                "image_l": tf.FixedLenFeature([width * height], tf.float32),
+                "image_ab": tf.FixedLenFeature([width * height * 2], tf.float32),
+                "image_embedding": tf.FixedLenFeature([embedding_size], tf.float32),
+            },
+        )
+
+        image_l = tf.reshape(features["image_l"], shape=[width, height, 1])
+        image_ab = tf.reshape(features["image_ab"], shape=[width, height, 2])
+
+        return {
+            "image_name": features["image_name"],
+            "image_l": image_l,
+            "image_ab": image_ab,
+            "image_embedding": features["image_embedding"],
+        }.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+images_queue.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 1;</li>
+<li>Severity: medium;</li>
+<li>Description: La libreria multiprocessing non è utilizzata nel codice.;</li>
+<li>Solution: Rimuovere l'import della libreria multiprocessing.;</li>
+<li>Example Code:<code>Rimuovere la riga 'import multiprocessing'..</code></li>
+</ul>
+</li>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 2;</li>
+<li>Severity: medium;</li>
+<li>Description: La libreria os.path non è utilizzata nel codice.;</li>
+<li>Solution: Rimuovere l'import della libreria os.path.;</li>
+<li>Example Code:<code>Rimuovere la riga 'from os.path import join, expanduser'..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>XSS (Cross-Site Scripting)<ul>
+<li>Line: 25;</li>
+<li>Severity: grave;</li>
+<li>Description: Questa vulnerabilità consente ad un attaccante di inserire del codice malevolo all'interno di una pagina web, che verrà poi eseguito dal browser del cliente.;</li>
+<li>Solution: Per proteggersi da questa vulnerabilità, è necessario effettuare una corretta validazione e sanitizzazione dei dati in input, in modo da evitare l'inserimento di codice HTML o JavaScript non desiderato.;</li>
+<li>Example Code:<code>Utilizzare funzioni di escape o encoding per convertire i caratteri speciali in entità HTML o JavaScript, ad esempio utilizzare htmlspecialchars() o htmlentities() per evitare l'inserimento di tag o script non desiderati..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+download.py
+<ol>
+<li>Remote Code Execution<ul>
+<li>Line: 69;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria urllib.request per scaricare file da una URL. Questo può essere pericoloso se la URL è controllata dall'utente, in quanto potrebbe consentire l'esecuzione di codice malevolo.;</li>
+<li>Solution: Verificare che la URL da cui si sta scaricando il file sia attendibile e non controllata dall'utente. In caso contrario, utilizzare metodi più sicuri per scaricare il file, come requests.get().;</li>
+<li>Example Code:<code>import requests
+
+response = requests.get(url)
+if response.status_code == 200:
+    with open(filename, 'wb') as file:
+        file.write(response.content).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+lab_batch.py
+<ol>
+<li>Insecure use of wget<ul>
+<li>Line: 19;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses the wget command to download a file without verifying its authenticity.;</li>
+<li>Solution: Use a secure method to download files, such as using HTTPS or verifying the file's checksum.;</li>
+<li>Example Code:<code>wget --secure-protocol=auto https://example.com/file.tar.gz.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 10;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria argparse per gestire gli argomenti passati da linea di comando. Tuttavia, non viene effettuato alcun controllo o validazione degli argomenti inseriti dall'utente. Questo potrebbe consentire ad un utente malintenzionato di eseguire comandi arbitrari all'interno del sistema.;</li>
+<li>Solution: Per prevenire l'iniezione di comandi, è necessario validare e filtrare gli argomenti inseriti dall'utente. Si consiglia di utilizzare la funzione 'add_argument' di argparse per specificare il tipo di dato atteso per ciascun argomento e di utilizzare la funzione 'parse_args' per ottenere i valori degli argomenti in modo sicuro.;</li>
+<li>Example Code:<code>parser.add_argument('--train-steps', type=int, required=True, metavar='STEPS', help='train for STEPS steps').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 32;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza l'argomento 'args.run_id' direttamente nella creazione del percorso del checkpoint, senza effettuare alcun controllo o sanitizzazione. Questo può consentire a un attaccante di eseguire comandi arbitrari sul sistema ospite.;</li>
+<li>Solution: Per evitare l'iniezione di comandi, è necessario effettuare una sanitizzazione dell'argomento 'args.run_id' prima di utilizzarlo nel percorso del checkpoint. Ciò può essere fatto utilizzando una funzione di sanitizzazione o validazione degli input per assicurarsi che l'argomento contenga solo caratteri consentiti.;</li>
+<li>Example Code:<code>import re
+
+run_id = re.sub(r'[^a-zA-Z0-9_]', '', args.run_id)
+dir_output = Path(args.output).expanduser().resolve().joinpath(run_id).as_posix().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+fusion_layer.py
+<ol>
+<li>Potenziale vulnerabilità di sicurezza<ul>
+<li>Line: 5;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice non gestisce l'input dell'utente in modo sicuro, potenzialmente consentendo attacchi di tipo injection.;</li>
+<li>Solution: Per prevenire attacchi di tipo injection, è necessario validare e sanificare l'input dell'utente prima di utilizzarlo nel codice. Utilizzare metodi come la validazione dei tipi di dati, l'escape dei caratteri speciali e l'utilizzo di query parametrizzate per evitare l'inserimento di codice dannoso.;</li>
+<li>Example Code:<code>imgs, embs = sanitize_inputs(inputs).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+training_utils.py
+<ol>
+<li>Uncontrolled File Path<ul>
+<li>Line: 10;</li>
+<li>Severity: serious;</li>
+<li>Description: The code imports the 'join' function from the 'os.path' module without validating the input. This can lead to a path traversal vulnerability, allowing an attacker to access or modify files outside of the intended directory.;</li>
+<li>Solution: Ensure that the input to the 'join' function is properly validated or sanitized to prevent path traversal attacks. Use a whitelist approach to only allow specific paths or filenames.;</li>
+<li>Example Code:<code>dir_tfrecord = join('path/to/directory', sanitize(user_input)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+network_definition.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 5;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Le librerie 'keras.engine' e 'keras.layers' non vengono utilizzate nel codice;</li>
+<li>Solution: Rimuovere l'import delle librerie non utilizzate;</li>
+<li>Example Code:<code>from keras.models import Sequential
+
+
+
+class Colorization:
+    def __init__(self, depth_after_fusion):
+        self.encoder = _build_encoder()
+        self.fusion = FusionLayer()
+        self.after_fusion = Conv2D(depth_after_fusion, (1, 1), activation="relu")
+        self.decoder = _build_decoder(depth_after_fusion)
+
+    def build(self, img_l, img_emb):
+        img_enc = self.encoder(img_l)
+
+        fusion = self.fusion([img_enc, img_emb])
+        fusion = self.after_fusion(fusion)
+
+        return self.decoder(fusion)
+
+
+
+def _build_encoder():
+    model = Sequential(name="encoder")
+    model.add(InputLayer(input_shape=(None, None, 1)))
+    model.add(Conv2D(64, (3, 3), activation="relu", padding="same", strides=2))
+    model.add(Conv2D(128, (3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(128, (3, 3), activation="relu", padding="same", strides=2))
+    model.add(Conv2D(256, (3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(256, (3, 3), activation="relu", padding="same", strides=2))
+    model.add(Conv2D(512, (3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(512, (3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(256, (3, 3), activation="relu", padding="same"))
+    return model
+
+
+
+def _build_decoder(encoding_depth):
+    model = Sequential(name="decoder")
+    model.add(InputLayer(input_shape=(None, None, encoding_depth)))
+    model.add(Conv2D(128, (3, 3), activation="relu", padding="same"))
+    model.add(UpSampling2D((2, 2)))
+    model.add(Conv2D(64, (3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(64, (3, 3), activation="relu", padding="same"))
+    model.add(UpSampling2D((2, 2)))
+    model.add(Conv2D(32, (3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(2, (3, 3), activation="tanh", padding="same"))
+    model.add(UpSampling2D((2, 2)))
+    return model.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_colorization.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 43;</li>
+<li>Severity: potential;</li>
+<li>Description: The code concatenates user input without sanitizing it, which can lead to SQL injection vulnerabilities.;</li>
+<li>Solution: Use parameterized queries or prepared statements to sanitize user input.;</li>
+<li>Example Code:<code>query = 'SELECT * FROM users WHERE username = ?'
+params = (username,)
+cursor.execute(query, params).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>XSS (Cross-Site Scripting)<ul>
+<li>Line: 12;</li>
+<li>Severity: serio;</li>
+<li>Description: Questa vulnerabilità permette ad un attaccante di inserire del codice maligno (solitamente JavaScript) all'interno di una pagina web, che verrà poi eseguito dal browser dell'utente.;</li>
+<li>Solution: Per proteggersi da questa vulnerabilità, è necessario effettuare una corretta validazione ed escaping dei dati in input prima di inserirli all'interno della pagina web. È inoltre consigliato utilizzare librerie o framework che offrono meccanismi di protezione automatica contro gli attacchi XSS.;</li>
+<li>Example Code:<code>Per esempio, invece di inserire direttamente un valore all'interno di un tag HTML, è possibile utilizzare la funzione htmlspecialchars() per convertire i caratteri speciali in entità HTML..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_write_read_base.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 39;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses user input to construct a command that is executed by the system shell, allowing an attacker to inject additional commands.;</li>
+<li>Solution: To prevent command injection vulnerabilities, it is recommended to use parameterized queries or prepared statements instead of concatenating user input directly into the command string. This ensures that user input is treated as data and not executable code.;</li>
+<li>Example Code:<code>import subprocess
+
+user_input = input('Enter a value: ')
+command = ['ls', user_input]
+subprocess.call(command).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_write_read_fixed.py
+<ol>
+<li>Serialization vulnerability<ul>
+<li>Line: 22;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses tf.train.Example.SerializeToString() to serialize the example object. This can potentially lead to serialization vulnerabilities if the serialized string is deserialized by an untrusted party.;</li>
+<li>Solution: Avoid serializing and deserializing data in an untrusted environment. If serialization is necessary, consider using a more secure serialization method.;</li>
+<li>Example Code:<code>import pickle
+
+example_string = example.SerializeToString()
+
+# Serialize the example using a more secure serialization method
+secure_string = pickle.dumps(example)
+
+# Deserialize the example
+example_deserialized = pickle.loads(secure_string).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_write_read_variable.py
+<ol>
+<li>Potential vulnerability in TensorFlow tf.train.Example<ul>
+<li>Line: 30;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is using tf.train.Example without validating the input data. This can potentially lead to a vulnerability if the input data is not properly sanitized.;</li>
+<li>Solution: Always validate and sanitize the input data before using it in tf.train.Example. Ensure that the data is of the expected type and shape.;</li>
+<li>Example Code:<code>shape = np.random.randint(2, 4, 2, dtype=np.int32)
+
+mat_ints = np.random.randint(0, 255, shape, dtype=np.uint8)
+mat_floats = np.random.random(shape).astype(np.float16)
+
+# Validate and sanitize the input data
+if isinstance(shape, np.ndarray) and shape.dtype == np.int32 and shape.shape == (2,):
+    example = tf.train.Example(
+        features=tf.train.Features(
+            feature={
+                "shape": self._bytes_feature(shape.tobytes()),
+                "mat_ints": self._bytes_feature(mat_ints.tobytes()),
+                "mat_floats": self._bytes_feature(mat_floats.tobytes()),
+            }
+        )
+    )
+    self.write(example.SerializeToString())
+else:
+    raise ValueError("Invalid shape value").</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_write_read_lab_image.py
+<ol>
+<li>Sensitive Information Exposure<ul>
+<li>Line: 59;</li>
+<li>Severity: medium;</li>
+<li>Description: The code is printing the name of the image file in plain text, which could potentially expose sensitive information such as file paths or user data.;</li>
+<li>Solution: Avoid printing sensitive information directly. If necessary, sanitize the data before printing or use logging functions that handle sensitive information properly.;</li>
+<li>Example Code:<code>print('Written: {}'.format(basename(key))).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_write_read_single_image.py
+<ol>
+<li>tf.errors.OutOfRangeError<ul>
+<li>Line: 52;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Questo errore si verifica quando la coda di input delle immagini si esaurisce e non ci sono più immagini da leggere.;</li>
+<li>Solution: Aggiungere un controllo per gestire l'eccezione tf.errors.OutOfRangeError e terminare il loop correttamente.;</li>
+<li>Example Code:<code>try:
+    while not coord.should_stop():
+        key, img = sess.run([img_key, img_tensor])
+        single_writer.write_image(key, img)
+        print("Written: {}".format(key))
+        count += 1
+except tf.errors.OutOfRangeError:
+    # La coda di input delle stringhe è terminata
+    pass.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+setup.py
+<ol>
+<li>File Inclusion<ul>
+<li>Line: 9;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione open per aprire il file README.md senza effettuare alcun controllo sul percorso del file. Questo può consentire ad un attaccante di includere file arbitrari dal sistema di file.;</li>
+<li>Solution: Prima di aprire il file, è necessario verificare che il percorso del file sia valido e che l'utente abbia i permessi necessari per accedere al file.;</li>
+<li>Example Code:<code>this_directory = os.path.abspath(os.path.dirname(__file__))
+
+# Verifica se il percorso del file è valido
+if os.path.exists(os.path.join(this_directory, 'README.md')):
+    with open(os.path.join(this_directory, 'README.md')) as f:
+        long_description = f.read()
+else:
+    # Gestisci l'errore se il percorso del file non è valido
+    long_description = ''.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

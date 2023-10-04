@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T16:34:34.654367900</h2><p>Total of  vulnerabilities founded 27</p>
+<ul>
+<li>
+lip.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 49;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice contiene potenziali vulnerabilità di Cross-Site Scripting (XSS).;</li>
+<li>Solution: Per prevenire attacchi di Cross-Site Scripting (XSS), è necessario validare e sanificare tutti i dati in input prima di utilizzarli nel codice. Ciò può essere fatto utilizzando funzioni di escape specifiche per il contesto in cui i dati verranno utilizzati, come ad esempio htmlspecialchars() per i dati visualizzati in HTML.;</li>
+<li>Example Code:<code>image_path = htmlspecialchars(image_path)
+label_path = htmlspecialchars(label_path).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ade20k.py
+<ol>
+<li>Insecure File Paths<ul>
+<li>Line: 103;</li>
+<li>Severity: serious;</li>
+<li>Description: The code constructs file paths using user-controlled input, which can lead to path traversal attacks.;</li>
+<li>Solution: Ensure that file paths are constructed using only trusted and validated input. If user input is required, validate and sanitize it to prevent path traversal attacks.;</li>
+<li>Example Code:<code>image_path = os.path.join(self.root, item['img'])
+label_path = os.path.join(self.root, item['label']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+custom.py
+<ol>
+<li>Import non sicuro<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: L'import del modulo 'torch' potrebbe consentire l'esecuzione di codice dannoso;</li>
+<li>Solution: Utilizzare solo moduli di importazione sicuri;</li>
+<li>Example Code:<code>import torch as th.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+imagenet.py
+<ol>
+<li>Potenziale vulnerabilità di Path Traversal<ul>
+<li>Line: 68;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza una variabile non controllata per costruire il percorso di un file da aprire o estrarre. Questo può consentire a un attaccante di accedere a file arbitrari sul sistema.;</li>
+<li>Solution: Verificare che la variabile utilizzata per costruire il percorso del file sia controllata e non consenta l'accesso a file arbitrari.;</li>
+<li>Example Code:<code>path = os.path.join(root, 'tiny-imagenet-200.zip').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+pascal_context.py
+<ol>
+<li>SQL Injection<ul>
+<li>Line: 63;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses string concatenation to build SQL queries, which can be exploited by attackers to inject malicious SQL code.;</li>
+<li>Solution: Use prepared statements or parameterized queries to prevent SQL injection attacks.;</li>
+<li>Example Code:<code>stmt = connection.prepareStatement('SELECT * FROM users WHERE username = ? AND password = ?');
+stmt.setString(1, username);
+stmt.setString(2, password);
+result = stmt.executeQuery();.</code></li>
+</ul>
+</li>
+<li>Command Injection<ul>
+<li>Line: 71;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses user input to build a command that is executed by the operating system, which can be exploited by attackers to execute arbitrary commands.;</li>
+<li>Solution: Validate and sanitize user input before using it to build commands. Use a whitelist approach to only allow specific characters and remove any potentially dangerous characters.;</li>
+<li>Example Code:<code>import shlex
+
+command = 'ls -l ' + shlex.quote(user_input)
+os.system(command).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Missing key(s) in state_dict vulnerability<ul>
+<li>Line: 13;</li>
+<li>Severity: medium;</li>
+<li>Description: La funzione 'load_state_dict' potrebbe sollevare un'eccezione di tipo 'RuntimeError' se la chiave dello stato non è presente nel dizionario dello stato fornito.;</li>
+<li>Solution: Aggiungere un blocco try-except per gestire l'eccezione 'RuntimeError' e caricare lo stato senza la chiave mancante.;</li>
+<li>Example Code:<code>try:
+    net.load_state_dict(state_dict)
+except RuntimeError as e:
+    if 'Missing key(s) in state_dict:' in str(e):
+        net.load_state_dict({
+            key.replace('module.', '', 1): value
+            for key, value in state_dict.items()
+        }).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+resnet.py
+<ol>
+<li>Missing input validation<ul>
+<li>Line: 45;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not validate the input before using it, which can lead to potential security vulnerabilities such as buffer overflow or SQL injection.;</li>
+<li>Solution: Always validate user input before using it. Use input validation techniques such as input sanitization, input validation rules, and parameterized queries to prevent security vulnerabilities.;</li>
+<li>Example Code:<code>if not isinstance(in_planes, int):
+    raise ValueError('in_planes must be an integer')
+if not isinstance(planes, int):
+    raise ValueError('planes must be an integer')
+if not isinstance(stride, int):
+    raise ValueError('stride must be an integer').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>Potenziale vulnerabilità di importazione non sicura<ul>
+<li>Line: 3;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'importazione di moduli non sicuri può consentire l'esecuzione di codice malevolo.;</li>
+<li>Solution: Utilizzare solo importazioni sicure da moduli affidabili.;</li>
+<li>Example Code:<code>from pytorchcv.models.efficientnet import EfficientNet.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+loss.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 3;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice importa le librerie torch, torch.nn, torch.nn.functional, collections.defaultdict, nbdt.tree.Node, nbdt.tree.Tree, math.log, nbdt.utils.Colors, nbdt.utils.dataset_to_default_path_graph, nbdt.utils.dataset_to_default_path_wnids, nbdt.utils.hierarchy_to_path_graph, nbdt.utils.coerce_tensor, nbdt.utils.uncoerce_tensor, pathlib.Path, os, ma non le utilizza nel codice.;</li>
+<li>Solution: Rimuovere le librerie non utilizzate dall'import.;</li>
+<li>Example Code:<code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from collections import defaultdict
+from nbdt.tree import Node, Tree
+from math import log
+from nbdt.utils import (
+    Colors,
+    dataset_to_default_path_graph,
+    dataset_to_default_path_wnids,
+    hierarchy_to_path_graph,
+    coerce_tensor,
+    uncoerce_tensor,
+)
+from pathlib import Path
+import os
+.</code></li>
+</ul>
+</li>
+<li>Variabili non utilizzate<ul>
+<li>Line: 12;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice dichiara le variabili 'names' e 'checkpoint_dir', ma non le utilizza nel codice.;</li>
+<li>Solution: Rimuovere le variabili non utilizzate.;</li>
+<li>Example Code:<code>names = []
+checkpoint_dir = ''
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tree.py
+<ol>
+<li>Hard-coded Credentials<ul>
+<li>Line: 48;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains hard-coded credentials, which can be easily extracted by an attacker.;</li>
+<li>Solution: Remove the hard-coded credentials and use a secure method for storing and retrieving credentials, such as environment variables or a secure configuration file.;</li>
+<li>Example Code:<code>username = os.environ.get('USERNAME')
+password = os.environ.get('PASSWORD').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+graph.py
+<ol>
+<li>XSS (Cross Site Scripting)<ul>
+<li>Line: 29;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice contiene potenziali vulnerabilità XSS.;</li>
+<li>Solution: Sanitizzare l'input dell'utente prima di utilizzarlo nel codice HTML.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert('XSS')</script>'
+sanitized_input = html.escape(user_input)
+
+# Utilizzare sanitized_input nel codice HTML.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+model.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 36;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses insecure URLs to download model weights. This can lead to potential security risks as the downloaded files may be tampered with or replaced with malicious files.;</li>
+<li>Solution: Use secure URLs (HTTPS) to download model weights from trusted sources.;</li>
+<li>Example Code:<code>model_urls = {
+    (
+        "ResNet18",
+        "CIFAR10",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR10-ResNet18-induced-ResNet18-SoftTreeSupLoss.pth",
+    (
+        "wrn28_10_cifar10",
+        "CIFAR10",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR10-wrn28_10_cifar10-induced-wrn28_10_cifar10-SoftTreeSupLoss.pth",
+    (
+        "wrn28_10_cifar10",
+        "CIFAR10",
+        "wordnet",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR10-wrn28_10_cifar10-wordnet-SoftTreeSupLoss.pth",
+    (
+        "ResNet18",
+        "CIFAR100",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR100-ResNet18-induced-ResNet18-SoftTreeSupLoss.pth",
+    (
+        "wrn28_10_cifar100",
+        "CIFAR100",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR100-wrn28_10_cifar100-induced-wrn28_10_cifar100-SoftTreeSupLoss.pth",
+    (
+        "ResNet18",
+        "TinyImagenet200",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-TinyImagenet200-ResNet18-induced-ResNet18-SoftTreeSupLoss-tsw10.0.pth",
+    (
+        "wrn28_10",
+        "TinyImagenet200",
+    ): "https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-TinyImagenet200-wrn28_10-induced-wrn28_10-SoftTreeSupLoss-tsw10.0.pth",
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 4;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice importa le librerie 'math' e 'numpy' ma non le utilizza in nessuna parte del codice.;</li>
+<li>Solution: Rimuovere gli import delle librerie 'math' e 'numpy' se non vengono utilizzate.;</li>
+<li>Example Code:<code>import os
+import sys
+import time
+
+from urllib.request import urlopen, Request
+from PIL import Image
+import torch.nn as nn
+import torch.nn.init as init
+from pathlib import Path
+import io..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+analysis.py
+<ol>
+<li>Vulnerabilità di Path Traversal<ul>
+<li>Line: 155;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la variabile 'path' direttamente all'interno di una stringa di formattazione per creare il percorso di salvataggio delle immagini. Questo può consentire a un attaccante di modificare il percorso di salvataggio e sovrascrivere file arbitrari sul sistema.;</li>
+<li>Solution: Utilizzare sempre metodi sicuri per creare percorsi di file, come ad esempio l'utilizzo di librerie specifiche per la manipolazione dei percorsi di file.;</li>
+<li>Example Code:<code>path = os.path.join(directory, f'image-{suffix}-{i}-{score:.2e}.jpg').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+hierarchy.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 35;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza dati non validati in una pagina web senza corretta sanitizzazione, permettendo l'inserimento di codice malevolo (solitamente JavaScript) che viene eseguito dal browser dell'utente.;</li>
+<li>Solution: Sanitizzare i dati in ingresso prima di utilizzarli in una pagina web. Utilizzare funzioni di escape o filtri per rimuovere caratteri speciali e codice malevolo.;</li>
+<li>Example Code:<code>import html
+
+name = html.escape(name)
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_train.py
+<ol>
+<li>Unused import<ul>
+<li>Line: 3;</li>
+<li>Severity: potential;</li>
+<li>Description: The code imports torch.nn module but does not use it.;</li>
+<li>Solution: Remove the unused import statement.;</li>
+<li>Example Code:<code>import torch.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+main.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 45;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the argparse module to parse command line arguments. However, it does not properly sanitize or validate the input, which can lead to command injection vulnerabilities.;</li>
+<li>Solution: To prevent command injection vulnerabilities, you should always sanitize and validate user input. Use whitelisting or input validation techniques to ensure that only expected values are accepted.;</li>
+<li>Example Code:<code>parser.add_argument('--dataset', default='CIFAR10', choices=datasets).</code></li>
+</ul>
+</li>
+<li>Insecure Direct Object Reference<ul>
+<li>Line: 75;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses the 'dataset' and 'dataset_test' arguments to dynamically import and instantiate classes. This can lead to insecure direct object reference vulnerabilities if an attacker can manipulate the values of these arguments to access unauthorized resources or perform unauthorized actions.;</li>
+<li>Solution: To prevent insecure direct object reference vulnerabilities, you should validate and sanitize user input before using it to dynamically import or instantiate classes. Use whitelisting or input validation techniques to ensure that only expected values are accepted.;</li>
+<li>Example Code:<code>if args.dataset in datasets:
+    dataset_train = getattr(data, args.dataset)
+else:
+    raise ValueError('Invalid dataset value').</code></li>
+</ul>
+</li>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 83;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses the 'name' argument to generate a checkpoint filename. If the 'name' argument is not properly sanitized, it can be used to inject malicious scripts or HTML code, leading to cross-site scripting (XSS) vulnerabilities.;</li>
+<li>Solution: To prevent cross-site scripting (XSS) vulnerabilities, you should properly sanitize and validate user input before using it in any context that can execute or render HTML code. Use input validation techniques and HTML escaping to ensure that user input is treated as plain text.;</li>
+<li>Example Code:<code>checkpoint_fname = generate_checkpoint_fname(**vars(args))
+checkpoint_path = './checkpoint/{}.pth'.format(checkpoint_fname).</code></li>
+</ul>
+</li>
+<li>Insecure File Upload<ul>
+<li>Line: 101;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses the 'checkpoint_path' variable to specify the path where checkpoints will be saved. If the 'checkpoint_path' variable is not properly sanitized, it can be manipulated by an attacker to upload malicious files to arbitrary locations on the server, leading to insecure file upload vulnerabilities.;</li>
+<li>Solution: To prevent insecure file upload vulnerabilities, you should validate and sanitize user input before using it to specify file paths. Use whitelisting or input validation techniques to ensure that only expected values are accepted. Additionally, consider using a secure file upload library or implementing strict file type and size restrictions.;</li>
+<li>Example Code:<code>checkpoint_path = './checkpoint/{}.pth'.format(checkpoint_fname).</code></li>
+</ul>
+</li>
+<li>Insecure Deserialization<ul>
+<li>Line: 111;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses the 'torch.load' function to load a checkpoint file. If an attacker can manipulate the contents of the checkpoint file, it can lead to insecure deserialization vulnerabilities, allowing the execution of arbitrary code.;</li>
+<li>Solution: To prevent insecure deserialization vulnerabilities, you should validate and sanitize any data that is deserialized. Avoid deserializing untrusted data or use secure deserialization libraries that implement strict validation and sanitization mechanisms.;</li>
+<li>Example Code:<code>checkpoint = torch.load(resume_path, map_location=torch.device(device))
+
+if 'net' in checkpoint:
+    load_state_dict(net, checkpoint['net'])
+    best_acc = checkpoint['acc']
+    start_epoch = checkpoint['epoch']
+    Colors.cyan(f'==> Checkpoint found for epoch {start_epoch} with accuracy {best_acc} at {resume_path}')
+else:
+    load_state_dict(net, checkpoint)
+    Colors.cyan(f'==> Checkpoint found at {resume_path}').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+api.py
+<ol>
+<li>File Upload Vulnerability<ul>
+<li>Line: 74;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not properly validate and sanitize user input when handling file uploads, which can lead to various vulnerabilities such as directory traversal, file overwriting, and remote code execution.;</li>
+<li>Solution: Implement proper validation and sanitization techniques when handling file uploads. This includes checking file extensions, using secure file names, and properly storing uploaded files in a secure location.;</li>
+<li>Example Code:<code>def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+# Example validation
+if file and allowed_file(file.filename):
+    # Process the uploaded file
+    pass.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>Import di moduli non controllato<ul>
+<li>Line: 15;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice importa automaticamente tutti i moduli Python nella directory 'losses' senza controllare la provenienza dei file.;</li>
+<li>Solution: Verificare la provenienza dei file che vengono importati automaticamente e assicurarsi che siano sicuri e attendibili.;</li>
+<li>Example Code:<code>import_all_modules(FILE_ROOT, 'losses', allowed_packages=['losses']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+nbdt_losses.py
+<ol>
+<li>Import di librerie non sicure<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice importa una libreria non sicura senza alcun controllo.;</li>
+<li>Solution: Verificare la sicurezza della libreria e implementare controlli di sicurezza appropriati.;</li>
+<li>Example Code:<code>Verificare se la libreria importata è affidabile e utilizzare controlli di sicurezza come la verifica della firma digitale o la scansione antivirus..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+classy_train.py
+<ol>
+<li>Potenziale vulnerabilità di importazione di moduli non sicuri<ul>
+<li>Line: 124;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice importa tutti i moduli nella stessa directory del file di script senza effettuare alcun controllo sulla sicurezza dei moduli importati. Questo potrebbe consentire l'esecuzione di codice malevolo se un modulo dannoso viene inserito nella stessa directory.;</li>
+<li>Solution: Verificare e controllare la sicurezza dei moduli importati prima di importarli nel codice.;</li>
+<li>Example Code:<code>Prima di importare i moduli, eseguire una verifica sulla sicurezza dei moduli o specificare esplicitamente i moduli che si desidera importare invece di importare tutti i moduli nella stessa directory..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

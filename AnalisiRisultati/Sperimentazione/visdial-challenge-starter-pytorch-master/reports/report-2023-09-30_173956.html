@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T17:39:56.250566400</h2><p>Total of  vulnerabilities founded 16</p>
+<ul>
+<li>
+extract_features_detectron.py
+<ol>
+<li>Insecure File Handling<ul>
+<li>Line: 82;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses user input to construct file paths without proper validation, which can lead to path traversal attacks.;</li>
+<li>Solution: Ensure that user input is properly validated and sanitized before using it to construct file paths.;</li>
+<li>Example Code:<code>image_root = os.path.abspath(args.image_root)
+if not os.path.isdir(image_root):
+    raise ValueError('Invalid image root directory')
+
+image_paths = []
+for root in image_root:
+    image_paths.extend(glob.glob(os.path.join(root, '*.jpg'))).</code></li>
+</ul>
+</li>
+<li>Unprotected Exception Handling<ul>
+<li>Line: 104;</li>
+<li>Severity: medium;</li>
+<li>Description: The code catches all exceptions without providing any error handling or logging, which can make it difficult to identify and debug issues.;</li>
+<li>Solution: Implement proper error handling and logging to ensure that exceptions are handled appropriately.;</li>
+<li>Example Code:<code>try:
+    # code that may raise exceptions
+except Exception as e:
+    # handle the exception
+    logging.error('An error occurred: %s', str(e)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 101;</li>
+<li>Severity: serious;</li>
+<li>Description: Cross-Site Scripting (XSS) allows attackers to inject malicious scripts into web pages viewed by other users.;</li>
+<li>Solution: To prevent XSS attacks, you should properly sanitize user input and encode any special characters.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert("XSS")</script>'
+sanitized_input = html.escape(user_input)
+print(sanitized_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+dataset.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 106;</li>
+<li>Severity: serious;</li>
+<li>Description: The code concatenates user input (question and answer) without sanitizing it, which can lead to SQL injection vulnerabilities.;</li>
+<li>Solution: Use parameterized queries or prepared statements to sanitize user input before concatenating it into SQL queries.;</li>
+<li>Example Code:<code>cursor.execute('SELECT * FROM users WHERE username = ?', (username,)).</code></li>
+</ul>
+</li>
+<li>Potential Cross-Site Scripting (XSS)<ul>
+<li>Line: 139;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not sanitize user input (caption, question, answer) before rendering it in the HTML template, which can lead to cross-site scripting vulnerabilities.;</li>
+<li>Solution: Use appropriate output encoding or escaping mechanisms to sanitize user input before rendering it in HTML templates.;</li>
+<li>Example Code:<code>import html
+
+html.escape(user_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+readers.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 95;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza input non validato per generare pagine web dinamiche, consentendo ad un attaccante di iniettare codice malevolo (ad esempio JavaScript) che viene eseguito nel browser dell'utente.;</li>
+<li>Solution: Validare e sanificare l'input dell'utente prima di utilizzarlo per generare pagine web dinamiche.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert("XSS")</script>'
+sanitized_input = html.escape(user_input)
+print(sanitized_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+checkpointing.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 57;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the subprocess.Popen function to execute a git command without properly sanitizing the input. This can lead to command injection vulnerabilities, where an attacker can execute arbitrary commands on the system.;</li>
+<li>Solution: To prevent command injection vulnerabilities, it is important to properly sanitize and validate any user input before using it in subprocess calls. In this case, the code should validate and sanitize the checkpoint_pthpath variable before passing it to the Popen function.;</li>
+<li>Example Code:<code>import shlex
+
+checkpoint_pthpath = shlex.quote(checkpoint_pthpath)
+
+# Rest of the code
+
+commit_sha_subprocess = Popen(
+    ['git', 'rev-parse', '--short', 'HEAD'], stdout=PIPE, stderr=PIPE
+).</code></li>
+</ul>
+</li>
+<li>Information Disclosure<ul>
+<li>Line: 45;</li>
+<li>Severity: medium;</li>
+<li>Description: The code saves the commit SHA of the current codebase in the checkpoint saving directory. This can potentially lead to information disclosure if the checkpoint directory is accessible to unauthorized users.;</li>
+<li>Solution: To prevent information disclosure, the code should ensure that the checkpoint directory is only accessible to authorized users. This can be done by setting appropriate file permissions and access controls on the directory.;</li>
+<li>Example Code:<code>import os
+
+# Set appropriate file permissions and access controls on the checkpoint directory
+os.chmod(checkpoint_dirpath, 0o700).</code></li>
+</ul>
+</li>
+<li>Insecure File Permissions<ul>
+<li>Line: 39;</li>
+<li>Severity: medium;</li>
+<li>Description: The code creates the checkpoint directory without explicitly setting the file permissions. This can lead to insecure file permissions, where the checkpoint directory is accessible to unauthorized users.;</li>
+<li>Solution: To prevent insecure file permissions, the code should explicitly set the file permissions on the checkpoint directory to ensure that it is only accessible to authorized users. This can be done using the os.chmod function.;</li>
+<li>Example Code:<code>import os
+
+# Set appropriate file permissions on the checkpoint directory
+os.chmod(checkpoint_dirpath, 0o700).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+gen.py
+<ol>
+<li>Hardcoded credentials<ul>
+<li>Line: 9;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains hardcoded credentials, which can be easily accessed by an attacker.;</li>
+<li>Solution: Remove the hardcoded credentials and use a secure method to store and retrieve sensitive information, such as environment variables or a secure configuration file.;</li>
+<li>Example Code:<code>config['username'] = os.environ['USERNAME']
+config['password'] = os.environ['PASSWORD'].</code></li>
+</ul>
+</li>
+<li>Insecure random number generation<ul>
+<li>Line: 32;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses a weak random number generator, which can lead to predictable or easily guessable values.;</li>
+<li>Solution: Use a cryptographically secure random number generator, such as the random module in Python's secrets library.;</li>
+<li>Example Code:<code>import secrets
+
+random_number = secrets.randbelow(10).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+disc.py
+<ol>
+<li>Potenziale vulnerabilità di sicurezza<ul>
+<li>Line: 0;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice non sembra contenere vulnerabilità di sicurezza.;</li>
+<li>Solution: Nessuna azione richiesta.;</li>
+<li>Example Code:<code>.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+lf.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 14;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is using torch.nn.Embedding without specifying the padding_idx argument.;</li>
+<li>Solution: Specify the padding_idx argument when creating the torch.nn.Embedding layer to handle padding properly.;</li>
+<li>Example Code:<code>self.word_embed = nn.Embedding(
+    len(vocabulary),
+    config["word_embedding_size"],
+    padding_idx=vocabulary.PAD_INDEX,
+).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di Codice<ul>
+<li>Line: 6;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice non effettua alcun controllo sull'input fornito come parametro per la funzione 'Encoder'. Questo potrebbe consentire ad un attaccante di eseguire codice malevolo all'interno del programma.;</li>
+<li>Solution: Per prevenire l'iniezione di codice, è necessario implementare un controllo sull'input fornito alla funzione 'Encoder'. È consigliabile utilizzare metodi di validazione dell'input, come ad esempio la verifica dei tipi di dati o l'uso di librerie di sanitizzazione degli input.;</li>
+<li>Example Code:<code>def Encoder(model_config, *args):
+    if isinstance(model_config['encoder'], str):
+        name_enc_map = {"lf": LateFusionEncoder}
+        if model_config['encoder'] in name_enc_map:
+            return name_enc_map[model_config['encoder']](model_config, *args)
+    raise ValueError("Invalid encoder type").</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metrics.py
+<ol>
+<li>Memory Leak<ul>
+<li>Line: 23;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not call 'detach' on output tensors, which can cause memory leaks.;</li>
+<li>Solution: Call 'detach' on output tensors (like logits) to prevent memory leaks.;</li>
+<li>Example Code:<code>predicted_scores = predicted_scores.detach().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>XSS<ul>
+<li>Line: 119;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza input non validati direttamente in un'operazione di caricamento di file.;</li>
+<li>Solution: Validare l'input dell'utente prima di utilizzarlo in operazioni critiche come il caricamento di file.;</li>
+<li>Example Code:<code>import os
+
+file_path = input('Inserisci il percorso del file: ')
+
+if os.path.exists(file_path):
+    # Esegui l'operazione di caricamento del file
+    pass
+else:
+    print('Il percorso del file non è valido').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

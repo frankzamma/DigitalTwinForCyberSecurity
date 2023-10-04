@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T17:43:15.091180700</h2><p>Total of  vulnerabilities founded 30</p>
+<ul>
+<li>
+symbols.py
+<ol>
+<li>Potential vulnerability in variable naming<ul>
+<li>Line: 6;</li>
+<li>Severity: potential;</li>
+<li>Description: The variable names '_vowels', '_non_pulmonic_consonants', '_pulmonic_consonants', '_suprasegmentals', '_other_symbols', '_diacrilics', '_phonemes', '_punctuations', and '_alphabet' may not follow secure coding practices as they are using special characters and diacritics. This could potentially lead to confusion and errors in the code.;</li>
+<li>Solution: It is recommended to use only alphanumeric characters and underscores in variable names to ensure clarity and avoid any potential issues. Consider renaming the variables to follow this convention.;</li>
+<li>Example Code:<code>_vowels = 'iyuIYeEo'
+_non_pulmonic_consonants = 'ptdcgq'
+_pulmonic_consonants = 'pbtdc'
+_suprasegmentals = 'ˈˌːˑ'
+_other_symbols = 'w'
+_diacrilics = 'r'
+_phonemes = sorted(list(_vowels + _non_pulmonic_consonants + _pulmonic_consonants + _suprasegmentals + _other_symbols + _diacrilics))
+_punctuations = '!,-.:;? '
+_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.</code></li>
+</ul>
+</li>
+<li>Potential vulnerability in variable naming<ul>
+<li>Line: 8;</li>
+<li>Severity: potential;</li>
+<li>Description: The variable name 'all_phonemes' may not follow secure coding practices as it combines multiple special characters and diacritics. This could potentially lead to confusion and errors in the code.;</li>
+<li>Solution: It is recommended to use only alphanumeric characters and underscores in variable names to ensure clarity and avoid any potential issues. Consider renaming the variable to follow this convention.;</li>
+<li>Example Code:<code>all_phonemes = sorted(list(phonemes) + list(punctuations)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tokenizer.py
+<ol>
+<li>Potenziale vulnerabilità di Regex Injection<ul>
+<li>Line: 19;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la libreria re per gestire le espressioni regolari senza effettuare controlli di sicurezza. Ciò può portare a vulnerabilità di Regex Injection, in cui un attaccante può inserire un pattern dannoso che viene eseguito in modo non sicuro.;</li>
+<li>Solution: Utilizzare metodi di validazione e sanitizzazione per i pattern delle espressioni regolari, come ad esempio l'escape dei caratteri speciali.;</li>
+<li>Example Code:<code>pattern = re.escape(pattern).</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di Command Injection<ul>
+<li>Line: 63;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la libreria phonemizer per eseguire comandi di sistema senza effettuare controlli di sicurezza. Ciò può portare a vulnerabilità di Command Injection, in cui un attaccante può inserire comandi dannosi che vengono eseguiti in modo non sicuro.;</li>
+<li>Solution: Utilizzare metodi di validazione e sanitizzazione per i dati di input, come ad esempio l'escape dei caratteri speciali.;</li>
+<li>Example Code:<code>text = re.escape(text).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+audio.py
+<ol>
+<li>Vulnerabilità di Iniezione di Codice<ul>
+<li>Line: 148;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la funzione 'eval' che permette l'esecuzione di codice arbitrario. Questo può portare ad una vulnerabilità di iniezione di codice.;</li>
+<li>Solution: Evitare di utilizzare la funzione 'eval' e invece utilizzare metodi più sicuri per eseguire il codice.;</li>
+<li>Example Code:<code>Sostituire la riga 'eval(code)' con 'exec(code)' per eseguire il codice senza restituire un valore di ritorno..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+datasets.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 22;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses user input to construct a file path without proper validation, allowing an attacker to traverse the file system and access unauthorized files.;</li>
+<li>Solution: Validate user input to ensure it does not contain any path traversal characters (such as '../' or '..\') and restrict access to only authorized directories.;</li>
+<li>Example Code:<code>path = Path(path).resolve()
+if not path.startswith('/authorized_directory/'):
+    raise ValueError('Unauthorized access')
+return list(path.rglob(f'*{extension}')).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metadata_readers.py
+<ol>
+<li>Sensitive Information Exposure<ul>
+<li>Line: 22;</li>
+<li>Severity: medium;</li>
+<li>Description: The code reads a metadata file that may contain sensitive information, such as filenames and text.;</li>
+<li>Solution: Ensure that the metadata file does not contain any sensitive information. If sensitive information is required, handle it securely by encrypting or obfuscating the data.;</li>
+<li>Example Code:<code>metadata_path = '/Volumes/data/datasets/LJSpeech-1.1/metadata.csv'
+with open(metadata_path, 'r', encoding='utf-8') as f:
+    # Handle the metadata file securely
+    pass.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+models.py
+<ol>
+<li>Hardcoded Secret<ul>
+<li>Line: 37;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains a hardcoded secret that should not be exposed.;</li>
+<li>Solution: Remove the hardcoded secret and use a secure method to store and retrieve the secret, such as environment variables or a secure key management system.;</li>
+<li>Example Code:<code>SECRET_KEY = os.getenv('SECRET_KEY').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+transformer_utils.py
+<ol>
+<li>Potenziale vulnerabilità di codice<ul>
+<li>Line: 24;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice non effettua alcun controllo sull'input dell'utente, il che potrebbe portare a vulnerabilità come attacchi di tipo injection.;</li>
+<li>Solution: Si consiglia di effettuare una validazione dell'input dell'utente e utilizzare metodi di sanitizzazione per prevenire attacchi di tipo injection.;</li>
+<li>Example Code:<code>def create_encoder_padding_mask(seq):
+    seq = tf.cast(tf.math.equal(seq, 0), tf.float32)
+    seq = sanitize_input(seq)
+    return seq[:, tf.newaxis, tf.newaxis, :]  # (batch_size, 1, y, x).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+losses.py
+<ol>
+<li>Utilizzo di funzioni di perdita non sicure<ul>
+<li>Line: 14;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza funzioni di perdita non sicure come SparseCategoricalCrossentropy e MeanSquaredError che potrebbero essere vulnerabili ad attacchi di avvelenamento dei dati.;</li>
+<li>Solution: Utilizzare funzioni di perdita sicure come SparseCategoricalCrossentropy(from_logits=True, reduction=tf.keras.losses.Reduction.NONE) e MeanSquaredError(reduction=tf.keras.losses.Reduction.NONE) che consentono di specificare la riduzione come 'NONE' per evitare attacchi di avvelenamento dei dati.;</li>
+<li>Example Code:<code>crossentropy = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+mse = tf.keras.losses.MeanSquaredError(reduction=tf.keras.losses.Reduction.NONE).</code></li>
+</ul>
+</li>
+<li>Mancanza di maschera per i dati di input<ul>
+<li>Line: 26;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice non utilizza una maschera per i dati di input, il che potrebbe portare a risultati errati o vulnerabilità ad attacchi di avvelenamento dei dati.;</li>
+<li>Solution: Utilizzare una maschera per i dati di input per assicurarsi che solo i dati validi vengano considerati durante il calcolo della perdita.;</li>
+<li>Example Code:<code>mask = tf.math.logical_not(tf.math.equal(targets, 0))
+mask = tf.cast(mask, dtype=tf.int32)
+loss = crossentropy(targets, logits, sample_weight=mask).</code></li>
+</ul>
+</li>
+<li>Mancanza di maschera per i dati di input<ul>
+<li>Line: 34;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice non utilizza una maschera per i dati di input, il che potrebbe portare a risultati errati o vulnerabilità ad attacchi di avvelenamento dei dati.;</li>
+<li>Solution: Utilizzare una maschera per i dati di input per assicurarsi che solo i dati validi vengano considerati durante il calcolo della perdita.;</li>
+<li>Example Code:<code>mask = tf.math.logical_not(tf.math.equal(targets, 0))
+mask = tf.cast(mask, dtype=tf.int32)
+loss = mse(targets, logits, sample_weight=mask).</code></li>
+</ul>
+</li>
+<li>Mancanza di maschera per i dati di input<ul>
+<li>Line: 45;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice non utilizza una maschera per i dati di input, il che potrebbe portare a risultati errati o vulnerabilità ad attacchi di avvelenamento dei dati.;</li>
+<li>Solution: Utilizzare una maschera per i dati di input per assicurarsi che solo i dati validi vengano considerati durante il calcolo della perdita.;</li>
+<li>Example Code:<code>mask = tf.math.logical_not(tf.math.equal(targets, mask_value))
+mask = tf.cast(mask, dtype=tf.int32)
+loss = mae(targets, logits, sample_weight=mask).</code></li>
+</ul>
+</li>
+<li>Mancanza di maschera per i dati di input<ul>
+<li>Line: 55;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice non utilizza una maschera per i dati di input, il che potrebbe portare a risultati errati o vulnerabilità ad attacchi di avvelenamento dei dati.;</li>
+<li>Solution: Utilizzare una maschera per i dati di input per assicurarsi che solo i dati validi vengano considerati durante il calcolo della perdita.;</li>
+<li>Example Code:<code>mask = tf.math.logical_not(tf.math.equal(logits, mask_value))
+mask = tf.cast(mask, dtype=tf.int32)
+loss_ *= mask.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+display.py
+<ol>
+<li>Buffer Overflow<ul>
+<li>Line: 7;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice potrebbe essere vulnerabile a un attacco di buffer overflow.;</li>
+<li>Solution: Utilizzare un meccanismo di controllo dei limiti per evitare l'overflow del buffer.;</li>
+<li>Example Code:<code>buf = io.BytesIO()
+figure.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.0)
+buf.seek(0)
+plt.close('all')
+return buf.</code></li>
+</ul>
+</li>
+<li>Eccezione non gestita<ul>
+<li>Line: 24;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice potrebbe generare un'eccezione non gestita.;</li>
+<li>Solution: Inserire un blocco try-except per gestire le eccezioni e fornire un'azione appropriata in caso di errore.;</li>
+<li>Example Code:<code>try:
+    f = plt.figure(figsize=figsize)
+    plt.imshow(image)
+    plt.title(title)
+    if with_bar:
+        plt.colorbar()
+    buf = buffer_image(f)
+    return buf
+except Exception as e:
+    print('Errore durante la creazione del plot:', str(e)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metrics.py
+<ol>
+<li>Potenziale vulnerabilità di overflow dell'array<ul>
+<li>Line: 23;</li>
+<li>Severity: medio;</li>
+<li>Description: Potenziale vulnerabilità di overflow dell'array a causa dell'utilizzo di indici non controllati;</li>
+<li>Solution: Controllare che gli indici utilizzati per accedere all'array siano all'interno dei limiti consentiti;</li>
+<li>Example Code:<code>max_loc_diff = tf.abs(max_loc[:, :, 1:] - max_loc[:, :, :-1])
+max_loc_diff = tf.abs(tf.clip_by_value(max_loc_diff, 0, mel_max - 1))
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+vec_ops.py
+<ol>
+<li>Divisione per zero<ul>
+<li>Line: 8;</li>
+<li>Severity: serio;</li>
+<li>Description: La funzione potrebbe generare una divisione per zero se il denominatore è uguale a zero.;</li>
+<li>Solution: Verificare che il denominatore non sia uguale a zero prima di eseguire la divisione.;</li>
+<li>Example Code:<code>if tf.math.reduce_max(tensor) != tf.math.reduce_min(tensor):
+    return tf.math.divide(tf.math.subtract(tensor, tf.math.reduce_min(tensor)), tf.math.subtract(tf.math.reduce_max(tensor), tf.math.reduce_min(tensor)))
+else:
+    return tensor.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+alignments.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 60;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza dati non filtrati all'interno di una stringa di output, consentendo l'esecuzione di script dannosi nel browser dell'utente.;</li>
+<li>Solution: Filtrare i dati in ingresso per rimuovere o neutralizzare i caratteri speciali che possono essere utilizzati per iniettare script dannosi.;</li>
+<li>Example Code:<code>import re
+
+# Rimuovi tutti i caratteri speciali tranne i numeri e le lettere
+filtered_data = re.sub(r'[^a-zA-Z0-9]', '', input_data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+logging_utils.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di codice<ul>
+<li>Line: 81;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la funzione 'eval' senza una corretta validazione o sanitizzazione dell'input. Ciò potrebbe consentire ad un attaccante di eseguire codice arbitrario.;</li>
+<li>Solution: Evitare l'utilizzo della funzione 'eval' o, se necessario, validare e sanitizzare correttamente l'input.;</li>
+<li>Example Code:<code>replace 'eval' with 'ast.literal_eval'.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+scripts_utils.py
+<ol>
+<li>Potenziale vulnerabilità di allocazione dinamica della memoria<ul>
+<li>Line: 8;</li>
+<li>Severity: potenziale;</li>
+<li>Description: La funzione dynamic_memory_allocation() potrebbe causare una potenziale vulnerabilità di allocazione dinamica della memoria se non gestita correttamente.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario gestire correttamente l'allocazione dinamica della memoria. Assicurarsi di impostare correttamente la crescita della memoria per ogni GPU utilizzata e gestire eventuali eccezioni che potrebbero verificarsi durante l'allocazione.;</li>
+<li>Example Code:<code>try:
+    for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), 'Physical GPUs,', len(logical_gpus), 'Logical GPUs')
+except Exception as e:
+    print('Error:', str(e)).</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di parsing degli argomenti<ul>
+<li>Line: 19;</li>
+<li>Severity: potenziale;</li>
+<li>Description: La funzione basic_train_parser() potrebbe causare una potenziale vulnerabilità di parsing degli argomenti se non gestita correttamente.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario gestire correttamente il parsing degli argomenti. Assicurarsi di impostare correttamente i tipi di dati degli argomenti e gestire eventuali eccezioni che potrebbero verificarsi durante il parsing.;</li>
+<li>Example Code:<code>parser = argparse.ArgumentParser()
+parser.add_argument('--config', dest='config', type=str)
+parser.add_argument('--reset_dir', dest='clear_dir', action='store_true',
+                    help="deletes everything under this config's folder.")
+parser.add_argument('--reset_logs', dest='clear_logs', action='store_true',
+                    help="deletes logs under this config's folder.")
+parser.add_argument('--reset_weights', dest='clear_weights', action='store_true',
+                    help="deletes weights under this config's folder.")
+return parser.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+spectrogram_ops.py
+<ol>
+<li>Potenziale vulnerabilità di sicurezza<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice potrebbe essere vulnerabile a attacchi di sicurezza.;</li>
+<li>Solution: Per proteggere il codice da attacchi di sicurezza, è consigliabile implementare misure di sicurezza come la validazione dei dati di input, l'uso di librerie di sicurezza affidabili e l'aggiornamento regolare del software.;</li>
+<li>Example Code:<code>Esempio di codice per proteggere il codice da attacchi di sicurezza:
+
+import tensorflow as tf
+
+
+def mel_padding_mask(mel_batch, padding_value=0):
+    if isinstance(mel_batch, tf.Tensor):
+        mel_batch = mel_batch.numpy()
+    return 1.0 - tf.cast(mel_batch == padding_value, tf.float32)
+
+
+def mel_lengths(mel_batch, padding_value=0):
+    if isinstance(mel_batch, tf.Tensor):
+        mel_batch = mel_batch.numpy()
+    mask = mel_padding_mask(mel_batch, padding_value=padding_value)
+    mel_channels = tf.shape(mel_batch)[-1]
+    sum_tot = tf.cast(mel_channels, tf.float32) * padding_value
+    idxs = tf.cast(tf.reduce_sum(mask, axis=-1) != sum_tot, tf.int32)
+    return tf.reduce_sum(idxs, axis=-1)
+
+
+def phoneme_lengths(phonemes, phoneme_padding=0):
+    if isinstance(phonemes, tf.Tensor):
+        phonemes = phonemes.numpy()
+    return tf.reduce_sum(tf.cast(phonemes != phoneme_padding, tf.int32), axis=-1).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+training_config_manager.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 70;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses subprocess.check_output without validating user input, which can lead to command injection vulnerability.;</li>
+<li>Solution: Validate and sanitize user input before using it in subprocess.check_output.;</li>
+<li>Example Code:<code>import shlex
+
+command = shlex.quote(user_input)
+subprocess.check_output(['git', 'describe', '--always', command]).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train_tts.py
+<ol>
+<li>Sensitive Data Exposure<ul>
+<li>Line: 67;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice potrebbe esporre dati sensibili come le configurazioni di addestramento o i percorsi dei file.;</li>
+<li>Solution: Evitare di esporre dati sensibili nel codice sorgente. Utilizzare invece variabili di ambiente o file di configurazione esterni.;</li>
+<li>Example Code:<code>config = TrainingConfigManager(config_path=os.environ['CONFIG_PATH']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+predict_tts.py
+<ol>
+<li>Potenziale vulnerabilità di injection di comandi<ul>
+<li>Line: 26;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la funzione 'open' per aprire un file senza effettuare alcun controllo o sanificazione dei dati di input. Ciò può consentire a un attaccante di eseguire comandi arbitrari sul sistema.;</li>
+<li>Solution: Utilizzare la funzione 'open' in modo sicuro, assicurandosi di sanificare o validare correttamente i dati di input. Ad esempio, è possibile utilizzare la funzione 'os.path' per verificare che il percorso del file sia valido e non contenga caratteri pericolosi.;</li>
+<li>Example Code:<code>with open(os.path.abspath(args.file), 'r') as file:.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train_aligner.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 61;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is vulnerable to SQL injection attacks because it directly concatenates user input into SQL queries.;</li>
+<li>Solution: To prevent SQL injection attacks, you should use parameterized queries or prepared statements. These methods separate the SQL code from the user input, preventing malicious input from altering the structure of the query.;</li>
+<li>Example Code:<code>query = 'SELECT * FROM users WHERE username = ? AND password = ?'
+params = (username, password)
+cursor.execute(query, params).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+extract_durations.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 10;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria argparse per accettare input da riga di comando. L'input non viene validato o sanificato prima di essere utilizzato nella creazione di un oggetto argparse.ArgumentParser. Questo potrebbe consentire a un attaccante di eseguire comandi arbitrari sul sistema.;</li>
+<li>Solution: Validare e sanificare l'input dell'utente prima di utilizzarlo nella creazione di un oggetto argparse.ArgumentParser. Ad esempio, è possibile utilizzare regole di validazione o filtri per accettare solo input di determinati tipi o formati.;</li>
+<li>Example Code:<code>parser.add_argument('--config', dest='config', type=str, required=True)
+parser.add_argument('--best', dest='best', action='store_true', required=True)
+parser.add_argument('--autoregressive_weights', type=str, default=None)
+parser.add_argument('--skip_char_pitch', dest='skip_char_pitch', action='store_true')
+parser.add_argument('--skip_durations', dest='skip_durations', action='store_true').</code></li>
+</ul>
+</li>
+<li>Path Traversal<ul>
+<li>Line: 92;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza l'input dell'utente per creare percorsi di file senza validazione o sanificazione. Ciò potrebbe consentire a un attaccante di accedere a file arbitrari sul sistema, inclusi file sensibili o critici.;</li>
+<li>Solution: Validare e sanificare l'input dell'utente prima di utilizzarlo per creare percorsi di file. Ad esempio, è possibile utilizzare regole di validazione per accettare solo input che corrispondono a percorsi di file validi o utilizzare funzioni di libreria specifiche per manipolare i percorsi di file in modo sicuro.;</li>
+<li>Example Code:<code>np.load((config_manager.pitch_dir / sample_name).with_suffix('.npy').as_posix()).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+create_training_data.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 9;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the argparse module to parse command-line arguments. However, it does not properly validate or sanitize the input, which can lead to command injection vulnerabilities.;</li>
+<li>Solution: Always validate and sanitize user input, especially when it is used to execute commands or interact with the system. Use input validation techniques such as whitelisting or regular expressions to ensure that only expected values are accepted.;</li>
+<li>Example Code:<code>import shlex
+
+args = parser.parse_args()
+command = shlex.quote(args.command)
+
+# Use the sanitized command
+subprocess.call(command).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

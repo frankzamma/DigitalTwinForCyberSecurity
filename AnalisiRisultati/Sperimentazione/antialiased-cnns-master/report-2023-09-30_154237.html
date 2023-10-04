@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T15:42:37.387631</h2><p>Total of  vulnerabilities founded 16</p>
+<ul>
+<li>
+make_plots.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non effettua alcun controllo o sanitizzazione dei dati inseriti dall'utente, aprendo la possibilità di eseguire codice JavaScript malevolo all'interno del sito.;</li>
+<li>Solution: Effettuare una corretta validazione e sanitizzazione dei dati inseriti dall'utente, utilizzando ad esempio librerie come OWASP Java Encoder o ESAPI.;</li>
+<li>Example Code:<code>import org.owasp.encoder.Encode;
+
+String userInput = request.getParameter("input");
+String encodedInput = Encode.forHtml(userInput);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+make_plots2.py
+<ol>
+<li>Potenziale vulnerabilità di accesso non autorizzato<ul>
+<li>Line: 10;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice non contiene controlli di autenticazione o autorizzazione per l'accesso alle risorse.;</li>
+<li>Solution: Aggiungere controlli di autenticazione e autorizzazione per l'accesso alle risorse.;</li>
+<li>Example Code:<code>if not logged_in:
+    return 'Accesso non autorizzato'
+
+if not authorized:
+    return 'Autorizzazione negata'.</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di Iniezione di codice<ul>
+<li>Line: 64;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza input non validato per costruire comandi o query, aprendo la possibilità di iniezione di codice malevolo.;</li>
+<li>Solution: Validare e sanificare tutti gli input utente prima di utilizzarli per costruire comandi o query.;</li>
+<li>Example Code:<code>user_input = sanitize(user_input)
+query = 'SELECT * FROM users WHERE username = ' + user_input.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+main.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 179;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non fa alcun controllo sull'input utente, consentendo l'inserimento di script dannosi che vengono eseguiti nel browser dell'utente.;</li>
+<li>Solution: Sanitizzare l'input utente in modo che i caratteri speciali vengano correttamente gestiti e non interpretati come codice eseguibile.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert('XSS')</script>'
+sanitized_input = html.escape(user_input)
+print(sanitized_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+setup.py
+<ol>
+<li>Missing input validation<ul>
+<li>Line: 16;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not validate user input, which can lead to security vulnerabilities such as SQL injection or remote code execution.;</li>
+<li>Solution: Always validate user input to ensure it meets the expected format and does not contain any malicious code. Use input validation techniques such as input sanitization, parameterized queries, or prepared statements.;</li>
+<li>Example Code:<code>import re
+
+name = input('Enter your name: ')
+
+if re.match('^[A-Za-z\s]*$', name):
+    # continue with the rest of the code
+else:
+    print('Invalid name format').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+vgg.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 42;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses insecure URLs to download model weights. This can potentially lead to security vulnerabilities.;</li>
+<li>Solution: Use secure HTTPS URLs to download model weights.;</li>
+<li>Example Code:<code>model_urls = {
+    'vgg16_bn_lpf2': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_bn_lpf2-2c2052a8.pth',
+    'vgg16_bn_lpf3': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_bn_lpf3-1782878a.pth',
+    'vgg16_bn_lpf4': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_bn_lpf4-a1c3559b.pth',
+    'vgg16_bn_lpf5': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_bn_lpf5-c500b52f.pth',
+    'vgg16_lpf2': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_lpf2-60268e0c.pth',
+    'vgg16_lpf3': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_lpf3-e9b0ce42.pth',
+    'vgg16_lpf4': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_lpf4-de9267ac.pth',
+    'vgg16_lpf5': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_lpf5-1391f70c.pth',
+    'vgg11_bn_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg11_bn_lpf4_finetune-5d60b5e4.pth',
+    'vgg11_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg11_lpf4_finetune-35eab449.pth',
+    'vgg13_bn_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg13_bn_lpf4_finetune-45e2a72f.pth',
+    'vgg13_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg13_lpf4_finetune-d8ff02c4.pth',
+    'vgg16_bn_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_bn_lpf4_finetune-1dd798d1.pth',
+    'vgg16_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg16_lpf4_finetune-79c9dff7.pth',
+    'vgg19_bn_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg19_bn_lpf4_finetune-d0114293.pth',
+    'vgg19_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/vgg19_lpf4_finetune-7ab2cf45.pth'
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+util.py
+<ol>
+<li>Controlled Access to Sensitive Data<ul>
+<li>Line: 10;</li>
+<li>Severity: medium;</li>
+<li>Description: This code does not check if the user has the necessary permissions to access the sensitive data.;</li>
+<li>Solution: Add a check to verify if the user has the necessary permissions before accessing the sensitive data.;</li>
+<li>Example Code:<code>if user_has_permissions:
+    # Access the sensitive data
+else:
+    # Display an error message or deny access.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+resnet.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 61;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is using insecure URLs to download pretrained models. This can lead to security vulnerabilities as the data can be intercepted or tampered with during the download process.;</li>
+<li>Solution: Use secure HTTPS URLs to download the pretrained models.;</li>
+<li>Example Code:<code>Replace 'http://' with 'https://' in the model_urls dictionary..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+alexnet.py
+<ol>
+<li>Insecure use of model_zoo.load_url<ul>
+<li>Line: 110;</li>
+<li>Severity: medium;</li>
+<li>Description: The model_zoo.load_url function is used to load pre-trained models from a given URL. However, this function does not perform any security checks on the URL, which could potentially lead to the execution of malicious code if an attacker is able to control the URL. It is recommended to perform additional checks on the URL before using it to load a model.;</li>
+<li>Solution: Before using the model_zoo.load_url function, validate the URL to ensure that it is a trusted source. This can be done by checking the domain of the URL and verifying that it is a known and trusted source for pre-trained models.;</li>
+<li>Example Code:<code>import urllib.parse
+
+url = 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf4_finetune-20598a7a.pth'
+parsed_url = urllib.parse.urlparse(url)
+
+if parsed_url.netloc == 'antialiased-cnns.s3.us-east-2.amazonaws.com':
+    model.load_state_dict(model_zoo.load_url(url, map_location='cpu', check_hash=True)['state_dict']).</code></li>
+</ul>
+</li>
+<li>Insecure use of model_zoo.load_url<ul>
+<li>Line: 111;</li>
+<li>Severity: medium;</li>
+<li>Description: The model_zoo.load_url function is used to load pre-trained models from a given URL. However, this function does not perform any security checks on the URL, which could potentially lead to the execution of malicious code if an attacker is able to control the URL. It is recommended to perform additional checks on the URL before using it to load a model.;</li>
+<li>Solution: Before using the model_zoo.load_url function, validate the URL to ensure that it is a trusted source. This can be done by checking the domain of the URL and verifying that it is a known and trusted source for pre-trained models.;</li>
+<li>Example Code:<code>import urllib.parse
+
+url = 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf4_finetune-20598a7a.pth'
+parsed_url = urllib.parse.urlparse(url)
+
+if parsed_url.netloc == 'antialiased-cnns.s3.us-east-2.amazonaws.com':
+    model.load_state_dict(model_zoo.load_url(url, map_location='cpu', check_hash=True)['state_dict']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+blurpool.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di codice<ul>
+<li>Line: 74;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione print per visualizzare un messaggio di errore, ma non effettua la sanitizzazione dei dati in ingresso. Questo potrebbe consentire a un attaccante di eseguire codice dannoso attraverso l'iniezione di codice.;</li>
+<li>Solution: Per evitare l'iniezione di codice, è necessario sanitizzare i dati in ingresso prima di utilizzarli in una funzione come print. Ciò può essere fatto utilizzando funzioni di sanitizzazione come escape o quote.;</li>
+<li>Example Code:<code>message = escape(message)
+print(message).</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di Iniezione di codice<ul>
+<li>Line: 127;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione print per visualizzare un messaggio di errore, ma non effettua la sanitizzazione dei dati in ingresso. Questo potrebbe consentire a un attaccante di eseguire codice dannoso attraverso l'iniezione di codice.;</li>
+<li>Solution: Per evitare l'iniezione di codice, è necessario sanitizzare i dati in ingresso prima di utilizzarli in una funzione come print. Ciò può essere fatto utilizzando funzioni di sanitizzazione come escape o quote.;</li>
+<li>Example Code:<code>message = escape(message)
+print(message).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+densenet.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 68;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is using insecure URLs to download model weights. This can potentially lead to man-in-the-middle attacks or the download of malicious code.;</li>
+<li>Solution: Always use secure URLs (https) when downloading files from the internet.;</li>
+<li>Example Code:<code>model_urls = {
+    'densenet121_lpf2': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/densenet121_lpf2-7da7d4cd.pth',
+    'densenet121_lpf3': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/densenet121_lpf3-0f267ad8.pth',
+    ...
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+mobilenet.py
+<ol>
+<li>Vulnerabilità di sicurezza<ul>
+<li>Line: 111;</li>
+<li>Severity: seria;</li>
+<li>Description: Il codice utilizza la funzione 'model_zoo.load_url' per caricare i pesi del modello da un URL esterno. Questo può essere una potenziale vulnerabilità di sicurezza, in quanto l'URL potrebbe essere manipolato per caricare codice dannoso o eseguire attacchi di tipo 'Man-in-the-middle'.;</li>
+<li>Solution: Evitare di caricare i pesi del modello da un URL esterno. Invece, scaricare i pesi in modo sicuro e caricarli localmente.;</li>
+<li>Example Code:<code>model.load_state_dict(torch.load('path/to/weights.pth')).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+example_usage.py
+<ol>
+<li>Vulnerabilità di sicurezza nella libreria antialiased_cnns<ul>
+<li>Line: 5;</li>
+<li>Severity: potenziale;</li>
+<li>Description: La libreria antialiased_cnns potrebbe contenere vulnerabilità di sicurezza non corrette.;</li>
+<li>Solution: Aggiornare la libreria antialiased_cnns alla versione più recente.;</li>
+<li>Example Code:<code>model = antialiased_cnns.mobilenet_v3(pretrained=True).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+example_usage2.py
+<ol>
+<li>Utilizzo di modelli preaddestrati non sicuri<ul>
+<li>Line: 6;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza modelli preaddestrati senza verificare la loro provenienza o autenticità, il che potrebbe portare all'esecuzione di codice malevolo.;</li>
+<li>Solution: Verificare la provenienza e l'autenticità dei modelli preaddestrati prima di utilizzarli. Utilizzare solo modelli provenienti da fonti affidabili.;</li>
+<li>Example Code:<code>model = antialiased_cnns.resnet18(pretrained=True, source='https://example.com/model.pth').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

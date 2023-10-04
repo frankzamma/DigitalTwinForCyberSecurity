@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-25</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-25T21:50:31.885702400</h2><p>Total of  vulnerabilities founded 16</p>
+<ul>
+<li>
+server.py
+<ol>
+<li>Injection di codice SQL<ul>
+<li>Line: 15;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità di injection di codice SQL. La query SQL viene costruita concatenando direttamente i valori degli utenti senza utilizzare parametri o escape characters, consentendo agli attaccanti di eseguire codice SQL dannoso.;</li>
+<li>Solution: Per prevenire l'injection di codice SQL, è consigliabile utilizzare parametri nelle query SQL o utilizzare escape characters per evitare l'esecuzione di codice dannoso. Ad esempio, è possibile utilizzare il metodo execute() con i parametri nella libreria sqlite3 o utilizzare metodi di escape come quote() o escape_string().;</li>
+<li>Example Code:<code>connection.execute('INSERT INTO users(id, username, firstname, lastname, email, password, session) VALUES(NULL, ?, ?, ?, ?, ?, ?)', user).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+attacks.py
+<ol>
+<li>SQL Injection<ul>
+<li>Line: 42;</li>
+<li>Severity: serio;</li>
+<li>Description: La vulnerabilità di SQL Injection si verifica quando un'applicazione web non valida o filtra correttamente i dati forniti dall'utente prima di utilizzarli in una query SQL. Ciò consente a un attaccante di eseguire query non autorizzate o alterare le query esistenti per ottenere, modificare o eliminare dati sensibili.;</li>
+<li>Solution: Per prevenire le SQL Injection, è necessario utilizzare parametri interrogativi o statement preparati per separare i dati utente dalle query SQL. Inoltre, è consigliabile utilizzare librerie di accesso al database che supportano l'escape dei caratteri speciali o l'uso di query parametriche.;</li>
+<li>Example Code:<code>cursor.execute('SELECT id, username, firstname, lastname, email, session FROM users WHERE id = ?', [id]).</code></li>
+</ul>
+</li>
+<li>XSS Reflected<ul>
+<li>Line: 56;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di XSS Reflected si verifica quando un'applicazione web non valida o filtra correttamente i dati forniti dall'utente prima di restituirli al browser. Ciò consente a un attaccante di inserire script dannosi che verranno eseguiti nel contesto del sito web.;</li>
+<li>Solution: Per prevenire gli attacchi XSS Reflected, è necessario validare e filtrare correttamente i dati forniti dall'utente prima di restituirli al browser. Ciò può essere fatto utilizzando librerie di sanitizzazione HTML o implementando una politica di sicurezza del contenuto (CSP) che limita l'esecuzione di script non autorizzati.;</li>
+<li>Example Code:<code>content = html.escape(content).</code></li>
+</ul>
+</li>
+<li>XSS Stored<ul>
+<li>Line: 74;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di XSS Stored si verifica quando un'applicazione web non valida o filtra correttamente i dati forniti dall'utente prima di salvarli nel database. Ciò consente a un attaccante di inserire script dannosi che verranno eseguiti quando i dati vengono visualizzati da altri utenti.;</li>
+<li>Solution: Per prevenire gli attacchi XSS Stored, è necessario validare e filtrare correttamente i dati forniti dall'utente prima di salvarli nel database. Inoltre, è consigliabile utilizzare librerie di sanitizzazione HTML o implementare una politica di sicurezza del contenuto (CSP) che limita l'esecuzione di script non autorizzati.;</li>
+<li>Example Code:<code>comment = html.escape(comment).</code></li>
+</ul>
+</li>
+<li>Unvalidated Redirect<ul>
+<li>Line: 95;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Unvalidated Redirect si verifica quando un'applicazione web reindirizza l'utente a una pagina specificata dai parametri dell'URL senza convalidare o filtrare correttamente l'URL di destinazione. Ciò consente a un attaccante di reindirizzare l'utente a un sito malevolo o di eseguire altre azioni indesiderate.;</li>
+<li>Solution: Per prevenire gli attacchi di Unvalidated Redirect, è necessario convalidare e filtrare correttamente l'URL di destinazione prima di reindirizzare l'utente. È possibile utilizzare librerie o funzioni di convalida degli URL per garantire che l'URL sia valido e sicuro.;</li>
+<li>Example Code:<code>path = validate_url(path).</code></li>
+</ul>
+</li>
+<li>Execution After Redirect<ul>
+<li>Line: 112;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Execution After Redirect si verifica quando un'applicazione web esegue azioni non sicure dopo un reindirizzamento senza verificare se l'utente è autorizzato a eseguirle. Ciò consente a un attaccante di eseguire azioni non autorizzate o di ottenere informazioni sensibili.;</li>
+<li>Solution: Per prevenire gli attacchi di Execution After Redirect, è necessario verificare l'autenticazione o l'autorizzazione dell'utente prima di eseguire azioni non sicure dopo un reindirizzamento. È possibile utilizzare sessioni, token di autenticazione o altre forme di autenticazione per garantire che solo gli utenti autorizzati possano eseguire tali azioni.;</li>
+<li>Example Code:<code>if not cookie:
+    content += "<script>window.location = '/login';</script>".</code></li>
+</ul>
+</li>
+<li>Command Injection<ul>
+<li>Line: 133;</li>
+<li>Severity: serio;</li>
+<li>Description: La vulnerabilità di Command Injection si verifica quando un'applicazione web esegue comandi di sistema utilizzando dati forniti dall'utente senza convalidare o filtrare correttamente tali dati. Ciò consente a un attaccante di eseguire comandi non autorizzati o dannosi sul server.;</li>
+<li>Solution: Per prevenire gli attacchi di Command Injection, è necessario convalidare e filtrare correttamente i dati forniti dall'utente prima di utilizzarli per eseguire comandi di sistema. È possibile utilizzare librerie o funzioni specifiche per il linguaggio di programmazione utilizzato per garantire che i dati siano sicuri e non possano essere interpretati come comandi.;</li>
+<li>Example Code:<code>output = subprocess.check_output([command, domain]).</code></li>
+</ul>
+</li>
+<li>Unsafe Deserialization<ul>
+<li>Line: 156;</li>
+<li>Severity: serio;</li>
+<li>Description: La vulnerabilità di Unsafe Deserialization si verifica quando un'applicazione web deserializza dati provenienti da una fonte non fidata senza verificare o filtrare correttamente tali dati. Ciò consente a un attaccante di eseguire codice dannoso o ottenere accesso non autorizzato al sistema.;</li>
+<li>Solution: Per prevenire gli attacchi di Unsafe Deserialization, è necessario verificare e filtrare correttamente i dati deserializzati provenienti da una fonte non fidata. È possibile utilizzare librerie o funzioni specifiche per il linguaggio di programmazione utilizzato per garantire che i dati siano sicuri e non possano essere interpretati come codice dannoso.;</li>
+<li>Example Code:<code>content = str(pickle.loads(base64.urlsafe_b64decode(object))).</code></li>
+</ul>
+</li>
+<li>Path Traversal<ul>
+<li>Line: 180;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Path Traversal si verifica quando un'applicazione web consente a un utente di accedere a file o directory al di fuori della directory prevista. Ciò consente a un attaccante di leggere, modificare o eliminare file sensibili sul server.;</li>
+<li>Solution: Per prevenire gli attacchi di Path Traversal, è necessario convalidare e filtrare correttamente i percorsi dei file forniti dall'utente. È possibile utilizzare funzioni specifiche per il linguaggio di programmazione utilizzato per garantire che i percorsi dei file siano limitati alla directory prevista e non consentano l'accesso a file o directory sensibili.;</li>
+<li>Example Code:<code>file = open(os.path.abspath(path), 'rb').</code></li>
+</ul>
+</li>
+<li>Session Fixation<ul>
+<li>Line: 204;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Session Fixation si verifica quando un'applicazione web non rigenera correttamente l'ID di sessione dopo l'autenticazione o il cambio di utente. Ciò consente a un attaccante di utilizzare un ID di sessione noto per ottenere accesso non autorizzato all'account dell'utente.;</li>
+<li>Solution: Per prevenire gli attacchi di Session Fixation, è necessario rigenerare l'ID di sessione dopo l'autenticazione o il cambio di utente. È possibile utilizzare funzioni o librerie specifiche per il linguaggio di programmazione utilizzato per generare un nuovo ID di sessione univoco e associarlo all'account dell'utente.;</li>
+<li>Example Code:<code>cookie['SESSIONID'] = session.</code></li>
+</ul>
+</li>
+<li>Session Hijacking<ul>
+<li>Line: 224;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Session Hijacking si verifica quando un attaccante riesce a ottenere o indovinare l'ID di sessione di un utente legittimo. Ciò consente all'attaccante di impersonare l'utente e ottenere accesso non autorizzato all'account dell'utente.;</li>
+<li>Solution: Per prevenire gli attacchi di Session Hijacking, è necessario utilizzare tecniche di gestione delle sessioni sicure, come l'utilizzo di ID di sessione casuali, la scadenza delle sessioni dopo un periodo di inattività o l'utilizzo di token di autenticazione per verificare l'identità dell'utente ad ogni richiesta.;</li>
+<li>Example Code:<code>cursor.execute("SELECT * FROM users WHERE session = ?", [session]).</code></li>
+</ul>
+</li>
+<li>Auth Bypass<ul>
+<li>Line: 245;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Auth Bypass si verifica quando un'applicazione web non verifica correttamente l'autenticazione o l'autorizzazione dell'utente prima di eseguire azioni sensibili. Ciò consente a un attaccante di eseguire azioni non autorizzate o ottenere informazioni sensibili.;</li>
+<li>Solution: Per prevenire gli attacchi di Auth Bypass, è necessario verificare l'autenticazione o l'autorizzazione dell'utente prima di eseguire azioni sensibili. È possibile utilizzare sessioni, token di autenticazione o altre forme di autenticazione per garantire che solo gli utenti autorizzati possano eseguire tali azioni.;</li>
+<li>Example Code:<code>if user:
+    content = content.format(type=type, message=message)
+    cursor.execute("UPDATE users SET session = ? WHERE id = ?", (session, user[0])).</code></li>
+</ul>
+</li>
+<li>XS Request Forgery<ul>
+<li>Line: 266;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di XS Request Forgery si verifica quando un'applicazione web non verifica correttamente l'origine delle richieste HTTP prima di eseguire azioni sensibili. Ciò consente a un attaccante di eseguire azioni non autorizzate a nome dell'utente.;</li>
+<li>Solution: Per prevenire gli attacchi di XS Request Forgery, è necessario utilizzare token CSRF (Cross-Site Request Forgery) per verificare l'origine delle richieste HTTP. È possibile generare e includere un token CSRF univoco in ogni modulo o richiesta che esegue azioni sensibili e verificare il token al momento dell'elaborazione della richiesta.;</li>
+<li>Example Code:<code>if 'email' in params.keys():
+    cursor.execute("UPDATE users SET email = ? WHERE id = ?", (email, user[0])).</code></li>
+</ul>
+</li>
+<li>Clickjacking<ul>
+<li>Line: 288;</li>
+<li>Severity: medio;</li>
+<li>Description: La vulnerabilità di Clickjacking si verifica quando un'applicazione web viene incorporata in un'altra pagina web in modo nascosto o ingannevole, consentendo all'attaccante di ingannare l'utente e farlo eseguire azioni non desiderate o rivelare informazioni sensibili.;</li>
+<li>Solution: Per prevenire gli attacchi di Clickjacking, è necessario utilizzare l'intestazione X-Frame-Options per limitare l'incorporamento del sito web in altre pagine. È possibile impostare l'intestazione X-Frame-Options su 'DENY' per impedire completamente l'incorporamento o su 'SAMEORIGIN' per consentire solo l'incorporamento all'interno dello stesso dominio.;</li>
+<li>Example Code:<code>content = '''
+<div class="alert alert-danger">
+    Irreversible and destructive actions!
+</div>
+<form method="GET" action="/danger">
+    <div class="form-group">
+        <label>
+            Delete this account
+        </label>
+        <small style="margin-top:-10px" class="form-text text-muted">
+            Once you delete your account, there is no going back. Please be certain.
+        </small>
+        <input type="hidden" name="delete" value="1">
+        <button class="btn btn-danger" type="submit" style="float:right;margin-top:-40px">Delete</button>
+    </div>
+</form>
+'''.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+handlers.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 114;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità di Command Injection. L'input dell'utente viene utilizzato direttamente in una chiamata subprocess.check_output senza essere opportunamente sanificato o validato.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario validare e sanificare l'input dell'utente prima di utilizzarlo in una chiamata subprocess. È possibile utilizzare la funzione shlex.quote() per sanificare l'input dell'utente e assicurarsi che non vengano eseguiti comandi non autorizzati.;</li>
+<li>Example Code:<code>import shlex
+
+input = shlex.quote(user_input)
+output = subprocess.check_output(input, shell=True, stderr=subprocess.STDOUT, stdin=subprocess.PIPE).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+dsvpwa.py
+<ol>
+<li>Utilizzo di SSLv3<ul>
+<li>Line: 35;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza SSLv3, che è obsoleto e insicuro.;</li>
+<li>Solution: Utilizzare TLS al posto di SSLv3.;</li>
+<li>Example Code:<code>ctx.options &= ~ssl.OP_NO_SSLv3.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

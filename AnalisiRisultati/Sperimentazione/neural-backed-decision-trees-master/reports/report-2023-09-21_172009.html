@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-21</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-21T17:20:09.863434700</h2><p>Total of  vulnerabilities founded 32</p>
+<ul>
+<li>
+lip.py
+<ol>
+<li>Vulnerabilità di accesso non autorizzato<ul>
+<li>Line: 148;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice non verifica l'autenticazione o l'autorizzazione dell'utente prima di eseguire determinate azioni o accedere a risorse protette.;</li>
+<li>Solution: Verificare l'autenticazione e l'autorizzazione dell'utente prima di eseguire azioni o accedere a risorse protette.;</li>
+<li>Example Code:<code>if user_authenticated and user_authorized:
+    # esegui azioni o accedi a risorse protette.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ade20k.py
+<ol>
+<li>Potential Command Injection<ul>
+<li>Line: 3;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the os module to execute commands, which can be vulnerable to command injection attacks if user input is not properly validated or sanitized.;</li>
+<li>Solution: Avoid using user input directly in commands. Validate and sanitize user input before using it in commands. Use safe alternatives such as subprocess module to execute commands.;</li>
+<li>Example Code:<code>import subprocess
+
+command = ['ls', '-l']
+subprocess.run(command).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+custom.py
+<ol>
+<li>Unused import<ul>
+<li>Line: 33;</li>
+<li>Severity: potential;</li>
+<li>Description: The code imports the module torch.nn.nn but it is not used in the code.;</li>
+<li>Solution: Remove the unused import statement.;</li>
+<li>Example Code:<code>import torch.nn.nn.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+imagenet.py
+<ol>
+<li>Potenziale vulnerabilità di Path Traversal<ul>
+<li>Line: 67;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza il modulo os per creare e manipolare i percorsi delle directory. Questo può essere soggetto ad attacchi di Path Traversal, in cui un utente malintenzionato può accedere a file o directory al di fuori del percorso previsto.;</li>
+<li>Solution: Utilizzare metodi di sicurezza per la manipolazione dei percorsi delle directory, come ad esempio l'utilizzo di percorsi assoluti o la validazione dei percorsi di input.;</li>
+<li>Example Code:<code>root = os.path.abspath(root)
+
+# Esempio di validazione del percorso di input
+if not root.startswith('/path/to/allowed/directory/'):
+    raise ValueError('Invalid root directory').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+transforms.py
+<ol>
+<li>Utilizzo di dati sensibili in chiaro<ul>
+<li>Line: 5;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza i valori di media e deviazione standard in chiaro, rendendo possibile l'accesso a dati sensibili.;</li>
+<li>Solution: Utilizzare un metodo di protezione dei dati sensibili, come la crittografia, per evitare che siano accessibili in chiaro.;</li>
+<li>Example Code:<code>import torch
+
+
+class InverseNormalize:
+    def __init__(self, mean, std):
+        self.mean = torch.Tensor(mean)[None, :, None, None]
+        self.std = torch.Tensor(std)[None, :, None, None]
+        self.mean = self.mean.to(device)
+        self.std = self.std.to(device)
+
+    def __call__(self, sample):
+        return (sample * self.std) + self.mean
+
+    def to(self, device):
+        self.mean = self.mean.to(device)
+        self.std = self.std.to(device)
+        return self.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+pascal_context.py
+<ol>
+<li>Potential Command Injection<ul>
+<li>Line: 24;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the 'os' module to execute shell commands without proper input validation, which can lead to command injection vulnerabilities.;</li>
+<li>Solution: Use input validation and sanitization techniques to ensure that user input is properly handled and does not contain any malicious commands. Avoid using user input directly in shell commands.;</li>
+<li>Example Code:<code>import subprocess
+
+command = ['ls', '-l', '/path/to/directory']
+subprocess.call(command).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Missing Key in State Dictionary<ul>
+<li>Line: 13;</li>
+<li>Severity: medium;</li>
+<li>Description: The code is attempting to load a state dictionary into a network, but some keys are missing in the state dictionary.;</li>
+<li>Solution: Check if the state dictionary contains all the necessary keys before loading it into the network. If some keys are missing, handle the missing keys appropriately.;</li>
+<li>Example Code:<code>net.load_state_dict({
+    key.replace('module.', '', 1): value
+    for key, value in state_dict.items()
+}).</code></li>
+</ul>
+</li>
+<li>Coercing State Dictionary<ul>
+<li>Line: 47;</li>
+<li>Severity: medium;</li>
+<li>Description: The code is manipulating the state dictionary to match the structure of the reference state dictionary.;</li>
+<li>Solution: Ensure that the state dictionary and the reference state dictionary have the same structure. If the structure is different, handle the differences appropriately.;</li>
+<li>Example Code:<code>state_dict = {
+    key.replace('module.', '', 1): value
+    for key, value in state_dict.items()
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+resnet.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 30;</li>
+<li>Severity: medium;</li>
+<li>Description: L'URL fornito per il download del modello preaddestrato potrebbe essere insicuro.;</li>
+<li>Solution: Utilizzare un URL sicuro per il download del modello preaddestrato.;</li>
+<li>Example Code:<code>model_urls = {
+    (
+        'ResNet10',
+        'CIFAR10',
+    ): 'https://example.com/ckpt-CIFAR10-ResNet10.pth',
+    (
+        'ResNet10',
+        'CIFAR100',
+    ): 'https://example.com/ckpt-CIFAR100-ResNet10.pth',
+    (
+        'ResNet18',
+        'CIFAR10',
+    ): 'https://example.com/ckpt-CIFAR10-ResNet18.pth',
+    (
+        'ResNet18',
+        'CIFAR100',
+    ): 'https://example.com/ckpt-CIFAR100-ResNet18.pth',
+    (
+        'ResNet18',
+        'TinyImagenet200',
+    ): 'https://example.com/ckpt-TinyImagenet200-ResNet18.pth',
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>Potenziale vulnerabilità di importazione di moduli non sicuri<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza l'importazione di moduli senza specificare il percorso completo o l'origine del modulo. Questo potrebbe consentire a un attaccante di sostituire il modulo importato con uno dannoso.;</li>
+<li>Solution: Specificare il percorso completo o l'origine del modulo da importare per garantire che venga utilizzato solo il modulo desiderato.;</li>
+<li>Example Code:<code>from .resnet import resnet.</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di importazione di moduli non sicuri<ul>
+<li>Line: 2;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza l'importazione di moduli senza specificare il percorso completo o l'origine del modulo. Questo potrebbe consentire a un attaccante di sostituire il modulo importato con uno dannoso.;</li>
+<li>Solution: Specificare il percorso completo o l'origine del modulo da importare per garantire che venga utilizzato solo il modulo desiderato.;</li>
+<li>Example Code:<code>from .wideresnet import wideresnet.</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di importazione di moduli non sicuri<ul>
+<li>Line: 3;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza l'importazione di moduli senza specificare il percorso completo o l'origine del modulo. Questo potrebbe consentire a un attaccante di sostituire il modulo importato con uno dannoso.;</li>
+<li>Solution: Specificare il percorso completo o l'origine del modulo da importare per garantire che venga utilizzato solo il modulo desiderato.;</li>
+<li>Example Code:<code>from pytorchcv.models.efficientnet import efficientnet.</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di importazione di moduli non sicuri<ul>
+<li>Line: 4;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza l'importazione di moduli senza specificare il percorso completo o l'origine del modulo. Questo potrebbe consentire a un attaccante di sostituire il modulo importato con uno dannoso.;</li>
+<li>Solution: Specificare il percorso completo o l'origine del modulo da importare per garantire che venga utilizzato solo il modulo desiderato.;</li>
+<li>Example Code:<code>from torchvision.models import resnet.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+wideresnet.py
+<ol>
+<li>Insecure use of get_pretrained_model function<ul>
+<li>Line: 22;</li>
+<li>Severity: serious;</li>
+<li>Description: The get_pretrained_model function is used to load a pretrained model, but it does not perform any security checks on the downloaded model file. This can potentially lead to the execution of arbitrary code if a malicious model file is downloaded and loaded.;</li>
+<li>Solution: Ensure that the get_pretrained_model function performs proper security checks on the downloaded model file, such as verifying its integrity and authenticity before loading it.;</li>
+<li>Example Code:<code>Implement a secure download and verification process for pretrained model files. This can include using secure protocols (e.g., HTTPS) for downloading the files, checking the file's checksum or digital signature against a trusted source, and validating the file's format and content before loading it..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+loss.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 5;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice importa le librerie torch.nn, torch.nn.functional, collections.defaultdict, nbdt.tree.Node, nbdt.tree.Tree, math.log, nbdt.utils.Colors, pathlib.Path e os ma non le utilizza nel codice.;</li>
+<li>Solution: Rimuovere le librerie non utilizzate dall'import.;</li>
+<li>Example Code:<code>import torch.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tree.py
+<ol>
+<li>Import Injection<ul>
+<li>Line: 3;</li>
+<li>Severity: serious;</li>
+<li>Description: The code imports the 'torchvision.datasets' module without checking if it is safe to do so. An attacker could potentially replace the module with a malicious one and execute arbitrary code.;</li>
+<li>Solution: Always validate and sanitize user input before using it in dynamic code execution. Avoid importing modules based on user input.;</li>
+<li>Example Code:<code>import torchvision.datasets as datasets.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+graph.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di comandi<ul>
+<li>Line: 160;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la funzione 'os.system()' per eseguire comandi del sistema operativo senza sanitizzare i dati di input. Questo può consentire ad un attaccante di eseguire comandi arbitrari sul sistema.;</li>
+<li>Solution: Utilizzare funzioni sicure per eseguire comandi di sistema, come ad esempio 'subprocess.run()'. Assicurarsi di sanificare i dati di input prima di passarli a funzioni di esecuzione di comandi.;</li>
+<li>Example Code:<code>import subprocess
+
+subprocess.run(['ls', '-l']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+model.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 5;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice importa librerie che non vengono utilizzate nel resto del codice.;</li>
+<li>Solution: Rimuovere l'import delle librerie non utilizzate.;</li>
+<li>Example Code:<code>Rimuovere l'import delle librerie non utilizzate..</code></li>
+</ul>
+</li>
+<li>Utilizzo di librerie non importate<ul>
+<li>Line: 69;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice utilizza librerie che non sono state importate.;</li>
+<li>Solution: Importare le librerie necessarie per utilizzare le funzioni correttamente.;</li>
+<li>Example Code:<code>from nbdt.data.custom import Node.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 6;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice importa la libreria 'math' ma non la utilizza in nessuna parte del codice.;</li>
+<li>Solution: Rimuovere l'import della libreria 'math' se non viene utilizzata.;</li>
+<li>Example Code:<code>import os
+import sys
+import time
+import numpy as np
+
+from urllib.request import urlopen, Request
+from PIL import Image
+import torch.nn as nn
+import torch.nn.init as init
+from pathlib import Path
+import io..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+nx.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 5;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice importa la libreria 'random' ma non la utilizza in nessuna parte del codice.;</li>
+<li>Solution: Rimuovere l'import della libreria 'random' se non viene utilizzata.;</li>
+<li>Example Code:<code>import networkx as nx
+import json
+from nbdt.utils import DATASETS, METHODS, fwd
+from networkx.readwrite.json_graph import node_link_data, node_link_graph
+from sklearn.cluster import AgglomerativeClustering
+from pathlib import Path
+import nbdt.models as models
+import torch
+import argparse
+import os.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+wn.py
+<ol>
+<li>Missing Input Validation<ul>
+<li>Line: 13;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not validate the input received from the user, which can lead to security vulnerabilities such as SQL injection or cross-site scripting (XSS) attacks.;</li>
+<li>Solution: Always validate and sanitize user input before using it in any part of the code. This can be done by using input validation functions or libraries, and by implementing proper input sanitization techniques such as parameterized queries or output encoding.;</li>
+<li>Example Code:<code>import re
+
+# Validate and sanitize user input
+input_data = input()
+if re.match(r'^[a-zA-Z0-9]+$', input_data):
+    # Process input
+    ...
+else:
+    # Handle invalid input
+    ....</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+analysis.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 157;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità di Cross-Site Scripting (XSS) nella riga 157.;</li>
+<li>Solution: Per proteggere l'applicazione da attacchi XSS, è necessario validare e sanificare tutti i dati in ingresso prima di utilizzarli nel codice HTML.;</li>
+<li>Example Code:<code>Utilizzare funzioni di escape HTML come htmlspecialchars() per convertire i caratteri speciali in entità HTML..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+hierarchy.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 226;</li>
+<li>Severity: serious;</li>
+<li>Description: La funzione generate_hierarchy_vis permette di specificare un percorso di file che può essere controllato dall'utente. Questo può consentire a un attaccante di accedere a file sensibili o di eseguire codice dannoso.;</li>
+<li>Solution: È necessario controllare il percorso dei file in ingresso e assicurarsi che sia valido e sicuro. È possibile utilizzare funzioni di sanitizzazione dei percorsi dei file per rimuovere caratteri o sequenze pericolose.;</li>
+<li>Example Code:<code>path_html = os.path.abspath(path_html)
+path_html = os.path.normpath(path_html).</code></li>
+</ul>
+</li>
+<li>Command Injection<ul>
+<li>Line: 226;</li>
+<li>Severity: serious;</li>
+<li>Description: La funzione generate_hierarchy_vis consente di specificare un percorso di file che può essere controllato dall'utente. Questo può consentire a un attaccante di eseguire comandi arbitrari sul sistema.;</li>
+<li>Solution: È necessario controllare il percorso dei file in ingresso e assicurarsi che sia valido e sicuro. È possibile utilizzare funzioni di sanitizzazione dei percorsi dei file per rimuovere caratteri o sequenze pericolose.;</li>
+<li>Example Code:<code>path_html = os.path.abspath(path_html)
+path_html = os.path.normpath(path_html).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_train.py
+<ol>
+<li>Importing Torch without specifying version<ul>
+<li>Line: 3;</li>
+<li>Severity: potential;</li>
+<li>Description: The code imports the torch library without specifying a specific version. This can lead to compatibility issues if the code relies on specific features or behavior of a particular version of torch.;</li>
+<li>Solution: Specify the version of torch library to be used in the code. This ensures that the code is compatible with the specified version.;</li>
+<li>Example Code:<code>import torch==1.7.0.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+test_inference.py
+<ol>
+<li>Hardcoded Credentials<ul>
+<li>Line: 5;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains hardcoded credentials, which can be easily accessed by an attacker.;</li>
+<li>Solution: Remove the hardcoded credentials and use a secure method for storing and retrieving sensitive information, such as environment variables or a secure configuration file.;</li>
+<li>Example Code:<code>model_soft = SoftNBDT(
+    dataset=os.environ['DATASET'], model=resnet18_cifar10, hierarchy='induced'
+).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+main.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 37;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the argparse module to parse command line arguments. However, it does not properly sanitize or validate the user input, which can lead to command injection vulnerabilities.;</li>
+<li>Solution: To prevent command injection vulnerabilities, you should always sanitize and validate user input before using it in command execution. Use input validation techniques such as whitelisting or input sanitization to ensure that only valid and safe input is accepted.;</li>
+<li>Example Code:<code>parser.add_argument('--dataset', default='CIFAR10', choices=datasets, type=str, help='Specify the dataset to use. Valid options are CIFAR10, CIFAR100, and TinyImagenet200').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+api.py
+<ol>
+<li>Insecure Secret Key<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: The secret key used for Flask's session management is generated using os.urandom(24), which is not a secure method for generating secret keys.;</li>
+<li>Solution: Use a secure method for generating secret keys, such as using a cryptographic library to generate a random key.;</li>
+<li>Example Code:<code>import secrets
+
+app.config['SECRET_KEY'] = secrets.token_hex(24).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+__init__.py
+<ol>
+<li>Import All Modules<ul>
+<li>Line: 15;</li>
+<li>Severity: medium;</li>
+<li>Description: Questa funzione importa automaticamente tutti i file Python presenti nella directory specificata. Questo può portare a potenziali vulnerabilità di sicurezza se i file importati non sono controllati o non sono attendibili.;</li>
+<li>Solution: Assicurarsi che solo i file attendibili e controllati siano importati utilizzando questa funzione. Verificare la provenienza dei file e assicurarsi che siano stati scritti da fonti affidabili.;</li>
+<li>Example Code:<code>import_all_modules(FILE_ROOT, "losses", whitelist=["losses_module.py", "another_loss.py"]).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+nbdt_losses.py
+<ol>
+<li>Import di librerie non sicure<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'import di librerie non sicure può portare a vulnerabilità nel codice. È consigliabile utilizzare librerie affidabili e verificare la sicurezza delle librerie importate.;</li>
+<li>Solution: Verificare la sicurezza delle librerie importate e utilizzare solo librerie affidabili.;</li>
+<li>Example Code:<code>from torchvision import models
+import torch.nn as nn
+
+model = models.resnet50(pretrained=True)
+
+# Utilizzare solo librerie affidabili.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+classy_train.py
+<ol>
+<li>Import Injection<ul>
+<li>Line: 132;</li>
+<li>Severity: serious;</li>
+<li>Description: The code imports all modules in the same directory as classy_train.py, which can lead to import injection vulnerabilities if an attacker is able to place a malicious module in that directory.;</li>
+<li>Solution: Avoid importing modules dynamically from a directory that can be controlled by an attacker. Instead, explicitly import only the necessary modules.;</li>
+<li>Example Code:<code>import module_name.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

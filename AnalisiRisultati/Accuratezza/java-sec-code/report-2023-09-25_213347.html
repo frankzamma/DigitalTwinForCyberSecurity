@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-25</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-25T21:33:47.114023600</h2><p>Total of  vulnerabilities founded 81</p>
+<ul>
+<li>
+Hello.java
+<ol>
+<li>RMI Remote Code Execution<ul>
+<li>Line: 9;</li>
+<li>Severity: seria;</li>
+<li>Description: Questa vulnerabilità consente a un attaccante di eseguire codice arbitrario sul server tramite un attacco RMI.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario implementare meccanismi di sicurezza adeguati come l'autenticazione e l'autorizzazione per limitare l'accesso alle funzionalità sensibili del server RMI.;</li>
+<li>Example Code:<code>Implementare l'autenticazione e l'autorizzazione nel server RMI utilizzando ad esempio il framework Spring Security..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Server.java
+<ol>
+<li>RMI Registry Port Vulnerability<ul>
+<li>Line: 23;</li>
+<li>Severity: medio;</li>
+<li>Description: La porta predefinita del registro RMI (1099) è vulnerabile agli attacchi di forza bruta e di scansione.;</li>
+<li>Solution: Cambiare la porta predefinita del registro RMI per rendere più difficile agli attaccanti scoprire e sfruttare la vulnerabilità.;</li>
+<li>Example Code:<code>LocateRegistry.createRegistry(1234);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+HttpServiceImpl.java
+<ol>
+<li>HTTP Redirect Vulnerability<ul>
+<li>Line: 39;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Questa implementazione di HttpServiceImpl non segue i redirect HTTP quando si effettua una richiesta HTTP.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è consigliabile seguire i redirect HTTP durante le richieste HTTP.;</li>
+<li>Example Code:<code>restTemplate.setFollowRedirects(true);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+JwtUtils.java
+<ol>
+<li>Utilizzo di una chiave segreta hardcoded<ul>
+<li>Line: 13;</li>
+<li>Severity: serio;</li>
+<li>Description: La chiave segreta utilizzata per firmare il token JWT è hardcoded nel codice sorgente, rendendola facilmente accessibile agli attaccanti.;</li>
+<li>Solution: Estrarre la chiave segreta da una sorgente esterna sicura, come un file di configurazione o una variabile di ambiente.;</li>
+<li>Example Code:<code>private static final String SECRET = System.getenv("JWT_SECRET");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+WebUtils.java
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 34;</li>
+<li>Severity: medium;</li>
+<li>Description: La funzione json2Jsonp potrebbe essere vulnerabile a attacchi di Cross-Site Scripting (XSS) se i parametri callback e jsonStr non vengono opportunamente sanificati.;</li>
+<li>Solution: Sanificare i parametri callback e jsonStr utilizzando una libreria o una funzione specifica per la codifica degli elementi HTML.;</li>
+<li>Example Code:<code>return HtmlUtils.htmlEscape(callback) + "(" + HtmlUtils.htmlEscape(jsonStr) + ")";.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+HttpUtils.java
+<ol>
+<li>HTTP Response Splitting<ul>
+<li>Line: 35;</li>
+<li>Severity: serious;</li>
+<li>Description: L'applicazione utilizza la classe HttpClient che non gestisce correttamente gli header HTTP, consentendo un potenziale attacco di HTTP Response Splitting.;</li>
+<li>Solution: Utilizzare una libreria che gestisca correttamente gli header HTTP, come ad esempio Apache HttpComponents.;</li>
+<li>Example Code:<code>CloseableHttpClient client = HttpClients.createDefault();
+HttpGet httpGet = new HttpGet(url);
+HttpResponse httpResponse = client.execute(httpGet);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+WebConfig.java
+<ol>
+<li>Injection di dipendenza non sicura<ul>
+<li>Line: 24;</li>
+<li>Severity: medio;</li>
+<li>Description: La classe WebConfig utilizza l'annotazione @Value per iniettare valori dalle proprietà dell'applicazione. Tuttavia, non viene effettuato alcun controllo sulla sicurezza dei valori iniettati, aprendo la porta a possibili attacchi di injection di dipendenza.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è consigliabile implementare controlli di sicurezza sui valori iniettati utilizzando metodi di validazione e sanitizzazione dei dati. Inoltre, è consigliabile utilizzare un meccanismo di iniezione di dipendenza sicuro, come ad esempio l'uso di Spring Security.;</li>
+<li>Example Code:<code>public void setJsonpReferCheckEnabled(Boolean jsonpReferCheckEnabled) {
+  if(jsonpReferCheckEnabled) {
+    WebConfig.jsonpReferCheckEnabled = jsonpReferCheckEnabled;
+  }
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CorsConfig2.java
+<ol>
+<li>Configurazione CORS non restrittiva<ul>
+<li>Line: 19;</li>
+<li>Severity: serio;</li>
+<li>Description: La configurazione CORS non è restrittiva e consente richieste da qualsiasi origine e con qualsiasi metodo.;</li>
+<li>Solution: Limitare le origini consentite e i metodi consentiti nella configurazione CORS.;</li>
+<li>Example Code:<code>config.addAllowedOrigin("http://test.joychou.org");
+config.addAllowedOrigin("https://test.joychou.org");
+config.addAllowedMethod("GET");
+config.addAllowedMethod("POST");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Object2Jsonp.java
+<ol>
+<li>Utilizzo di AbstractJsonpResponseBodyAdvice<ul>
+<li>Line: 25;</li>
+<li>Severity: medium;</li>
+<li>Description: L'utilizzo di AbstractJsonpResponseBodyAdvice è deprecato e verrà rimosso a partire dalla versione 5.1 di Spring Framework. Si consiglia di utilizzare CORS al suo posto.;</li>
+<li>Solution: Aggiornare il codice per utilizzare CORS invece di AbstractJsonpResponseBodyAdvice.;</li>
+<li>Example Code:<code>import org.springframework.web.bind.annotation.CrossOrigin;
+
+@ControllerAdvice
+public class Object2Jsonp {
+
+    @CrossOrigin
+    protected void beforeBodyWriteInternal(...) {
+        // codice per il corpo del metodo
+    }
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CsrfTokenBean.java
+<ol>
+<li>Configurazione CSRF non sicura<ul>
+<li>Line: 19;</li>
+<li>Severity: medio;</li>
+<li>Description: La configurazione del token CSRF non è sicura perché il token viene inviato come cookie e può essere letto da JavaScript.;</li>
+<li>Solution: Impostare il flag 'httpOnly' su 'true' per il cookie del token CSRF per impedire che sia letto da JavaScript.;</li>
+<li>Example Code:<code>return CookieCsrfTokenRepository.withHttpOnlyTrue();.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SwaggerConfig.java
+<ol>
+<li>Configuring Swagger to allow unrestricted access<ul>
+<li>Line: 25;</li>
+<li>Severity: serious;</li>
+<li>Description: The code allows unrestricted access to the Swagger documentation, potentially exposing sensitive information.;</li>
+<li>Solution: Restrict access to the Swagger documentation by adding authentication and authorization mechanisms.;</li>
+<li>Example Code:<code>Add authentication and authorization mechanisms to the Swagger configuration, such as OAuth2 or API key authentication..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CustomCorsConfig.java
+<ol>
+<li>CORS Origin Whitelist Bypass<ul>
+<li>Line: 27;</li>
+<li>Severity: serious;</li>
+<li>Description: Questa configurazione di CORS consente a qualsiasi dominio di inviare richieste al server, bypassando la whitelist degli origini consentiti.;</li>
+<li>Solution: Limitare l'elenco degli origini consentiti solo ai domini attendibili e necessari.;</li>
+<li>Example Code:<code>String[] allowOrigins = {"https://www.example.com", "https://www.example2.com"};
+registry.addMapping("/cors/sec/webMvcConfigurer")
+        .allowedOrigins(allowOrigins)
+        .allowedMethods("GET", "POST")
+        .allowCredentials(true);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SafeDomainParser.java
+<ol>
+<li>XML External Entity (XXE) Injection<ul>
+<li>Line: 34;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice legge un file XML esterno senza alcun controllo, consentendo un attacco di XXE.;</li>
+<li>Solution: Utilizzare un parser XML sicuro che disabiliti l'elaborazione delle entità esterne o applicare controlli per filtrare le entità esterne.;</li>
+<li>Example Code:<code>DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+// Disabilita l'elaborazione delle entità esterne
+dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+HttpServiceConfig.java
+<ol>
+<li>Configurazione di RestTemplate con followRedirects impostato su false<ul>
+<li>Line: 19;</li>
+<li>Severity: medio;</li>
+<li>Description: La configurazione di RestTemplate con followRedirects impostato su false può consentire a un attaccante di eseguire attacchi di phishing o dirottare il traffico verso siti dannosi.;</li>
+<li>Solution: Impostare followRedirects su true per consentire il reindirizzamento delle richieste HTTP.;</li>
+<li>Example Code:<code>connection.setInstanceFollowRedirects(true);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+TomcatFilterMemShell.java
+<ol>
+<li>Tomcat Filter MemShell<ul>
+<li>Line: 59;</li>
+<li>Severity: serious;</li>
+<li>Description: Questa classe contiene un filtro Tomcat che può essere utilizzato per iniettare un backdoor nel server. Il backdoor consente di eseguire comandi sul server tramite il parametro 'cmd_' in una richiesta HTTP.;</li>
+<li>Solution: Rimuovere o disabilitare il filtro Tomcat MemShell. Assicurarsi che non ci siano altre vulnerabilità o backdoor presenti nel codice.;</li>
+<li>Example Code:<code>standardContext.removeFilterDef(filterDef);
+standardContext.removeFilterMap(filterMap);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+WebSocketsCmdEndpoint.java
+<ol>
+<li>Command Injection<ul>
+<li>Line: 32;</li>
+<li>Severity: serious;</li>
+<li>Description: La classe WebSocketsCmdEndpoint esegue comandi del sistema operativo senza alcun controllo sugli input dell'utente, consentendo un potenziale attacco di command injection.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario implementare un controllo sugli input dell'utente e sanitizzare correttamente i comandi prima di eseguirli.;</li>
+<li>Example Code:<code>public void onMessage(String s) {
+  try {
+    // Sanitize input
+    String sanitizedInput = sanitizeInput(s);
+
+    // Esegui il comando solo se è sicuro
+    if (isCommandSafe(sanitizedInput)) {
+      Process process;
+      boolean bool = System.getProperty("os.name").toLowerCase().startsWith("windows");
+      if (bool) {
+        process = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", sanitizedInput});
+      } else {
+        process = Runtime.getRuntime().exec(new String[]{"/bin/bash", "-c", sanitizedInput});
+      }
+      InputStream inputStream = process.getInputStream();
+      StringBuilder stringBuilder = new StringBuilder();
+      int i;
+      while ((i = inputStream.read()) != -1) stringBuilder.append((char) i);
+      inputStream.close();
+      process.waitFor();
+      session.getBasicRemote().sendText(stringBuilder.toString());
+    } else {
+      // Comando non sicuro, gestisci l'errore
+      session.getBasicRemote().sendText("Comando non consentito");
+    }
+  } catch (Exception exception) {
+    exception.printStackTrace();
+  }
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+WebSocketsProxyEndpoint.java
+<ol>
+<li>Utilizzo di ByteBuffer senza limiti di dimensione<ul>
+<li>Line: 42;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice utilizza ByteBuffer senza limiti di dimensione per leggere e scrivere dati. Questo può causare un utilizzo eccessivo della memoria e potenziali attacchi di tipo Denial of Service.;</li>
+<li>Solution: Limitare la dimensione massima del ByteBuffer utilizzato per leggere e scrivere dati.;</li>
+<li>Example Code:<code>final ByteBuffer buffer = ByteBuffer.allocate(4096);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ReferFilter.java
+<ol>
+<li>Manca la validazione del referer<ul>
+<li>Line: 53;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice non effettua una valida validazione del referer;</li>
+<li>Solution: Aggiungere una validazione del referer per evitare attacchi di CSRF;</li>
+<li>Example Code:<code>if (!request.getHeader('referer').startsWith('https://example.com')) { 
+ throw new SecurityException('Invalid referer'); 
+ }.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+OriginFilter.java
+<ol>
+<li>Cors跨域漏洞<ul>
+<li>Line: 37;</li>
+<li>Severity: serious;</li>
+<li>Description: 该代码没有对Origin进行有效的校验，存在Cors跨域漏洞。攻击者可以通过构造恶意的Origin请求头绕过同源策略，从而进行跨域攻击。;</li>
+<li>Solution: 应该对Origin进行有效的校验，只允许特定的域名或IP访问。可以使用正则表达式或白名单机制来校验Origin。;</li>
+<li>Example Code:<code>if (origin != null && (origin.equals("http://www.example.com") || origin.equals("http://example.com"))) {
+	// 允许访问
+} else {
+	// 拒绝访问
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+BaseCorsFilter.java
+<ol>
+<li>CORS Misconfiguration<ul>
+<li>Line: 26;</li>
+<li>Severity: medium;</li>
+<li>Description: La configurazione CORS non è corretta e potrebbe consentire richieste non autorizzate da origini non attendibili.;</li>
+<li>Solution: Limitare gli origini consentiti solo a quelli attendibili.;</li>
+<li>Example Code:<code>config.addAllowedOrigin("https://www.joychou.org");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+UserMapper.java
+<ol>
+<li>Injection SQL<ul>
+<li>Line: 20;</li>
+<li>Severity: grave;</li>
+<li>Description: La query 'select * from users where username = '${username}' permette l'injection di codice SQL.;</li>
+<li>Solution: Utilizzare sempre i prepared statements o parametrizzare le query per evitare l'injection di codice SQL.;</li>
+<li>Example Code:<code>@Select("select * from users where username = #{username}")
+List<User> findByUserNameVuln01(@Param("username") String username);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SSRFChecker.java
+<ol>
+<li>Vulnerabilità SSRF<ul>
+<li>Line: 58;</li>
+<li>Severity: serio;</li>
+<li>Description: La classe SSRFChecker contiene un metodo checkSSRF che effettua una richiesta HTTP all'URL specificato senza alcun controllo o validazione. Questo può consentire a un attaccante di eseguire attacchi SSRF (Server Side Request Forgery) inviando richieste a risorse interne o esterne non autorizzate.;</li>
+<li>Solution: Prima di effettuare la richiesta HTTP, è necessario implementare controlli e validazioni adeguati per garantire che l'URL fornito sia sicuro e consentito. Ciò può includere la verifica del protocollo (solo http o https), il controllo dell'URL rispetto a una lista di domini sicuri consentiti e la gestione corretta dei reindirizzamenti.;</li>
+<li>Example Code:<code>public static boolean checkSSRF(String url, int checkTimes) {
+  	// Esegui i controlli e le validazioni necessarie sull'URL
+  	if (!isValidURL(url)) {
+  		return false;
+  	}
+
+  	// Effettua la richiesta HTTP solo se l'URL è sicuro e consentito
+  	// ... rest of the code
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SocketHookImpl.java
+<ol>
+<li>Reflection Injection<ul>
+<li>Line: 55;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la riflessione per invocare metodi su oggetti senza controllare l'input o verificare la sicurezza.;</li>
+<li>Solution: Verificare l'input prima di utilizzarlo nella riflessione e implementare controlli di sicurezza per prevenire l'iniezione di codice dannoso.;</li>
+<li>Example Code:<code>if (initSocketImpl == null || !isInit) {
+  SocketHookFactory.setHook(false);
+  throw new RuntimeException("InitSocketImpl failed! Hook stopped!");
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SocketHookUtils.java
+<ol>
+<li>Reflection Injection<ul>
+<li>Line: 16;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la riflessione per accedere a metodi privati o protetti delle classi. Questo può consentire ad un attaccante di eseguire codice non autorizzato o ottenere informazioni sensibili.;</li>
+<li>Solution: Evitare l'uso della riflessione per accedere a metodi privati o protetti. Se necessario, utilizzare metodi pubblici o interfacce fornite dalla classe.;</li>
+<li>Example Code:<code>public class MyClass {
+    public void myMethod() {
+        // Codice sicuro
+    }
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SocketHookFactory.java
+<ol>
+<li>SSRF (Server-Side Request Forgery)<ul>
+<li>Line: 22;</li>
+<li>Severity: potenziale;</li>
+<li>Description: La classe SocketHookFactory potrebbe essere vulnerabile a SSRF (Server-Side Request Forgery) se il valore della variabile 'isHook' viene controllato da input non attendibili. Questo potrebbe consentire a un attaccante di eseguire richieste verso risorse interne o esterne non autorizzate.;</li>
+<li>Solution: Assicurarsi che il valore della variabile 'isHook' venga controllato da input attendibili e non consentire l'accesso a risorse non autorizzate.;</li>
+<li>Example Code:<code>setHook(true);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SecurityUtil.java
+<ol>
+<li>SSRF漏洞<ul>
+<li>Line: 98;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice contiene una funzione checkSSRFByWhitehosts che verifica se l'URL è sicuro. Tuttavia, questa funzione potrebbe non essere sufficiente per proteggere completamente dall'attacco SSRF. È consigliabile utilizzare altre misure di sicurezza, come la verifica dell'URL tramite una whitelist di domini consentiti.;</li>
+<li>Solution: Utilizzare una combinazione di misure di sicurezza per proteggere dall'attacco SSRF, come la verifica dell'URL tramite una whitelist di domini consentiti, la limitazione delle richieste di reindirizzamento e l'uso di IP interni.;</li>
+<li>Example Code:<code>public static boolean checkSSRFByWhitehosts(String url) {
+    return SSRFChecker.checkURLFckSSRF(url);
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+WebSecurityConfig.java
+<ol>
+<li>CSRF<ul>
+<li>Line: 47;</li>
+<li>Severity: serious;</li>
+<li>Description: La configurazione CSRF potrebbe essere disabilitata o non correttamente configurata, consentendo attacchi CSRF.;</li>
+<li>Solution: Abilitare e configurare correttamente la protezione CSRF per prevenire attacchi CSRF.;</li>
+<li>Example Code:<code>http.csrf()
+    .requireCsrfProtectionMatcher(csrfRequestMatcher)
+    .ignoringAntMatchers(csrfExcludeUrl)
+    .csrfTokenRepository(new CookieCsrfTokenRepository());.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CustomCorsProcessor.java
+<ol>
+<li>Insecure CORS Configuration<ul>
+<li>Line: 34;</li>
+<li>Severity: medium;</li>
+<li>Description: La configurazione CORS non è sicura e potrebbe consentire richieste da origini non attendibili.;</li>
+<li>Solution: Impostare correttamente la configurazione CORS per consentire solo richieste da origini attendibili.;</li>
+<li>Example Code:<code>config.addAllowedOrigin("https://www.example.com");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+LoginFailureHandler.java
+<ol>
+<li>Insecure Logging<ul>
+<li>Line: 19;</li>
+<li>Severity: serious;</li>
+<li>Description: The code logs sensitive information (username and password) in plain text.;</li>
+<li>Solution: Do not log sensitive information. Instead, log a generic message without including the actual values.;</li>
+<li>Example Code:<code>logger.info("Login failed. " + request.getRequestURL() + " username: [REDACTED] password: [REDACTED]");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+LoginSuccessHandler.java
+<ol>
+<li>Potential Open Redirect<ul>
+<li>Line: 29;</li>
+<li>Severity: potential;</li>
+<li>Description: The 'originUrl' variable is not properly validated before being used in a redirect. This can allow an attacker to redirect users to malicious websites.;</li>
+<li>Solution: Validate the 'originUrl' variable to ensure it is a trusted URL before using it in a redirect.;</li>
+<li>Example Code:<code>if (isValidUrl(originUrl)) {
+    response.sendRedirect(originUrl);
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+AntObjectInputStream.java
+<ol>
+<li>Deserialization vulnerability<ul>
+<li>Line: 34;</li>
+<li>Severity: serious;</li>
+<li>Description: La classe AntObjectInputStream estende ObjectInputStream e sovrascrive il metodo resolveClass(). Questo metodo viene chiamato durante la deserializzazione di un oggetto e consente di risolvere la classe dell'oggetto. Tuttavia, la classe non effettua alcun controllo sulle classi che possono essere deserializzate, consentendo potenziali attacchi di deserializzazione.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare un meccanismo di controllo sulle classi che possono essere deserializzate. È possibile utilizzare una lista nera o una lista bianca per specificare le classi consentite o non consentite durante la deserializzazione.;</li>
+<li>Example Code:<code>protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+    String className = desc.getName();
+    if (!isAllowed(className)) {
+        throw new InvalidClassException("Unauthorized deserialization attempt", className);
+    }
+    return super.resolveClass(desc);
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CsrfAccessDeniedHandler.java
+<ol>
+<li>Access Denied Page Vulnerability<ul>
+<li>Line: 23;</li>
+<li>Severity: medium;</li>
+<li>Description: La pagina di accesso negato mostra informazioni sensibili come URL e referer.;</li>
+<li>Solution: Evitare di mostrare informazioni sensibili nella pagina di accesso negato.;</li>
+<li>Example Code:<code>response.getWriter().write("Accesso negato.");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+DisableSpringSecurityFirewall.java
+<ol>
+<li>Disabilitazione del firewall di sicurezza di Spring<ul>
+<li>Line: 9;</li>
+<li>Severity: medio;</li>
+<li>Description: La classe DisableSpringSecurityFirewall disabilita il firewall di sicurezza di Spring.;</li>
+<li>Solution: Non disabilitare il firewall di sicurezza di Spring in modo da garantire la protezione dell'applicazione.;</li>
+<li>Example Code:<code>Rimuovere la classe DisableSpringSecurityFirewall o reimplementarla in modo che non disabiliti il firewall di sicurezza di Spring..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Jwt.java
+<ol>
+<li>Vulnerabilità di XSS<ul>
+<li>Line: 62;</li>
+<li>Severity: serio;</li>
+<li>Description: Il valore del cookie USER_COOKIE viene utilizzato direttamente nel metodo getNickname senza essere sanitizzato o validato.;</li>
+<li>Solution: Sanitizzare e validare il valore del cookie prima di utilizzarlo nel codice.;</li>
+<li>Example Code:<code>String nickname = JwtUtils.getNicknameByJavaJwt(sanitize(user_cookie));.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Rce.java
+<ol>
+<li>Command Injection<ul>
+<li>Line: 38;</li>
+<li>Severity: serious;</li>
+<li>Description: L'applicazione esegue comandi del sistema operativo senza validare o filtrare l'input dell'utente, consentendo ad un attaccante di eseguire comandi arbitrari.;</li>
+<li>Solution: Validare e filtrare l'input dell'utente per evitare l'esecuzione di comandi non autorizzati. Utilizzare metodi sicuri per eseguire comandi di sistema, come ProcessBuilder.;</li>
+<li>Example Code:<code>ProcessBuilder processBuilder = new ProcessBuilder(arrCmd);
+Process p = processBuilder.start();.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+XSS.java
+<ol>
+<li>Stored XSS<ul>
+<li>Line: 33;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità di tipo Stored XSS, che permette l'inserimento di codice JavaScript dannoso all'interno di un cookie.;</li>
+<li>Solution: Per risolvere la vulnerabilità di Stored XSS, è necessario effettuare una corretta validazione e sanitizzazione dei dati inseriti dall'utente prima di memorizzarli all'interno del cookie. Inoltre, è consigliabile utilizzare l'header HttpOnly per impedire l'accesso al cookie tramite JavaScript.;</li>
+<li>Example Code:<code>public String store(String xss, HttpServletResponse response) {
+  String sanitizedXss = sanitize(xss);
+  Cookie cookie = new Cookie("xss", sanitizedXss);
+  cookie.setHttpOnly(true);
+  response.addCookie(cookie);
+  return "Parametro inserito nel cookie";
+}
+
+private String sanitize(String input) {
+  // Effettua la sanitizzazione del parametro input
+  return sanitizedInput;
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+XXE.java
+<ol>
+<li>XML External Entity (XXE)<ul>
+<li>Line: 45;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza parser XML vulnerabili che permettono l'inclusione di entità esterne;</li>
+<li>Solution: Utilizzare parser XML sicuri che disabilitino le funzionalità di inclusione di entità esterne;</li>
+<li>Example Code:<code>xmlReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+xmlReader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Cors.java
+<ol>
+<li>Vulnerabilità CORS<ul>
+<li>Line: 32;</li>
+<li>Severity: serio;</li>
+<li>Description: La configurazione CORS non è corretta e potrebbe consentire attacchi di Cross-Origin Resource Sharing (CORS).;</li>
+<li>Solution: Configurare correttamente le impostazioni CORS per limitare l'accesso ai domini autorizzati e prevenire attacchi di tipo CORS.;</li>
+<li>Example Code:<code>response.setHeader("Access-Control-Allow-Origin", "https://www.example.com");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Jdbc.java
+<ol>
+<li>CVE-2022-21724<ul>
+<li>Line: 26;</li>
+<li>Severity: grave;</li>
+<li>Description: La vulnerabilità CVE-2022-21724 consente agli attaccanti di eseguire attacchi JDBC attraverso un URL JDBC malevolo.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario validare e sanificare l'URL JDBC prima di utilizzarlo per connettersi al database. Inoltre, è consigliabile utilizzare librerie di terze parti per gestire in modo sicuro le connessioni al database.;</li>
+<li>Example Code:<code>byte[] b = java.util.Base64.getDecoder().decode(jdbcUrlBase64);
+String jdbcUrl = new String(b);
+jdbcUrl = sanitize(jdbcUrl);
+log.info(jdbcUrl);
+DriverManager.getConnection(jdbcUrl);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SpEL.java
+<ol>
+<li>Iniezione SpEL<ul>
+<li>Line: 27;</li>
+<li>Severity: Serio;</li>
+<li>Description: L'applicazione utilizza l'espressione SpEL senza una corretta validazione o sanitizzazione dei dati in ingresso, consentendo agli attaccanti di eseguire codice arbitrario sul server.;</li>
+<li>Solution: Per prevenire l'iniezione SpEL, è necessario validare e sanitizzare correttamente i dati in ingresso prima di utilizzarli nell'espressione SpEL. Utilizzare metodi come ExpressionUtils#isExpressionLanguage() per verificare se l'input contiene espressioni SpEL.;</li>
+<li>Example Code:<code>public String rce(String expression) {
+  if (ExpressionUtils.isExpressionLanguage(expression)) {
+    return "Invalid expression";
+  }
+
+  ExpressionParser parser = new SpelExpressionParser();
+  return parser.parseExpression(expression).getValue().toString();
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SQLI.java
+<ol>
+<li>SQL Injection<ul>
+<li>Line: 59;</li>
+<li>Severity: serious;</li>
+<li>Description: La vulnerabilità di SQL Injection consente a un attaccante di inserire o manipolare query SQL non protette in un'applicazione web. Ciò può consentire all'attaccante di visualizzare, modificare o eliminare dati nel database o eseguire operazioni non autorizzate.;</li>
+<li>Solution: Per proteggere l'applicazione da SQL Injection, è necessario utilizzare sempre PreparedStatement o metodi equivalenti per creare query SQL parametriche. In questo modo, i parametri vengono correttamente trattati e sanificati, evitando l'iniezione di SQL.;</li>
+<li>Example Code:<code>String sql = "select * from users where username = ?";
+PreparedStatement st = con.prepareStatement(sql);
+st.setString(1, username);
+ResultSet rs = st.executeQuery();.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SSRF.java
+<ol>
+<li>Java SSRF<ul>
+<li>Line: 45;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 67;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 85;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 105;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 133;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 153;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 173;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 193;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 213;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 233;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 253;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+<li>Java SSRF<ul>
+<li>Line: 273;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità SSRF (Server Side Request Forgery), che consente a un attaccante di forzare il server a fare richieste a risorse esterne non autorizzate.;</li>
+<li>Solution: Per mitigare questa vulnerabilità, è necessario implementare controlli sulle URL fornite dagli utenti, verificando che siano valide e consentendo solo protocolli sicuri come HTTP e HTTPS.;</li>
+<li>Example Code:<code>if (!SecurityUtil.isHttp(url)) {
+    return "[-] Controllo SSRF fallito";
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+SSTI.java
+<ol>
+<li>SSTI (Server Side Template Injection)<ul>
+<li>Line: 29;</li>
+<li>Severity: grave;</li>
+<li>Description: L'applicazione utilizza Velocity per l'elaborazione dei template, ma non controlla adeguatamente i dati inseriti dall'utente, consentendo l'iniezione di codice malevolo.;</li>
+<li>Solution: Evitare di utilizzare il metodo Velocity.evaluate per l'elaborazione dei template. Utilizzare invece un meccanismo di rendering dei template che fornisca una protezione adeguata contro le SSTI, come ad esempio l'utilizzo di un motore di template che implementa un sistema di sandboxing.;</li>
+<li>Example Code:<code>Per esempio, si può utilizzare il motore di template FreeMarker che offre una protezione nativa contro le SSTI. Invece di utilizzare Velocity.evaluate, si può utilizzare il metodo processTemplateIntoString di FreeMarker per elaborare il template in modo sicuro..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Test.java
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 20;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza dati non filtrati dall'utente nel metodo System.out.println, che potrebbe consentire l'esecuzione di codice JavaScript dannoso sul browser dell'utente.;</li>
+<li>Solution: Filtrare e validare i dati inseriti dall'utente prima di utilizzarli nel codice.;</li>
+<li>Example Code:<code>String empIdFiltered = filterAndValidate(empId);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Jsonp.java
+<ol>
+<li>JSONP Injection<ul>
+<li>Line: 32;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza il parametro callback direttamente per generare una risposta JSONP senza alcun controllo o sanitizzazione.;</li>
+<li>Solution: Sanitizzare il parametro callback prima di utilizzarlo per generare la risposta JSONP. Verificare che il parametro contenga solo caratteri alfanumerici.;</li>
+<li>Example Code:<code>String callback = request.getParameter(this.callback);
+if (!callback.matches("^[a-zA-Z0-9]+$")) {
+    return "error";
+}
+return WebUtils.json2Jsonp(callback, LoginUtils.getUserInfo2JsonStr(request));.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Log4j.java
+<ol>
+<li>Insecure Log4j Configuration<ul>
+<li>Line: 23;</li>
+<li>Severity: serious;</li>
+<li>Description: La configurazione di Log4j permette l'inserimento di payload dannosi tramite il parametro 'token', che potrebbe portare ad attacchi di tipo injection.;</li>
+<li>Solution: Aggiorna Log4j all'ultima versione per correggere questa vulnerabilità.;</li>
+<li>Example Code:<code>Aggiorna la dipendenza di Log4j nel file pom.xml o build.gradle alla versione più recente..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Login.java
+<ol>
+<li>Gestione errata del logout<ul>
+<li>Line: 32;</li>
+<li>Severity: potenziale;</li>
+<li>Description: La gestione del logout potrebbe non essere corretta, permettendo a un utente di effettuare il logout anche se non è autenticato.;</li>
+<li>Solution: Verificare che l'utente sia autenticato prima di effettuare il logout.;</li>
+<li>Example Code:<code>if (request.getUserPrincipal() != null) {
+    // Effettua il logout
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ooxmlXXE.java
+<ol>
+<li>Vulnerabilità XXE<ul>
+<li>Line: 51;</li>
+<li>Severity: serio;</li>
+<li>Description: Questa classe di controller utilizza la libreria Apache POI per leggere file Excel (.xlsx). Tuttavia, il codice non effettua alcun controllo sul contenuto del file caricato, aprendo la porta a una potenziale vulnerabilità XXE (XML External Entity). Un attaccante potrebbe sfruttare questa vulnerabilità per eseguire attacchi di tipo XXE, che potrebbero consentire la lettura di file arbitrari sul server o l'esecuzione di codice remoto.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario implementare controlli adeguati sul file caricato per prevenire l'elaborazione di eventuali entità esterne o risorse esterne. È possibile utilizzare metodi come la validazione dello schema XML o la disabilitazione delle funzionalità di elaborazione delle entità esterne.;</li>
+<li>Example Code:<code>Esempio di codice per risolvere la vulnerabilità XXE:
+
+// Imposta la configurazione del parser XML per disabilitare le entità esterne
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
+// Esegui il parsing del documento XML
+DocumentBuilder builder = factory.newDocumentBuilder();
+Document document = builder.parse(file.getInputStream());.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+xlsxStreamerXXE.java
+<ol>
+<li>xxe<ul>
+<li>Line: 45;</li>
+<li>Severity: grave;</li>
+<li>Description: Il codice contiene una vulnerabilità di XXE (XML External Entity) che può consentire a un attaccante di leggere file arbitrari dal server.;</li>
+<li>Solution: Aggiorna xlsx-streamer alla versione 2.1.0 o successiva.;</li>
+<li>Example Code:<code>StreamingReader.builder().open(file.getInputStream());.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Dotall.java
+<ol>
+<li>Spring Security CVE-2022-22978<ul>
+<li>Line: 23;</li>
+<li>Severity: serious;</li>
+<li>Description: Questa vulnerabilità permette a un attaccante di bypassare le restrizioni di sicurezza di Spring Security.;</li>
+<li>Solution: Aggiornare la versione di Spring Security alla versione 5.5.7 o successiva.;</li>
+<li>Example Code:<code>import org.springframework.security.core.context.SecurityContextHolder;
+
+public class Dotall {
+
+    public static void main(String[] args) throws Exception{
+        Pattern vuln_pattern = Pattern.compile("/black_path.*");
+        Pattern sec_pattern = Pattern.compile("/black_path.*", Pattern.DOTALL);
+
+        String poc = URLDecoder.decode("/black_path%0a/xx", StandardCharsets.UTF_8.toString());
+        System.out.println("Poc: " + poc);
+        System.out.println("Not dotall: " + vuln_pattern.matcher(poc).matches());
+        System.out.println("Dotall: " + sec_pattern.matcher(poc).matches());
+    }
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Cookies.java
+<ol>
+<li>Accesso non autorizzato tramite cookie<ul>
+<li>Line: 31;</li>
+<li>Severity: serio;</li>
+<li>Description: Alcune applicazioni potrebbero ottenere le informazioni di identificazione dell'utente direttamente dai cookie in chiaro, causando problemi di accesso non autorizzato.;</li>
+<li>Solution: Per evitare problemi di accesso non autorizzato, è consigliabile crittografare le informazioni di identificazione dell'utente nei cookie e utilizzare meccanismi di autenticazione sicuri.;</li>
+<li>Example Code:<code>Utilizzare un algoritmo di crittografia per crittografare le informazioni di identificazione dell'utente nei cookie e utilizzare un meccanismo di autenticazione sicuro come JWT (JSON Web Token)..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+IPForge.java
+<ol>
+<li>Utilizzo di X-Forwarded-For per ottenere l'indirizzo IP<ul>
+<li>Line: 41;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'utilizzo di X-Forwarded-For per ottenere l'indirizzo IP può essere vulnerabile a spoofing dell'indirizzo IP. Questo può consentire a un attaccante di falsificare l'indirizzo IP e impersonare un'altra persona o dispositivo.;</li>
+<li>Solution: Utilizzare l'header X-Real-IP per ottenere l'indirizzo IP invece di X-Forwarded-For. Assicurarsi che l'header X-Real-IP sia impostato correttamente nel server proxy.;</li>
+<li>Example Code:<code>String ip = request.getHeader("X-Real-IP");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Fastjson.java
+<ol>
+<li>Deserializzazione non sicura<ul>
+<li>Line: 23;</li>
+<li>Severity: seria;</li>
+<li>Description: La classe Fastjson utilizza il metodo parseObject per deserializzare un oggetto JSON senza controllare adeguatamente la sua sicurezza. Questo può portare a vulnerabilità di deserializzazione non sicure.;</li>
+<li>Solution: Per evitare questa vulnerabilità, è consigliabile utilizzare librerie di deserializzazione sicure come Jackson o Gson, che implementano controlli di sicurezza adeguati durante la deserializzazione.;</li>
+<li>Example Code:<code>import com.fasterxml.jackson.databind.ObjectMapper;
+
+ObjectMapper objectMapper = new ObjectMapper();
+MyObject obj = objectMapper.readValue(jsonString, MyObject.class);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+FileUpload.java
+<ol>
+<li>Insecure File Upload<ul>
+<li>Line: 61;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non effettua controlli sufficienti sul tipo di file caricato, consentendo a un utente malintenzionato di caricare file eseguibili o script dannosi.;</li>
+<li>Solution: Implementare controlli per verificare il tipo di file caricato, ad esempio controllando l'estensione del file o il tipo MIME. Inoltre, è consigliabile rinominare il file caricato in modo casuale per evitare il sovrascrivere di file esistenti o l'accesso diretto a file caricati.;</li>
+<li>Example Code:<code>String[] allowedExtensions = {".jpg", ".png", ".jpeg", ".gif", ".bmp", ".ico"};
+String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+boolean isAllowedExtension = Arrays.stream(allowedExtensions).anyMatch(ext -> ext.equalsIgnoreCase(fileExtension));
+if (!isAllowedExtension) {
+    // handle error
+}.</code></li>
+</ul>
+</li>
+<li>MIME Type Validation Bypass<ul>
+<li>Line: 75;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza un approccio non sicuro per verificare il tipo MIME del file caricato, consentendo a un utente malintenzionato di caricare file dannosi con un tipo MIME modificato.;</li>
+<li>Solution: Utilizzare un metodo più sicuro per verificare il tipo MIME del file caricato, ad esempio utilizzando una libreria di convalida del tipo MIME o confrontando l'estensione del file con il tipo MIME dichiarato.;</li>
+<li>Example Code:<code>String[] allowedMimeTypes = {"image/jpeg", "image/png", "image/gif", "image/bmp", "image/x-icon"};
+boolean isAllowedMimeType = Arrays.stream(allowedMimeTypes).anyMatch(mimeType::equalsIgnoreCase);
+if (!isAllowedMimeType) {
+    // handle error
+}.</code></li>
+</ul>
+</li>
+<li>File Content Validation<ul>
+<li>Line: 92;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice non effettua controlli sufficienti sul contenuto del file caricato, consentendo a un utente malintenzionato di caricare file non validi o dannosi.;</li>
+<li>Solution: Implementare controlli per verificare che il file caricato sia un'immagine valida, ad esempio utilizzando una libreria di convalida delle immagini o verificando la struttura del file.;</li>
+<li>Example Code:<code>private static boolean isImage(File file) throws IOException {
+    BufferedImage bi = ImageIO.read(file);
+    return bi != null;
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+WebSockets.java
+<ol>
+<li>Injection di comandi<ul>
+<li>Line: 49;</li>
+<li>Severity: grave;</li>
+<li>Description: Il codice accetta un parametro 'path' dall'utente senza alcun controllo o validazione. Questo parametro viene utilizzato direttamente nella creazione di un oggetto ServerEndpointConfig. Un attaccante potrebbe sfruttare questa vulnerabilità per eseguire comandi arbitrari sul server.;</li>
+<li>Solution: Validare e filtrare il parametro 'path' per evitare l'iniezione di comandi. Utilizzare solo valori predefiniti o consentiti per la creazione di oggetti ServerEndpointConfig.;</li>
+<li>Example Code:<code>String path = req.getParameter("path");
+if (path == null || !isValidPath(path)) {
+    return "path is invalid";
+}
+
+private boolean isValidPath(String path) {
+    // Implementare la logica per verificare se il path è valido
+    return true;
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+XStreamRce.java
+<ol>
+<li>XStream RCE<ul>
+<li>Line: 30;</li>
+<li>Severity: serious;</li>
+<li>Description: L'applicazione utilizza una versione vulnerabile di XStream che consente l'esecuzione remota di codice (RCE).;</li>
+<li>Solution: Aggiorna XStream alla versione 1.4.11 o successiva.;</li>
+<li>Example Code:<code>dependencies {
+    implementation 'com.thoughtworks.xstream:xstream:1.4.11'
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+Deserialize.java
+<ol>
+<li>Deserialization vulnerability<ul>
+<li>Line: 45;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la deserializzazione di oggetti senza verificare la loro sicurezza, consentendo potenziali attacchi di Remote Code Execution (RCE).;</li>
+<li>Solution: È necessario implementare controlli di sicurezza sulla deserializzazione degli oggetti, come l'utilizzo di una whitelist di classi consentite o l'uso di librerie di deserializzazione sicure.;</li>
+<li>Example Code:<code>public class SecureObjectInputStream extends ObjectInputStream {
+    
+    private static final Set<Class<?>> allowedClasses = new HashSet<>();
+    
+    static {
+        allowedClasses.add(TrustedClass1.class);
+        allowedClasses.add(TrustedClass2.class);
+    }
+    
+    public SecureObjectInputStream(InputStream in) throws IOException {
+        super(in);
+    }
+    
+    @Override
+    protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+        if (!allowedClasses.contains(desc.forClass())) {
+            throw new InvalidClassException("Unauthorized deserialization attempt", desc.getName());
+        }
+        return super.resolveClass(desc);
+    }
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+URLRedirect.java
+<ol>
+<li>URL Redirect<ul>
+<li>Line: 26;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una vulnerabilità di reindirizzamento non controllato.;</li>
+<li>Solution: Controllare l'URL di reindirizzamento per assicurarsi che sia presente in una whitelist di URL consentiti.;</li>
+<li>Example Code:<code>if (url.startsWith("http://localhost:8080") || url.startsWith("http://www.example.com")) {
+    return "redirect:" + url;
+} else {
+    return "redirect:/";
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+URLWhiteList.java
+<ol>
+<li>Whitelist Bypass<ul>
+<li>Line: 46;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza una whitelist per controllare gli URL, ma è vulnerabile a bypassare la whitelist utilizzando URL che terminano con il dominio consentito o che contengono il dominio consentito.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario utilizzare un controllo più accurato per verificare l'URL. Ad esempio, è possibile utilizzare l'equals() o il metodo endsWith() con un controllo completo del dominio.;</li>
+<li>Example Code:<code>if (host.equals(domain)) {
+    return "Good url.";
+}.</code></li>
+</ul>
+</li>
+<li>Whitelist Bypass<ul>
+<li>Line: 70;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza una whitelist per controllare gli URL, ma è vulnerabile a bypassare la whitelist utilizzando URL che contengono il dominio consentito.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario utilizzare un controllo più accurato per verificare l'URL. Ad esempio, è possibile utilizzare il metodo contains() con un controllo completo del dominio.;</li>
+<li>Example Code:<code>if (host.contains(domain)) {
+    return "Good url.";
+}.</code></li>
+</ul>
+</li>
+<li>Whitelist Bypass<ul>
+<li>Line: 92;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza una whitelist per controllare gli URL, ma è vulnerabile a bypassare la whitelist utilizzando un'espressione regolare non sicura per verificare il dominio.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario utilizzare un'espressione regolare sicura per verificare il dominio. Ad esempio, è possibile utilizzare l'espressione regolare "^joychou\\.org$".;</li>
+<li>Example Code:<code>Pattern p = Pattern.compile("^joychou\\.org$");
+Matcher m = p.matcher(host);
+
+if (m.find()) {
+    return "Good url.";
+} else {
+    return "Bad url.";
+}.</code></li>
+</ul>
+</li>
+<li>Whitelist Bypass<ul>
+<li>Line: 116;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza una whitelist per controllare gli URL, ma è vulnerabile a bypassare la whitelist utilizzando la classe URL per ottenere l'host.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario utilizzare un metodo più sicuro per ottenere l'host dell'URL. Ad esempio, è possibile utilizzare il metodo SecurityUtil.gethost() invece della classe URL.;</li>
+<li>Example Code:<code>String host = SecurityUtil.gethost(url);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CommandInject.java
+<ol>
+<li>Command Injection<ul>
+<li>Line: 32;</li>
+<li>Severity: serious;</li>
+<li>Description: L'applicazione esegue comandi di sistema senza validare o filtrare i dati di input dell'utente, consentendo agli attaccanti di eseguire comandi arbitrari sul server.;</li>
+<li>Solution: Validare e filtrare attentamente i dati di input dell'utente prima di utilizzarli per eseguire comandi di sistema. Utilizzare metodi sicuri per eseguire comandi di sistema, come ad esempio l'utilizzo di API specifiche del linguaggio o l'utilizzo di librerie di terze parti che gestiscono correttamente l'input dell'utente.;</li>
+<li>Example Code:<code>String[] cmdList = new String[]{"sh", "-c", "ls -la " + sanitize(filepath)};
+ProcessBuilder builder = new ProcessBuilder(cmdList);
+builder.redirectErrorStream(true);
+Process process = builder.start();.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+CRLFInjection.java
+<ol>
+<li>CRLF Injection<ul>
+<li>Line: 26;</li>
+<li>Severity: medium;</li>
+<li>Description: L'iniezione di CRLF (Carriage Return Line Feed) si verifica quando un'applicazione web accetta input dall'utente e lo utilizza per creare una risposta HTTP senza sanitizzare o validare correttamente l'input. Questo può consentire a un attaccante di iniettare sequenze di caratteri speciali come il ritorno a capo e il avanzamento di riga, che possono essere utilizzate per manipolare l'output o inserire contenuti dannosi.;</li>
+<li>Solution: Per proteggere l'applicazione da un attacco di iniezione CRLF, è necessario validare e sanitizzare correttamente l'input dell'utente prima di utilizzarlo per creare una risposta HTTP. Utilizzare metodi di sanitizzazione come l'escape dei caratteri speciali o la rimozione dei caratteri non validi.;</li>
+<li>Example Code:<code>String author = request.getParameter("test3");
+author = author.replaceAll("\\r", "").replaceAll("\\n", "");
+Cookie cookie = new Cookie("test3", author);
+response.addCookie(cookie);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+GetRequestURI.java
+<ol>
+<li>Bypassing URL Path Security Check<ul>
+<li>Line: 41;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza getRequestURI invece di getServletPath per verificare la sicurezza del percorso URL, consentendo potenzialmente a un utente malintenzionato di bypassare i controlli di sicurezza.;</li>
+<li>Solution: Utilizzare getServletPath invece di getRequestURI per verificare la sicurezza del percorso URL.;</li>
+<li>Example Code:<code>uri = request.getServletPath();.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+PathTraversal.java
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 27;</li>
+<li>Severity: serious;</li>
+<li>Description: La vulnerabilità di Path Traversal consente a un attaccante di accedere a file o directory al di fuori della directory prevista.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario implementare un meccanismo di filtraggio dei percorsi dei file in modo che solo i percorsi validi siano consentiti.;</li>
+<li>Example Code:<code>public String getImageSec(String filepath) throws IOException {
+  if (SecurityUtil.pathFilter(filepath) == null) {
+    logger.info("Illegal file path: " + filepath);
+    return "Bad boy. Illegal file path.";
+  }
+  return getImgBase64(filepath);
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ClassDataLoader.java
+<ol>
+<li>Remote Code Execution<ul>
+<li>Line: 19;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice accetta un parametro 'classData' dall'utente e lo utilizza per caricare una classe dinamicamente. Questo può portare ad un'attacco di Remote Code Execution.;</li>
+<li>Solution: Validare e filtrare il parametro 'classData' per impedire l'iniezione di codice dannoso. Utilizzare metodi di sicurezza come sandboxing o class loader personalizzati per limitare l'accesso alle risorse di sistema.;</li>
+<li>Example Code:<code>String classData = request.getParameter("classData");
+
+// Validazione e filtraggio del parametro classData
+if (isValid(classData)) {
+    byte[] classBytes = java.util.Base64.getDecoder().decode(classData);
+    // Resto del codice...
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+imageConfig.java
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 15;</li>
+<li>Severity: serio;</li>
+<li>Description: La configurazione del resource handler permette di accedere a file al di fuori della directory specificata.;</li>
+<li>Solution: Verificare che la directory specificata sia sicura e limitata solo ai file che devono essere resi accessibili.;</li>
+<li>Example Code:<code>registry.addResourceHandler("/image/**").addResourceLocations("file:/path/to/secure/directory/");.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

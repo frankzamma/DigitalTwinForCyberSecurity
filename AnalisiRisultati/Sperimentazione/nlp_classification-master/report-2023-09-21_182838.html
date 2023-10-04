@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-21</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-21T18:28:37.816826400</h2><p>Total of  vulnerabilities founded 102</p>
+<ul>
+<li>
+net.py
+<ol>
+<li>Utilizzo di librerie non sicure<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice importa la libreria torch senza specificare una versione specifica. Questo potrebbe portare all'utilizzo di una versione non sicura della libreria, che potrebbe contenere vulnerabilità note o problemi di sicurezza.;</li>
+<li>Solution: Specificare una versione specifica della libreria torch che sia nota per essere sicura, ad esempio utilizzando il comando 'import torch==1.8.1'. Inoltre, è consigliabile tenere aggiornate le librerie utilizzate per beneficiare delle correzioni di sicurezza più recenti.;</li>
+<li>Example Code:<code>import torch==1.8.1.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Insecure File Path<ul>
+<li>Line: 14;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses a user-provided filepath without validating or sanitizing it, which can lead to path traversal attacks.;</li>
+<li>Solution: Always validate and sanitize user-provided filepaths before using them.;</li>
+<li>Example Code:<code>import os
+
+filepath = '/path/to/file.csv'
+
+# Validate and sanitize the filepath
+if os.path.isabs(filepath):
+    filepath = os.path.abspath(filepath)
+else:
+    filepath = os.path.abspath(os.path.join(os.getcwd(), filepath))
+
+# Use the sanitized filepath
+self._corpus = pd.read_csv(filepath, sep='	').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 117;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is vulnerable to SQL injection attacks. User input is directly used in a SQL query without proper sanitization or parameterization.;</li>
+<li>Solution: To prevent SQL injection attacks, user input should be properly sanitized or parameterized before being used in a SQL query. This can be done by using prepared statements or parameterized queries, which separate the SQL code from the user input.;</li>
+<li>Example Code:<code>import psycopg2
+
+conn = psycopg2.connect(database='mydb', user='myuser', password='mypassword', host='localhost', port='5432')
+cursor = conn.cursor()
+
+query = 'SELECT * FROM users WHERE username = %s'
+username = input('Enter username: ')
+cursor.execute(query, (username,))
+result = cursor.fetchall()
+
+for row in result:
+    print(row)
+
+conn.close().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metric.py
+<ol>
+<li>Utilizzo di una libreria non sicura<ul>
+<li>Line: 4;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'utilizzo della libreria tqdm può causare una potenziale vulnerabilità di sicurezza;</li>
+<li>Solution: Aggiornare la libreria tqdm alla versione più recente per risolvere la vulnerabilità;</li>
+<li>Example Code:<code>pip install --upgrade tqdm.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tokenization.py
+<ol>
+<li>Potential Path Traversal<ul>
+<li>Line: 44;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the 'os.path.isfile' function to check if a file exists before loading it. However, this function does not provide any protection against path traversal attacks, where an attacker can manipulate the file path to access files outside of the intended directory.;</li>
+<li>Solution: Use a secure file loading function that provides protection against path traversal attacks, such as the 'os.path.abspath' function.;</li>
+<li>Example Code:<code>resolved_vocab_file = os.path.abspath(vocab_file).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 65;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza input non validato in una pagina web, consentendo ad un attaccante di iniettare script malevoli che verranno eseguiti nel browser dell'utente.;</li>
+<li>Solution: Validare e sanificare tutti gli input dell'utente prima di utilizzarli nella pagina web. Utilizzare librerie o framework che offrono funzioni di validazione degli input.;</li>
+<li>Example Code:<code>import bleach
+
+user_input = input()
+
+sanitized_input = bleach.clean(user_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potenziale vulnerabilità di injection di JSON<ul>
+<li>Line: 16;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione json.loads per caricare un file JSON senza validare il contenuto. Questo potrebbe consentire a un attaccante di eseguire un attacco di injection di JSON, inserendo codice dannoso nel file JSON.;</li>
+<li>Solution: Per evitare questa vulnerabilità, è necessario validare il contenuto del file JSON prima di caricarlo utilizzando la funzione json.loads. È possibile utilizzare la libreria jsonschema per definire uno schema JSON e convalidare il file JSON rispetto a tale schema.;</li>
+<li>Example Code:<code>import json
+from jsonschema import validate
+
+with open(json_path_or_dict, mode='r') as io:
+    params = json.loads(io.read())
+
+schema = {
+    'type': 'object',
+    'properties': {
+        'attribute1': {'type': 'string'},
+        'attribute2': {'type': 'integer'},
+    },
+    'required': ['attribute1', 'attribute2'],
+}
+
+validate(params, schema).</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di injection di JSON<ul>
+<li>Line: 44;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione json.loads per caricare un file JSON senza validare il contenuto. Questo potrebbe consentire a un attaccante di eseguire un attacco di injection di JSON, inserendo codice dannoso nel file JSON.;</li>
+<li>Solution: Per evitare questa vulnerabilità, è necessario validare il contenuto del file JSON prima di caricarlo utilizzando la funzione json.loads. È possibile utilizzare la libreria jsonschema per definire uno schema JSON e convalidare il file JSON rispetto a tale schema.;</li>
+<li>Example Code:<code>import json
+from jsonschema import validate
+
+with open(json_path_or_dict, mode='r') as io:
+    metric = json.loads(io.read())
+
+schema = {
+    'type': 'object',
+    'properties': {
+        'attribute1': {'type': 'string'},
+        'attribute2': {'type': 'integer'},
+    },
+    'required': ['attribute1', 'attribute2'],
+}
+
+validate(metric, schema).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tokenization.py
+<ol>
+<li>Insecure Caching<ul>
+<li>Line: 78;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses a cached_path function to download and cache files. However, it does not verify the integrity of the downloaded files, which can lead to security vulnerabilities if an attacker replaces the file with a malicious one.;</li>
+<li>Solution: Add a verification step to ensure the integrity of the downloaded files. This can be done by comparing the hash of the downloaded file with a trusted hash.;</li>
+<li>Example Code:<code>import hashlib
+
+# Calculate the hash of the downloaded file
+def calculate_hash(file_path):
+    with open(file_path, 'rb') as f:
+        data = f.read()
+        hash_value = hashlib.sha256(data).hexdigest()
+    return hash_value
+
+# Verify the integrity of the downloaded file
+def verify_file(file_path, trusted_hash):
+    downloaded_hash = calculate_hash(file_path)
+    if downloaded_hash != trusted_hash:
+        raise ValueError('The downloaded file has been tampered with!')
+
+# Usage
+file_path = cached_path(vocab_file, cache_dir=cache_dir)
+trusted_hash = '...' # Replace with the trusted hash
+verify_file(file_path, trusted_hash).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria pathlib per creare un percorso di file senza validare o sanificare l'input dell'utente. Questo può consentire a un attaccante di accedere a file al di fuori del percorso previsto.;</li>
+<li>Solution: Validare e sanificare l'input dell'utente prima di utilizzarlo per creare un percorso di file. Utilizzare metodi come os.path.abspath() o os.path.join() per costruire il percorso in modo sicuro.;</li>
+<li>Example Code:<code>qpair_dir = Path(os.path.abspath('qpair')).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+prepare_vocab_and_weights.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 29;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice utilizza il modulo 'argparse' per accettare input dall'utente senza validare correttamente i percorsi dei file.;</li>
+<li>Solution: Validare i percorsi dei file forniti dall'utente per prevenire l'accesso non autorizzato a file sensibili.;</li>
+<li>Example Code:<code>Utilizzare la funzione 'os.path.abspath()' per ottenere il percorso assoluto del file specificato dall'utente..</code></li>
+</ul>
+</li>
+<li>Download non sicuro<ul>
+<li>Line: 41;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione 'urlretrieve()' per scaricare file da Internet senza verificare l'autenticità o l'integrità del file.;</li>
+<li>Solution: Utilizzare una connessione sicura (HTTPS) per scaricare file da Internet e verificare l'autenticità e l'integrità del file utilizzando firme digitali o hash.;</li>
+<li>Example Code:<code>Utilizzare la libreria 'requests' per scaricare file in modo sicuro e verificare l'autenticità e l'integrità del file utilizzando firme digitali o hash..</code></li>
+</ul>
+</li>
+<li>File System Manipulation<ul>
+<li>Line: 59;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione 'extractall()' del modulo 'zipfile' per estrarre il contenuto di un file ZIP senza verificare la destinazione di estrazione.;</li>
+<li>Solution: Verificare che la destinazione di estrazione sia una directory sicura e limitare l'accesso ai file estratti.;</li>
+<li>Example Code:<code>Utilizzare la funzione 'os.path.abspath()' per ottenere il percorso assoluto della directory di destinazione e verificare che sia una directory sicura..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Insecure File Path<ul>
+<li>Line: 14;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is using a file path directly from user input without proper validation or sanitization, which can lead to path traversal attacks.;</li>
+<li>Solution: Validate and sanitize the file path input to prevent path traversal attacks. Use a whitelist approach to only allow certain characters or paths.;</li>
+<li>Example Code:<code>import os
+
+# Validate and sanitize the file path
+filepath = '/path/to/file'
+
+# Use os.path.join to construct the file path
+full_path = os.path.join('/base/path', filepath)
+
+# Use the full_path variable in the code.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 99;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is vulnerable to SQL injection attacks because it directly concatenates user input into a SQL query without sanitizing or validating it.;</li>
+<li>Solution: To prevent SQL injection attacks, use parameterized queries or prepared statements instead of directly concatenating user input into SQL queries. Parameterized queries ensure that user input is treated as data and not executable code.;</li>
+<li>Example Code:<code>query = 'SELECT * FROM users WHERE username = ? AND password = ?'
+values = (username, password)
+cursor.execute(query, values).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tokenization.py
+<ol>
+<li>Insecure File Download<ul>
+<li>Line: 38;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione cached_path per scaricare un file da una URL senza verificarne l'autenticità.;</li>
+<li>Solution: Utilizzare un metodo sicuro per scaricare il file, come ad esempio utilizzare librerie di terze parti che verificano l'autenticità del file scaricato.;</li>
+<li>Example Code:<code>from urllib.request import urlretrieve
+
+urlretrieve(url, filename).</code></li>
+</ul>
+</li>
+<li>Command Injection<ul>
+<li>Line: 82;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione os.path.join senza validare o sanificare i percorsi forniti dall'utente.;</li>
+<li>Solution: Validare e sanificare i percorsi forniti dall'utente prima di utilizzarli nelle funzioni di sistema.;</li>
+<li>Example Code:<code>import os
+
+user_input = input()
+valid_input = sanitize_input(user_input)
+path = os.path.join(valid_input, 'filename').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 60;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non effettua alcun controllo o sanitizzazione dei dati di input prima di utilizzarli all'interno di una stringa HTML. Ciò potrebbe consentire a un attaccante di eseguire codice JavaScript dannoso sul browser dell'utente.;</li>
+<li>Solution: Sanitizzare o filtrare i dati di input per rimuovere o neutralizzare i caratteri speciali che potrebbero essere utilizzati per eseguire codice JavaScript.;</li>
+<li>Example Code:<code>import html
+
+input_data = '<script>alert('XSS')</script>'
+
+sanitized_data = html.escape(input_data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Vulnerabilità di injection JSON<ul>
+<li>Line: 15;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la funzione json.loads senza validare o filtrare l'input, aprendo la possibilità di un attacco di injection JSON.;</li>
+<li>Solution: Utilizzare la funzione json.loads solo con input affidabili o validare e filtrare l'input prima di utilizzarlo.;</li>
+<li>Example Code:<code>params = json.loads(io.read())
+# Validare e filtrare params prima di utilizzarlo.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+tokenization.py
+<ol>
+<li>Potential Path Traversal<ul>
+<li>Line: 41;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the 'os.path.isfile' function to check if a file exists before loading it. However, this function does not provide any protection against path traversal attacks, allowing an attacker to access files outside of the intended directory.;</li>
+<li>Solution: Use a secure method to validate file paths and prevent path traversal attacks, such as using a whitelist of allowed file paths or using a secure file upload library.;</li>
+<li>Example Code:<code>import os
+
+def is_valid_file_path(file_path):
+    allowed_paths = ['path/to/allowed/files']
+    if file_path in allowed_paths:
+        return True
+    else:
+        return False
+
+# Example usage:
+file_path = 'path/to/file'
+if is_valid_file_path(file_path):
+    # Load the file
+    with open(file_path, 'r') as file:
+        data = file.read()
+    # Process the file
+    process_file(data)
+else:
+    # Handle invalid file path
+    handle_invalid_file_path().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Directory Traversal<ul>
+<li>Line: 14;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses user input to construct a file path without proper validation, allowing an attacker to traverse the file system and access unauthorized files.;</li>
+<li>Solution: Validate user input and restrict access to authorized directories.;</li>
+<li>Example Code:<code>nsmc_dir = Path('nsmc').resolve()
+filepath = nsmc_dir / 'ratings_train.txt'.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+prepare_vocab_and_weights.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 33;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza un percorso di file fornito dall'utente senza alcun controllo o validazione. Ciò può consentire a un utente malintenzionato di accedere a file sensibili o eseguire operazioni non autorizzate.;</li>
+<li>Solution: Validare e controllare attentamente il percorso del file fornito dall'utente. Assicurarsi che il percorso sia limitato a una directory specifica e non consentire l'accesso a file al di fuori di questa directory.;</li>
+<li>Example Code:<code>ptr_dir = Path('pretrained') / args.type
+
+if not ptr_dir.exists() or not ptr_dir.is_dir():
+    raise ValueError('Invalid directory path').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Import di librerie non utilizzate<ul>
+<li>Line: 3;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice importa la libreria torch.nn.functional ma non viene utilizzata nel codice.;</li>
+<li>Solution: Rimuovere l'import della libreria torch.nn.functional.;</li>
+<li>Example Code:<code>import torch
+import torch.nn as nn
+from model.ops import Embedding, Linker, BiLSTM, SelfAttention
+from model.utils import Vocab
+from typing import Tuple
+
+
+class SAN(nn.Module):
+    ‌‌‌‌"""SAN class"""
+    def __init__(self, num_classes: int, lstm_hidden_dim: int, da: int, r: int, hidden_dim: int, vocab: Vocab) -> None:
+        ‌‌‌‌"""Instantiating SAN class
+
+        Args:
+            num_classes (int): the number of classes
+            lstm_hidden_dim (int): the number of features in the hidden states in bi-directional lstm
+            da (int): the number of features in hidden layer from self-attention
+            r (int): the number of aspects of self-attention
+            hidden_dim (int): the number of features in hidden layer from mlp
+            vocab (model.utils.Vocab): the instance of model.utils.Vocab
+        """
+        super(SAN, self).__init__()
+        self._embedding = Embedding(vocab, padding_idx=vocab.to_indices(vocab.padding_token),
+                                    freeze=False, permuting=False, tracking=True)
+        self._pipe = Linker(permuting=False)
+        self._bilstm = BiLSTM(self._embedding._ops.embedding_dim, lstm_hidden_dim, using_sequence=True)
+        self._attention = SelfAttention(2 * lstm_hidden_dim, da, r)
+        self._fc1 = nn.Linear(2 * lstm_hidden_dim * r, hidden_dim)
+        self._fc2 = nn.Linear(hidden_dim, num_classes)
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.tensor, torch.tensor]:
+        fmap = self._embedding(x)
+        fmap = self._pipe(fmap)
+        hiddens = self._bilstm(fmap)
+        attn_mat = self._attention(hiddens)
+        m = torch.bmm(attn_mat, hiddens)
+        m = m.view(m.size()[0], -1)
+        hidden = F.relu(self._fc1(m))
+        score = self._fc2(hidden)
+        return score, attn_mat.</code></li>
+</ul>
+</li>
+<li>Utilizzo di funzioni obsolete<ul>
+<li>Line: 38;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice utilizza la funzione torch.bmm che è stata deprecata.;</li>
+<li>Solution: Utilizzare la funzione torch.matmul al posto di torch.bmm.;</li>
+<li>Example Code:<code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from model.ops import Embedding, Linker, BiLSTM, SelfAttention
+from model.utils import Vocab
+from typing import Tuple
+
+
+class SAN(nn.Module):
+    ‌‌‌‌"""SAN class"""
+    def __init__(self, num_classes: int, lstm_hidden_dim: int, da: int, r: int, hidden_dim: int, vocab: Vocab) -> None:
+        ‌‌‌‌"""Instantiating SAN class
+
+        Args:
+            num_classes (int): the number of classes
+            lstm_hidden_dim (int): the number of features in the hidden states in bi-directional lstm
+            da (int): the number of features in hidden layer from self-attention
+            r (int): the number of aspects of self-attention
+            hidden_dim (int): the number of features in hidden layer from mlp
+            vocab (model.utils.Vocab): the instance of model.utils.Vocab
+        """
+        super(SAN, self).__init__()
+        self._embedding = Embedding(vocab, padding_idx=vocab.to_indices(vocab.padding_token),
+                                    freeze=False, permuting=False, tracking=True)
+        self._pipe = Linker(permuting=False)
+        self._bilstm = BiLSTM(self._embedding._ops.embedding_dim, lstm_hidden_dim, using_sequence=True)
+        self._attention = SelfAttention(2 * lstm_hidden_dim, da, r)
+        self._fc1 = nn.Linear(2 * lstm_hidden_dim * r, hidden_dim)
+        self._fc2 = nn.Linear(hidden_dim, num_classes)
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.tensor, torch.tensor]:
+        fmap = self._embedding(x)
+        fmap = self._pipe(fmap)
+        hiddens = self._bilstm(fmap)
+        attn_mat = self._attention(hiddens)
+        m = torch.matmul(attn_mat, hiddens)
+        m = m.view(m.size()[0], -1)
+        hidden = F.relu(self._fc1(m))
+        score = self._fc2(hidden)
+        return score, attn_mat.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Injection di codice<ul>
+<li>Line: 15;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza una funzione 'read_csv' per leggere un file CSV. Se il valore del parametro 'filepath' viene fornito dall'utente senza una corretta validazione, potrebbe essere possibile eseguire un'iniezione di codice.;</li>
+<li>Solution: Validare e sanificare il valore del parametro 'filepath' per assicurarsi che contenga solo un percorso di file valido.;</li>
+<li>Example Code:<code>filepath = validate_filepath(filepath).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Importing untrusted library<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'importazione di una libreria non fidata può portare a vulnerabilità di sicurezza.;</li>
+<li>Solution: Evitare di importare librerie non fidate. Utilizzare solo librerie da fonti affidabili.;</li>
+<li>Example Code:<code>from nltk.tokenize import word_tokenize.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 11;</li>
+<li>Severity: potential;</li>
+<li>Description: The code does not validate the input for the Vocab class;</li>
+<li>Solution: Add input validation for the list_of_tokens parameter in the Vocab class constructor;</li>
+<li>Example Code:<code>if list_of_tokens is None:
+    list_of_tokens = [].</code></li>
+</ul>
+</li>
+<li>Potential vulnerability<ul>
+<li>Line: 18;</li>
+<li>Severity: potential;</li>
+<li>Description: The code does not validate the input for the reserved_tokens parameter in the Vocab class;</li>
+<li>Solution: Add input validation for the reserved_tokens parameter in the Vocab class constructor;</li>
+<li>Example Code:<code>if reserved_tokens is None:
+    reserved_tokens = [].</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metric.py
+<ol>
+<li>Manca la validazione dell'input<ul>
+<li>Line: 4;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice non controlla se i parametri passati alla funzione sono validi o meno.;</li>
+<li>Solution: Aggiungere controlli per verificare la validità dei parametri passati alla funzione.;</li>
+<li>Example Code:<code>def evaluate(model, data_loader, metrics, device):
+    if not isinstance(model, torch.nn.Module):
+        raise TypeError('Il parametro model deve essere un oggetto di tipo torch.nn.Module')
+    if not isinstance(data_loader, torch.utils.data.DataLoader):
+        raise TypeError('Il parametro data_loader deve essere un oggetto di tipo torch.utils.data.DataLoader')
+    if not isinstance(metrics, dict):
+        raise TypeError('Il parametro metrics deve essere un dizionario')
+    if not isinstance(device, torch.device):
+        raise TypeError('Il parametro device deve essere un oggetto di tipo torch.device')
+
+    if model.training:
+        model.eval()
+
+    summary = {metric: 0 for metric in metrics}
+
+    for step, mb in tqdm(enumerate(data_loader), desc='steps', total=len(data_loader)):
+        x_mb, y_mb = map(lambda elm: elm.to(device), mb)
+
+        with torch.no_grad():
+            y_hat_mb, _ = model(x_mb)
+
+            for metric in metrics:
+                summary[metric] += metrics[metric](y_hat_mb, y_mb).item() * y_mb.size()[0]
+    else:
+        for metric in metrics:
+            summary[metric] /= len(data_loader.dataset)
+
+    return summary
+
+
+def acc(yhat, y):
+    with torch.no_grad():
+        yhat = yhat.max(dim=1)[1]
+        acc = (yhat == y).float().mean()
+    return acc.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 61;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice non valida o filtra correttamente l'input dell'utente prima di inserirlo in una pagina web, consentendo ad un attaccante di eseguire script malevoli sul browser dell'utente.;</li>
+<li>Solution: Validare e filtrare correttamente l'input dell'utente prima di utilizzarlo in una pagina web. Utilizzare funzioni di escape o librerie di sanitizzazione per evitare l'esecuzione di script malevoli.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert("XSS")</script>'
+escaped_input = html.escape(user_input)
+
+# Utilizzare escaped_input nella pagina web.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Insecure File Handling<ul>
+<li>Line: 32;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not properly handle file paths, which can lead to path traversal attacks.;</li>
+<li>Solution: Use a secure method for handling file paths, such as the 'Path' class from the 'pathlib' module.;</li>
+<li>Example Code:<code>model_dir = Path(model_dir).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Pickle Deserialization<ul>
+<li>Line: 43;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la libreria pickle per serializzare l'oggetto vocab e salvarlo su disco. Tuttavia, la deserializzazione di oggetti pickle può essere pericolosa se i dati provengono da una fonte non attendibile, poiché un attaccante potrebbe fornire un payload malevolo che viene eseguito durante la deserializzazione.;</li>
+<li>Solution: Per evitare questa vulnerabilità, si dovrebbe evitare di utilizzare pickle per la serializzazione e deserializzazione di oggetti provenienti da fonti non attendibili. È possibile utilizzare formati di serializzazione più sicuri come JSON o MessagePack. Inoltre, è importante verificare l'affidabilità delle origini dei dati prima di eseguire la deserializzazione.;</li>
+<li>Example Code:<code>import json
+
+# Salvataggio vocab
+with open(nsmc_dir / 'vocab.json', 'w') as io:
+    json.dump(vocab, io)
+
+# Caricamento vocab
+with open(nsmc_dir / 'vocab.json', 'r') as io:
+    vocab = json.load(io).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Insecure Randomness<ul>
+<li>Line: 17;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses the torch.randn function to generate random numbers, which may not be cryptographically secure.;</li>
+<li>Solution: Use a cryptographically secure random number generator to generate random numbers.;</li>
+<li>Example Code:<code>import secrets
+
+random_number = secrets.randbelow(lstm_hidden_dim * 2).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ops.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 37;</li>
+<li>Severity: potential;</li>
+<li>Description: The code does not check if the input tensor x is of type torch.Tensor in the forward method of the Embedding class.;</li>
+<li>Solution: Add a check to ensure that the input tensor x is of type torch.Tensor before using it in the forward method.;</li>
+<li>Example Code:<code>if not isinstance(x, torch.Tensor):
+    raise TypeError('Input x must be of type torch.Tensor').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Insecure File Handling<ul>
+<li>Line: 16;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not validate the filepath input, which can lead to path traversal attacks or reading sensitive files.;</li>
+<li>Solution: Ensure that the filepath input is validated and restricted to a specific directory or whitelist of allowed files.;</li>
+<li>Example Code:<code>if not filepath.startswith('/path/to/allowed/directory/'): raise ValueError('Invalid filepath').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Import di librerie non sicure<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: L'import di librerie non sicure può portare a vulnerabilità nel sistema. Le librerie di terze parti possono contenere codice malevolo o avere vulnerabilità note che possono essere sfruttate dagli attaccanti.;</li>
+<li>Solution: Utilizzare solo librerie di terze parti affidabili e mantenute attivamente. Verificare regolarmente se sono disponibili aggiornamenti e applicarli tempestivamente. Evitare l'import di librerie non necessarie.;</li>
+<li>Example Code:<code>from konlpy.tag import Okt
+
+split_morphs = Okt().morphs.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 19;</li>
+<li>Severity: potential;</li>
+<li>Description: The code does not perform input validation on the list_of_tokens parameter in the Vocab class constructor, which can lead to potential security vulnerabilities such as code injection or SQL injection.;</li>
+<li>Solution: Perform input validation on the list_of_tokens parameter to ensure that it only contains valid tokens.;</li>
+<li>Example Code:<code>if list_of_tokens is not None and not isinstance(list_of_tokens, list):
+    raise ValueError('list_of_tokens must be a list').</code></li>
+</ul>
+</li>
+<li>Potential vulnerability<ul>
+<li>Line: 33;</li>
+<li>Severity: potential;</li>
+<li>Description: The code does not perform input validation on the token_to_idx parameter in the Vocab class constructor, which can lead to potential security vulnerabilities such as code injection or SQL injection.;</li>
+<li>Solution: Perform input validation on the token_to_idx parameter to ensure that it only contains valid tokens and indices.;</li>
+<li>Example Code:<code>if token_to_idx is not None and not isinstance(token_to_idx, dict):
+    raise ValueError('token_to_idx must be a dictionary').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metric.py
+<ol>
+<li>Uso di librerie non sicure<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'importazione di librerie non sicure può portare a vulnerabilità nel codice.;</li>
+<li>Solution: Utilizzare solo librerie affidabili e mantenute.;</li>
+<li>Example Code:<code>import numpy.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 60;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza l'input dell'utente senza sanificarlo, aprendo la porta a possibili attacchi di tipo Cross-Site Scripting (XSS).;</li>
+<li>Solution: Sanificare l'input dell'utente prima di utilizzarlo nel codice.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert('XSS')</script>'
+
+sanitized_input = html.escape(user_input)
+
+# Utilizzare sanitized_input nel codice.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Insecure File Handling<ul>
+<li>Line: 19;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the 'open' function to read a file without checking if the file path is trusted or validated. This can lead to a path traversal vulnerability, allowing an attacker to read sensitive files on the system.;</li>
+<li>Solution: Always validate and sanitize user input before using it as a file path. Use a whitelist approach to only allow trusted file paths.;</li>
+<li>Example Code:<code>import os
+
+file_path = '/path/to/file'
+
+# Validate and sanitize the file path
+if not file_path.startswith('/path/to/allowed/directory'):
+    raise ValueError('Invalid file path')
+
+# Use the file path
+with open(file_path, mode='r') as io:
+    data = io.read()
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>Serialization vulnerability<ul>
+<li>Line: 9;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza il modulo pickle per caricare un checkpoint di un modello. L'utilizzo di pickle per deserializzare oggetti può essere pericoloso in quanto può consentire l'esecuzione di codice malevolo.;</li>
+<li>Solution: Utilizzare un metodo di serializzazione sicuro come JSON o YAML invece di pickle. In alternativa, verificare che il file da caricare sia affidabile e non sia stato modificato.;</li>
+<li>Example Code:<code>import json
+
+with open(checkpoint_path, 'r') as f:
+    checkpoint = json.load(f)
+
+model.load_state_dict(checkpoint['model_state_dict']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Serialization Vulnerability<ul>
+<li>Line: 9;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the pickle module to serialize and deserialize objects, which can lead to remote code execution if untrusted data is deserialized.;</li>
+<li>Solution: Avoid using pickle module to deserialize untrusted data. Use safer alternatives like JSON or XML parsing.;</li>
+<li>Example Code:<code>import json
+
+# Deserialize using JSON
+with open('data.json', 'r') as file:
+    data = json.load(file).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 17;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria 'pathlib' per creare i percorsi dei file. Tuttavia, non viene effettuato alcun controllo sul percorso fornito dall'utente, aprendo la porta a un attacco di traversing directory.;</li>
+<li>Solution: È necessario verificare e sanificare il percorso fornito dall'utente per evitare attacchi di traversing directory. È possibile utilizzare la funzione 'resolve()' di 'pathlib' per ottenere il percorso assoluto e quindi verificare se il percorso appartiene alla directory desiderata.;</li>
+<li>Example Code:<code>qpair_dir = Path('qpair')
+
+# Verifica e sanifica il percorso fornito dall'utente
+qpair_dir = qpair_dir.resolve()
+
+train = pd.read_csv(qpair_dir / 'kor_pair_train.csv').filter(
+    items=['question1', 'question2', 'is_duplicate']
+)
+
+....</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Insecure Randomness<ul>
+<li>Line: 25;</li>
+<li>Severity: medium;</li>
+<li>Description: L'utilizzo di numeri casuali non sicuri può compromettere la sicurezza dell'applicazione;</li>
+<li>Solution: Utilizzare un generatore di numeri casuali sicuro come random.SystemRandom();</li>
+<li>Example Code:<code>import random
+random_generator = random.SystemRandom().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Insecure File Path<ul>
+<li>Line: 14;</li>
+<li>Severity: serious;</li>
+<li>Description: The filepath parameter is directly used to read a file without proper validation or sanitization, which can lead to directory traversal attacks or arbitrary file read/write vulnerabilities.;</li>
+<li>Solution: Always validate and sanitize user input before using it as a file path. Use a whitelist approach to only allow specific file paths or use a secure file path handling library.;</li>
+<li>Example Code:<code>import os
+
+# Validate and sanitize the filepath
+if not filepath.startswith('/path/to/allowed/files/'):
+    raise ValueError('Invalid file path')
+
+# Use a secure file path handling library
+secure_filepath = os.path.join('/path/to/allowed/files/', filepath)
+
+# Read the file
+self._corpus = pd.read_csv(secure_filepath, sep='	').loc[:, ['document', 'label']].</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Regex Injection<ul>
+<li>Line: 32;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza la funzione re.match senza validare correttamente l'input dell'utente, consentendo potenziali attacchi di regex injection.;</li>
+<li>Solution: Per prevenire attacchi di regex injection, è necessario validare e sanificare correttamente l'input dell'utente prima di utilizzarlo in una regex. È possibile utilizzare la funzione re.escape per sanificare l'input e limitare l'uso di caratteri speciali nelle regex.;</li>
+<li>Example Code:<code>import re
+
+user_input = input('Inserisci una stringa: ')
+sanitized_input = re.escape(user_input)
+
+if re.match('.*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*', sanitized_input) is not None:
+    # Continua con il codice normale
+    pass.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 80;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is vulnerable to potential injection attacks.;</li>
+<li>Solution: Use parameterized queries or prepared statements to prevent injection attacks.;</li>
+<li>Example Code:<code>import psycopg2
+
+conn = psycopg2.connect(database='mydb', user='myuser', password='mypassword', host='localhost', port='5432')
+cursor = conn.cursor()
+
+# Using parameterized query
+cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+
+# Using prepared statement
+cursor.execute('PREPARE get_user (int) AS SELECT * FROM users WHERE id = $1;')
+cursor.execute('EXECUTE get_user(1)').</code></li>
+</ul>
+</li>
+<li>Potential vulnerability<ul>
+<li>Line: 98;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is vulnerable to potential injection attacks.;</li>
+<li>Solution: Use parameterized queries or prepared statements to prevent injection attacks.;</li>
+<li>Example Code:<code>import psycopg2
+
+conn = psycopg2.connect(database='mydb', user='myuser', password='mypassword', host='localhost', port='5432')
+cursor = conn.cursor()
+
+# Using parameterized query
+cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+
+# Using prepared statement
+cursor.execute('PREPARE get_user (int) AS SELECT * FROM users WHERE id = $1;')
+cursor.execute('EXECUTE get_user(1)').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>SQL Injection<ul>
+<li>Line: 94;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza argomenti di linea di comando senza sanitizzazione, rendendolo vulnerabile ad attacchi di SQL Injection.;</li>
+<li>Solution: Sanitizzare gli argomenti di linea di comando prima di utilizzarli in query SQL. Utilizzare parametri preparati o librerie di ORM per evitare attacchi di SQL Injection.;</li>
+<li>Example Code:<code>import psycopg2
+
+conn = psycopg2.connect(database='mydb', user='myuser', password='mypassword', host='localhost', port='5432')
+
+# Esempio di sanitizzazione dell'argomento di linea di comando
+username = sanitize_input(args.username)
+
+cur = conn.cursor()
+cur.execute('SELECT * FROM users WHERE username = %s', (username,))
+
+# ....</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Vulnerabilità di sicurezza nell'uso di json.loads<ul>
+<li>Line: 20;</li>
+<li>Severity: serious;</li>
+<li>Description: L'utilizzo della funzione json.loads può essere vulnerabile ad attacchi di tipo injection se non si effettua una corretta validazione dei dati in ingresso.;</li>
+<li>Solution: Per evitare questa vulnerabilità, è necessario effettuare una corretta validazione dei dati in ingresso prima di utilizzare la funzione json.loads. È possibile utilizzare la funzione jsonschema per definire uno schema di validazione dei dati e verificare che i dati in ingresso siano conformi a tale schema.;</li>
+<li>Example Code:<code>import json
+import jsonschema
+
+# Definire lo schema di validazione
+def schema_validation(data):
+    schema = {
+        'type': 'object',
+        'properties': {
+            'name': {'type': 'string'},
+            'age': {'type': 'integer'},
+            'email': {'type': 'string', 'format': 'email'}
+        },
+        'required': ['name', 'age', 'email']
+    }
+    jsonschema.validate(data, schema)
+
+# Esempio di utilizzo
+json_data = '{"name": "John", "age": 30, "email": "john@example.com"}'
+data = json.loads(json_data)
+schema_validation(data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>Missing Input Validation<ul>
+<li>Line: 56;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non effettua alcuna validazione dell'input ricevuto dall'utente.;</li>
+<li>Solution: Effettuare una validazione dell'input ricevuto dall'utente per prevenire attacchi di tipo injection o altre vulnerabilità.;</li>
+<li>Example Code:<code>Aggiungere controlli sull'input ricevuto dall'utente, ad esempio utilizzando la libreria argparse per definire i tipi di input accettati e validare i valori inseriti dall'utente..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Pickle deserialization vulnerability<ul>
+<li>Line: 11;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza il modulo pickle per serializzare e deserializzare oggetti. Questo può portare ad una vulnerabilità di deserializzazione non sicura se i dati vengono forniti da una fonte non attendibile. Un attaccante potrebbe sfruttare questa vulnerabilità per eseguire codice malevolo sul sistema.;</li>
+<li>Solution: Evitare di utilizzare il modulo pickle per deserializzare dati non attendibili. Se è necessario deserializzare oggetti, utilizzare metodi più sicuri come JSON o YAML.;</li>
+<li>Example Code:<code>import json
+
+with open(nsmc_dir / 'vocab.pkl', 'rb') as io:
+    vocab = json.load(io).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Potenziale vulnerabilità di Path Traversal<ul>
+<li>Line: 7;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza il modulo pathlib senza validare o filtrare i percorsi dei file forniti dall'utente. Ciò potrebbe consentire a un utente malintenzionato di accedere a file sensibili o eseguire operazioni non autorizzate sul sistema.;</li>
+<li>Solution: Validare e filtrare i percorsi dei file forniti dall'utente per evitare l'accesso non autorizzato o le operazioni dannose.;</li>
+<li>Example Code:<code>filepath = nsmc_dir / "ratings_train.txt"
+
+# Validazione del percorso del file
+if not filepath.is_absolute():
+    filepath = nsmc_dir / filepath
+
+# Filtraggio dei caratteri non consentiti
+filepath = Path(''.join(filter(lambda c: c.isalnum() or c in ['_', '.'], str(filepath))))
+
+# Utilizzo del percorso del file filtrato
+dataset = pd.read_csv(filepath, sep="\t").loc[:, ["document", "label"]}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Import di librerie non sicure<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice importa la libreria torch senza verificare la provenienza o l'integrità della libreria. Questo potrebbe consentire ad un attaccante di eseguire codice dannoso o sfruttare vulnerabilità presenti nella libreria.;</li>
+<li>Solution: Verificare l'autenticità e l'integrità delle librerie prima di importarle. Utilizzare fonti affidabili per il download delle librerie e verificare le firme digitali o gli hash dei file per assicurarsi che siano stati scaricati correttamente e non siano stati modificati.;</li>
+<li>Example Code:<code>import torch
+import torch.nn as nn
+from model.ops import MultiChannelEmbedding, ConvolutionLayer, MaxOverTimePooling
+from model.utils import Vocab
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Insecure File Handling<ul>
+<li>Line: 18;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is reading a file directly from the user input without any validation or sanitization.;</li>
+<li>Solution: Always validate and sanitize user input before using it to read or write files. Use a whitelist approach to only allow specific file paths or extensions.;</li>
+<li>Example Code:<code>filepath = validate_and_sanitize(filepath).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Import di librerie non sicure<ul>
+<li>Line: 3;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'import di librerie non sicure può portare a vulnerabilità nel codice. In questo caso, l'import della libreria 'Mecab' potrebbe essere potenzialmente non sicuro.;</li>
+<li>Solution: Per evitare vulnerabilità, è consigliato importare solo librerie sicure e affidabili. Prima di utilizzare una libreria, è importante fare una ricerca sulle sue caratteristiche di sicurezza e sulla sua reputazione nella comunità degli sviluppatori.;</li>
+<li>Example Code:<code>from nltk.tokenize import word_tokenize
+
+split_morphs = word_tokenize.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 62;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is vulnerable to SQL injection attacks.;</li>
+<li>Solution: Use parameterized queries or prepared statements to sanitize user input.;</li>
+<li>Example Code:<code>import psycopg2
+
+conn = psycopg2.connect(database='mydb', user='myuser', password='mypassword', host='localhost', port='5432')
+cursor = conn.cursor()
+
+query = 'SELECT * FROM users WHERE username = %s AND password = %s'
+username = 'admin'
+password = 'password123'
+
+cursor.execute(query, (username, password))
+
+result = cursor.fetchall()
+
+conn.close()
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metric.py
+<ol>
+<li>Utilizzo di una libreria non sicura<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice importa la libreria 'torch' senza verificare se è una versione sicura o se è stata compromessa.;</li>
+<li>Solution: Verificare se la versione di 'torch' importata è sicura e aggiornare la libreria se necessario. Inoltre, verificare l'autenticità della libreria scaricata e assicurarsi di utilizzare fonti affidabili.;</li>
+<li>Example Code:<code>import torch==1.9.0.</code></li>
+</ul>
+</li>
+<li>Utilizzo di una libreria non sicura<ul>
+<li>Line: 2;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice importa la libreria 'tqdm' senza verificare se è una versione sicura o se è stata compromessa.;</li>
+<li>Solution: Verificare se la versione di 'tqdm' importata è sicura e aggiornare la libreria se necessario. Inoltre, verificare l'autenticità della libreria scaricata e assicurarsi di utilizzare fonti affidabili.;</li>
+<li>Example Code:<code>import tqdm==4.62.3.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 76;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice contiene una potenziale vulnerabilità di Cross-Site Scripting (XSS).;</li>
+<li>Solution: Per proteggere l'applicazione da attacchi XSS, è necessario effettuare la sanitizzazione dei dati in input e utilizzare funzioni di escape per evitare l'esecuzione di codice JavaScript non desiderato.;</li>
+<li>Example Code:<code>import html
+
+x_mb = html.escape(x_mb).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Vulnerabilità di Iniezione JSON<ul>
+<li>Line: 18;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione json.loads senza validare o filtrare i dati di input, aprendo la porta a possibili attacchi di iniezione JSON.;</li>
+<li>Solution: Validare o filtrare i dati di input prima di utilizzare la funzione json.loads.;</li>
+<li>Example Code:<code>params = json.loads(io.read())
+for key, value in params.items():
+    if isinstance(value, str):
+        params[key] = value.strip().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Pickle deserialization vulnerability<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: La libreria pickle in Python può essere utilizzata per serializzare oggetti Python in un formato binario. Tuttavia, la deserializzazione di oggetti pickle può essere pericolosa in quanto un attaccante potrebbe fornire un oggetto pickle malevolo che può essere eseguito con privilegi elevati o causare danni al sistema.;</li>
+<li>Solution: Evitare di utilizzare la libreria pickle per la deserializzazione di oggetti non fidati. Se è necessario deserializzare oggetti, utilizzare librerie sicure come JSON o YAML.;</li>
+<li>Example Code:<code>import json
+
+# Caricare l'oggetto pickle in modo sicuro
+with open('file.pickle', 'rb') as f:
+    data = json.load(f).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 8;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice utilizza il modulo pathlib per creare un percorso di file senza controllare se il percorso è sicuro.;</li>
+<li>Solution: Verificare che il percorso del file sia sicuro prima di utilizzarlo.;</li>
+<li>Example Code:<code>filepath = nsmc_dir / "ratings_train.txt"
+filepath = filepath.resolve()
+if not filepath.is_absolute():
+    raise ValueError("Invalid file path").</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Unused imports<ul>
+<li>Line: 4;</li>
+<li>Severity: potential;</li>
+<li>Description: There are unused imports in the code.;</li>
+<li>Solution: Remove the unused imports.;</li>
+<li>Example Code:<code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.nn.utils.rnn import pack_padded_sequence
+from model.ops import LexiconEncoder, ContextualEncoder, BiLSTM
+from typing import Tuple
+
+
+class SAN(nn.Module):
+    def __init__(self, num_classes, coarse_vocab, fine_vocab, fine_embedding_dim, hidden_size, multi_step,
+                 prediction_drop_ratio):
+        super(SAN, self).__init__()
+
+        self._lenc = LexiconEncoder(coarse_vocab, fine_vocab, fine_embedding_dim)
+        self._cenc = ContextualEncoder(self._lenc._output_size, hidden_size)
+        self._proj = nn.Linear(hidden_size * 2, hidden_size * 2, bias=False)
+        self._drop_a = nn.Dropout(.2)
+        self._drop_b = nn.Dropout(.2)
+        self._bilstm = BiLSTM(input_size=6 * hidden_size, hidden_size=hidden_size, using_sequence=True)
+        self._theta_a = nn.Linear(2 * hidden_size, 1, bias=False)
+        self._theta_b = nn.Parameter(torch.randn(2 * hidden_size, 2 * hidden_size))
+        self._grucell = nn.GRUCell(2 * hidden_size, 2 * hidden_size)
+        self._prediction = nn.Linear(8 * hidden_size, num_classes)
+        self._multi_step = multi_step
+        self._prediction_drop_ratio = prediction_drop_ratio
+
+    def forward(self, inputs: Tuple[torch.Tensor, torch.Tensor]) -> torch.Tensor:
+        qa_mb, qb_mb = inputs
+
+        # encoding
+        ca, length_a = self._cenc(self._lenc(qa_mb))
+        cb, length_b = self._cenc(self._lenc(qb_mb))
+
+        # attention
+        proj_ca = F.relu(self._proj(ca))
+        proj_cb = F.relu(self._proj(cb))
+
+        # for a
+        attn_score_a = torch.bmm(proj_ca, proj_cb.permute(0, 2, 1))
+        attn_score_a = self._drop_a(attn_score_a)
+        attn_a = F.softmax(attn_score_a, dim=-1)
+
+        # for b
+        attn_score_b = torch.bmm(proj_cb, proj_ca.permute(0, 2, 1))
+        attn_score_b = self._drop_b(attn_score_b)
+        attn_b = F.softmax(attn_score_b, dim=-1)
+
+        # memory
+        ua = torch.cat([ca, torch.bmm(attn_a, cb)], dim=-1)
+        ub = torch.cat([cb, torch.bmm(attn_b, ca)], dim=-1)
+        feature_a = pack_padded_sequence(torch.cat([ua, ca], dim=-1), length_a, batch_first=True, enforce_sorted=False)
+        feature_b = pack_padded_sequence(torch.cat([ub, cb], dim=-1), length_b, batch_first=True, enforce_sorted=False)
+        ma = self._bilstm(feature_a)
+        mb = self._bilstm(feature_b)
+
+        # answer
+        weights_alpha = torch.softmax(self._theta_a(ma).permute(0, 2, 1), dim=-1)
+        hidden_state = torch.bmm(weights_alpha, ma).squeeze()
+        weights_beta = torch.softmax((hidden_state.unsqueeze(1) @ self._theta_b @ mb.permute(0, 2, 1)), dim=-1)
+        time_step_input = torch.bmm(weights_beta, mb).squeeze()
+
+        predictions = []
+        predictions.append(self._one_step_predict((hidden_state, time_step_input)))
+
+        for step in range(self._multi_step - 1):
+            hidden_state = self._grucell(time_step_input, hidden_state)
+            weights_beta = torch.softmax((hidden_state.unsqueeze(1) @ self._theta_b @ mb.permute(0, 2, 1)), dim=-1)
+            time_step_input = torch.bmm(weights_beta, mb).squeeze()
+
+            predictions.append(self._one_step_predict((hidden_state, time_step_input)))
+        else:
+            predictions = torch.stack(predictions)
+
+            if self.training:
+                selected_indices = torch.where(torch.rand(self._multi_step).ge(self._prediction_drop_ratio))[0]
+                selected_indices = selected_indices.to(time_step_input.device)
+                average_prediction = predictions.index_select(0, selected_indices).mean(0)
+            else:
+                average_prediction = predictions.mean(0)
+
+        return average_prediction
+
+    def _one_step_predict(self, x: Tuple[torch.Tensor, torch.Tensor]) -> torch.Tensor:
+        hidden_state, time_step_input = x
+        concatenated = torch.cat([hidden_state, time_step_input, torch.abs(hidden_state - time_step_input),
+                                  hidden_state * time_step_input], dim=-1)
+        prediction = torch.softmax(self._prediction(concatenated), dim=-1)
+        return prediction
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+ops.py
+<ol>
+<li>Hardcoded Credentials<ul>
+<li>Line: 73;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains hardcoded credentials which can be a security risk if exposed or leaked.;</li>
+<li>Solution: Remove the hardcoded credentials and use a secure method to store and retrieve credentials, such as environment variables or a secure credential management system.;</li>
+<li>Example Code:<code>import os
+
+username = os.environ.get('USERNAME')
+password = os.environ.get('PASSWORD').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>SQL Injection<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza direttamente il parametro 'filepath' per leggere un file CSV senza alcun controllo o sanitizzazione. Questo può consentire a un attaccante di eseguire un attacco di SQL Injection.;</li>
+<li>Solution: Sanitizzare o validare il parametro 'filepath' prima di utilizzarlo per leggere il file CSV. Utilizzare metodi sicuri per l'accesso al file, come ad esempio l'utilizzo di percorsi assoluti o la limitazione dei permessi di accesso.;</li>
+<li>Example Code:<code>filepath = sanitize_filepath(filepath).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Potenziale vulnerabilità di Regex<ul>
+<li>Line: 15;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'utilizzo di espressioni regolari senza un'adeguata validazione può portare a vulnerabilità di Regex, come ad esempio la Regex Injection.;</li>
+<li>Solution: Per prevenire la vulnerabilità di Regex, è necessario validare accuratamente le espressioni regolari utilizzate. È possibile utilizzare librerie o funzioni specifiche per la validazione delle espressioni regolari, come ad esempio la funzione re.escape() in Python.;</li>
+<li>Example Code:<code>import re
+
+regex = re.escape(user_input)
+result = re.findall(regex, text).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 102;</li>
+<li>Severity: serious;</li>
+<li>Description: The code is vulnerable to SQL injection attacks as it directly concatenates user input into a SQL query.;</li>
+<li>Solution: Use parameterized queries or prepared statements to prevent SQL injection attacks. This involves using placeholders in the SQL query and binding user input to these placeholders.;</li>
+<li>Example Code:<code>import sqlite3
+
+conn = sqlite3.connect('database.db')
+cursor = conn.cursor()
+
+username = input('Enter username: ')
+password = input('Enter password: ')
+
+# Use parameterized query
+query = 'SELECT * FROM users WHERE username = ? AND password = ?'
+cursor.execute(query, (username, password))
+
+# Fetch the result
+result = cursor.fetchone()
+
+conn.close()
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metric.py
+<ol>
+<li>Potenziale vulnerabilità di sicurezza<ul>
+<li>Line: 33;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione torch.log() senza effettuare alcun controllo sull'input, potenzialmente causando errori o vulnerabilità di sicurezza.;</li>
+<li>Solution: Prima di utilizzare la funzione torch.log(), è consigliabile controllare l'input per evitare valori non validi o potenziali problemi di sicurezza. Ad esempio, si può verificare se l'input è maggiore di zero prima di applicare la funzione logaritmica.;</li>
+<li>Example Code:<code>if inputs > 0:
+    inputs = torch.log(inputs)
+    loss = F.nll_loss(inputs, targets)
+else:
+    # gestione dell'input non valido o dell'errore di sicurezza.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 71;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice contiene una potenziale vulnerabilità di Cross-Site Scripting (XSS).;</li>
+<li>Solution: Per prevenire l'XSS, è necessario sanitizzare e validare tutti i dati in ingresso. In particolare, i dati provenienti da input utente dovrebbero essere opportunamente filtrati e/o codificati prima di essere visualizzati nella pagina web.;</li>
+<li>Example Code:<code>import html
+
+mb_loss = log_loss(html.escape(y_hat_mb), y_mb).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potenziale vulnerabilità di injection JSON<ul>
+<li>Line: 17;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione json.loads senza validare o filtrare l'input JSON, il che potrebbe consentire un attacco di injection JSON.;</li>
+<li>Solution: Per prevenire l'injection JSON, è necessario validare e filtrare l'input JSON prima di utilizzarlo. È possibile utilizzare la funzione json.loads in combinazione con una libreria di validazione JSON come jsonschema per garantire che l'input sia conforme alle aspettative.;</li>
+<li>Example Code:<code>import json
+import jsonschema
+
+schema = {
+    'type': 'object',
+    'properties': {
+        'name': {'type': 'string'},
+        'age': {'type': 'number'},
+        'email': {'type': 'string', 'format': 'email'}
+    },
+    'required': ['name', 'age', 'email']
+}
+
+input_json = '{"name": "John", "age": 30, "email": "john@example.com"}'
+
+try:
+    jsonschema.validate(json.loads(input_json), schema)
+    # Input JSON is valid
+except jsonschema.ValidationError as e:
+    # Input JSON is invalid
+    print(f'Invalid JSON: {e}').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Pickle Deserialization<ul>
+<li>Line: 34;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria pickle per serializzare oggetti, il che può essere pericoloso se i dati serializzati provengono da una fonte non attendibile. Un attaccante potrebbe fornire un oggetto serializzato malevolo che potrebbe essere utilizzato per eseguire codice dannoso durante la deserializzazione.;</li>
+<li>Solution: Evitare di utilizzare la libreria pickle per la serializzazione e deserializzazione di oggetti. Utilizzare invece formati di serializzazione più sicuri come JSON o MessagePack.;</li>
+<li>Example Code:<code>import json
+
+# Serializzazione
+serialized_data = json.dumps(data)
+
+# Deserializzazione
+deserialized_data = json.loads(serialized_data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Potenziale vulnerabilità nell'import di moduli<ul>
+<li>Line: 1;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'import di moduli esterni può essere una potenziale vulnerabilità se il modulo importato contiene codice dannoso o non sicuro.;</li>
+<li>Solution: Verificare che il modulo importato sia affidabile e sicuro. Utilizzare moduli di terze parti solo da fonti affidabili e mantenuti attivamente. Effettuare regolarmente aggiornamenti e patch per i moduli importati.;</li>
+<li>Example Code:<code>import pandas as pd
+from pathlib import Path
+from utils import Config
+from sklearn.model_selection import train_test_split
+
+# Resto del codice....</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Utilizzo di inizializzazione non sicura<ul>
+<li>Line: 47;</li>
+<li>Severity: potenziale;</li>
+<li>Description: L'uso di inizializzazioni non sicure può portare a vulnerabilità di sicurezza come attacchi di avvelenamento dei dati o dirottamento del flusso di controllo.;</li>
+<li>Solution: Utilizzare inizializzazioni sicure come la distribuzione normale o la distribuzione uniforme per inizializzare i pesi delle reti neurali.;</li>
+<li>Example Code:<code>nn.init.normal_(layer.weight).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione SQL<ul>
+<li>Line: 17;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza direttamente i valori dell'input dell'utente per costruire una query SQL, senza alcun controllo o sanitizzazione dei dati. Ciò può consentire a un utente malintenzionato di eseguire un attacco di iniezione SQL e compromettere il database.;</li>
+<li>Solution: Utilizzare i parametri di query o i prepared statement per costruire le query SQL, in modo da evitare l'iniezione di codice dannoso.;</li>
+<li>Example Code:<code>import pandas as pd
+import torch
+from torch.utils.data import Dataset
+from typing import Tuple, Callable, List
+
+
+class Corpus(Dataset):
+    """Classe Corpus"""
+    def __init__(self, filepath: str, transform_fn: Callable[[str], List[int]]) -> None:
+        """Instantiating Corpus class
+
+        Args:
+            filepath (str): filepath
+            transform_fn (Callable): una funzione che può agire come trasformatore
+        """
+        self._corpus = pd.read_csv(filepath, sep='	').loc[:, ['document', 'label']]
+        self._transform = transform_fn
+
+    def __len__(self) -> int:
+        return len(self._corpus)
+
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
+        tokens2indices = torch.tensor(self._transform(self._corpus.iloc[idx]['document']))
+        label = torch.tensor(self._corpus.iloc[idx]['label'])
+        return tokens2indices, label.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di Regex<ul>
+<li>Line: 34;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione re.match per controllare se una stringa contiene caratteri coreani. Tuttavia, l'input dell'utente non viene validato o sanificato prima di essere utilizzato nella regex, il che potrebbe consentire un attacco di iniezione di regex.;</li>
+<li>Solution: Per prevenire l'iniezione di regex, è consigliabile utilizzare la funzione re.escape per sanificare l'input dell'utente prima di utilizzarlo nella regex.;</li>
+<li>Example Code:<code>char = re.escape(char).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 63;</li>
+<li>Severity: potential;</li>
+<li>Description: The code does not validate the input parameters;</li>
+<li>Solution: Add input validation code to ensure the input parameters are valid;</li>
+<li>Example Code:<code>if not isinstance(tokens, list):
+    raise ValueError('tokens must be a list')
+if not all(isinstance(tkn, str) for tkn in tokens):
+    raise ValueError('all elements in tokens must be strings').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 52;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non valida o filtra correttamente l'input dell'utente prima di inserirlo nel documento HTML, consentendo ad un attaccante di eseguire script dannosi sul browser dell'utente.;</li>
+<li>Solution: Utilizzare funzioni di sanitizzazione per filtrare l'input dell'utente e assicurarsi che non contenga script dannosi.;</li>
+<li>Example Code:<code>import re
+
+def sanitize_input(input):
+    return re.sub('<script.*?>.*?</script>', '', input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>JSON Injection<ul>
+<li>Line: 17;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione json.loads per caricare un file JSON senza validare il suo contenuto. Questo potrebbe consentire a un attaccante di eseguire un attacco di JSON Injection, inserendo codice malevolo nel file JSON.;</li>
+<li>Solution: Per evitare JSON Injection, è necessario validare il contenuto del file JSON prima di caricarlo. È possibile utilizzare la funzione json.load anziché json.loads, in quanto la funzione json.load esegue automaticamente la validazione del file JSON.;</li>
+<li>Example Code:<code>with open(json_path_or_dict, mode='r') as io:
+    params = json.load(io)
+self.__dict__.update(params).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>Potenziale vulnerabilità di injection<ul>
+<li>Line: 39;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice potrebbe essere vulnerabile ad attacchi di injection a causa dell'utilizzo di argomenti non validati nella creazione di percorsi di file.;</li>
+<li>Solution: Validare e sanificare gli argomenti utilizzati per creare i percorsi di file.;</li>
+<li>Example Code:<code>filepath = os.path.abspath(os.path.join(dataset_config, args.data)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Uso di pickle<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: L'utilizzo della libreria pickle può essere pericoloso in quanto permette di serializzare e deserializzare oggetti, aprendo la possibilità di eseguire codice dannoso.;</li>
+<li>Solution: Evitare di utilizzare la libreria pickle per serializzare oggetti. Invece, utilizzare metodi più sicuri come JSON o YAML.;</li>
+<li>Example Code:<code>import json
+
+# Serializzazione
+serialized_data = json.dumps(data)
+
+# Deserializzazione
+deserialized_data = json.loads(serialized_data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 11;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice utilizza il modulo pathlib senza validare i percorsi dei file.;</li>
+<li>Solution: Validare i percorsi dei file prima di utilizzarli.;</li>
+<li>Example Code:<code>filepath = nsmc_dir / "ratings_train.txt"
+filepath = filepath.resolve()
+dataset = pd.read_csv(filepath, sep="	").loc[:, ["document", "label"]}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Potenziale vulnerabilità di tipo injection<ul>
+<li>Line: 34;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice potrebbe essere vulnerabile ad attacchi di tipo injection. L'utilizzo diretto delle variabili 'qa' e 'qb' senza alcun controllo o sanitizzazione potrebbe permettere ad un attaccante di eseguire codice malevolo o manipolare i dati.;</li>
+<li>Solution: Per proteggere il codice da attacchi di tipo injection, è consigliabile utilizzare metodi di sanitizzazione dei dati in ingresso, come ad esempio l'escape dei caratteri speciali o l'utilizzo di prepared statements nelle query al database.;</li>
+<li>Example Code:<code>import re
+
+qa = re.escape(qa)
+qb = re.escape(qb)
+
+# oppure
+
+import sqlite3
+
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+
+c.execute('SELECT * FROM table WHERE column = ?', (qa,))
+result = c.fetchall().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Insecure File Handling<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza il metodo read_csv per leggere un file senza verificare l'estensione o il tipo di file. Questo potrebbe consentire a un attaccante di caricare file dannosi o eseguire codice malevolo.;</li>
+<li>Solution: Prima di leggere il file, verificare l'estensione e il tipo di file per assicurarsi che sia sicuro. Utilizzare metodi come os.path.splitext() per ottenere l'estensione del file e verificare se è consentita.;</li>
+<li>Example Code:<code>import os
+
+filepath = 'file.csv'
+extension = os.path.splitext(filepath)[1]
+
+if extension == '.csv':
+    # Leggi il file
+else:
+    # File non consentito.</code></li>
+</ul>
+</li>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 27;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice non effettua la sanitizzazione dei dati prima di utilizzarli per creare il Dataset. Ciò potrebbe consentire a un attaccante di eseguire attacchi di tipo XSS inserendo codice JavaScript dannoso nei dati.;</li>
+<li>Solution: Prima di utilizzare i dati per creare il Dataset, assicurarsi di effettuare la sanitizzazione dei dati. Utilizzare metodi come escape() o encode() per evitare l'inserimento di codice dannoso.;</li>
+<li>Example Code:<code>import html
+
+data = '<script>alert('XSS')</script>'
+
+sanitized_data = html.escape(data)
+
+# Utilizza sanitized_data per creare il Dataset.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Vulnerabilità di importazione di pacchetti non attendibili<ul>
+<li>Line: 1;</li>
+<li>Severity: serio;</li>
+<li>Description: L'importazione di pacchetti non attendibili può portare all'esecuzione di codice malevolo o all'inclusione di dipendenze non sicure nel progetto.;</li>
+<li>Solution: Assicurarsi di importare solo pacchetti provenienti da fonti attendibili e di verificare la sicurezza delle dipendenze utilizzate nel progetto.;</li>
+<li>Example Code:<code>from konlpy.tag import Mecab
+
+split_morphs = Mecab().morphs.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di codice<ul>
+<li>Line: 79;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice contiene una potenziale vulnerabilità di Iniezione di codice. La funzione 'to_indices' accetta una stringa di input senza alcun controllo o sanitizzazione. Questo potrebbe consentire a un utente malintenzionato di eseguire codice dannoso all'interno della stringa di input.;</li>
+<li>Solution: Per prevenire l'Iniezione di codice, è necessario implementare controlli e sanitizzazione dei dati di input. Utilizzare metodi come la validazione dei dati, la pulizia dei caratteri speciali e l'uso di query parametrizzate per evitare l'esecuzione di codice dannoso.;</li>
+<li>Example Code:<code>def to_indices(self, tokens: Union[str, List[str]]) -> Union[int, List[int]]:
+    sanitized_tokens = sanitize_input(tokens)
+    return [
+        self._token_to_idx[tkn]
+        if tkn in self._token_to_idx
+        else self._token_to_idx[self._unknown_token]
+        for tkn in sanitized_tokens
+    ].</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metric.py
+<ol>
+<li>Potenziale vulnerabilità di sicurezza<ul>
+<li>Line: 12;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice non gestisce correttamente le eccezioni o gli errori che possono verificarsi durante l'esecuzione.;</li>
+<li>Solution: Aggiungere una gestione adeguata delle eccezioni o degli errori, ad esempio utilizzando un blocco try-except per catturare gli errori e gestirli in modo appropriato.;</li>
+<li>Example Code:<code>try:
+    # codice da eseguire
+except Exception as e:
+    # gestione dell'errore.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 57;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non fa alcun controllo o sanitizzazione dei dati in input, consentendo a un attaccante di eseguire codice JavaScript dannoso sul browser dell'utente.;</li>
+<li>Solution: Sanitizzare i dati in input per rimuovere o neutralizzare eventuali script dannosi.;</li>
+<li>Example Code:<code>import html
+
+input_data = '<script>alert("XSS")</script>'
+sanitized_data = html.escape(input_data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potenziale vulnerabilità di injection JSON<ul>
+<li>Line: 17;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione json.loads senza validare o filtrare l'input JSON, aprendo la possibilità di un attacco di injection JSON.;</li>
+<li>Solution: Validare e filtrare l'input JSON prima di utilizzarlo con la funzione json.loads. È possibile utilizzare librerie come jsonschema per definire uno schema JSON e convalidare l'input rispetto a tale schema.;</li>
+<li>Example Code:<code>import jsonschema
+
+schema = {
+    'type': 'object',
+    'properties': {
+        'name': {'type': 'string'},
+        'age': {'type': 'integer'},
+        'email': {'type': 'string', 'format': 'email'}
+    },
+    'required': ['name', 'age', 'email']
+}
+
+try:
+    jsonschema.validate(data, schema)
+except jsonschema.ValidationError as e:
+    print('Input JSON non valido:', e).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Pickle Deserialization<ul>
+<li>Line: 30;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la libreria pickle per la deserializzazione di oggetti, il che può portare a vulnerabilità di tipo remote code execution se l'input non è controllato.;</li>
+<li>Solution: Evitare di utilizzare la libreria pickle per la deserializzazione di oggetti provenienti da input non controllati. Utilizzare invece metodi di serializzazione/deserializzazione più sicuri come JSON o XML.;</li>
+<li>Example Code:<code>import json
+
+with open(qpair_dir / 'vocab.pkl', 'rb') as io:
+    vocab = json.load(io).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+net.py
+<ol>
+<li>Utilizzo di funzioni non sicure di inizializzazione dei pesi<ul>
+<li>Line: 42;</li>
+<li>Severity: medium;</li>
+<li>Description: L'utilizzo di funzioni non sicure di inizializzazione dei pesi può rendere il modello vulnerabile ad attacchi come l'iniezione di dati malevoli o l'overfitting.;</li>
+<li>Solution: Utilizzare funzioni di inizializzazione dei pesi sicure, come nn.init.kaiming_uniform_ per i layer di convoluzione e nn.init.xavier_normal_ per i layer lineari.;</li>
+<li>Example Code:<code>if isinstance(layer, nn.Conv1d):
+    nn.init.kaiming_uniform_(layer.weight)
+elif isinstance(layer, nn.Linear):
+    nn.init.xavier_normal_(layer.weight).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 36;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice non valida o filtra i dati in ingresso, consentendo ad un attaccante di inserire script malevoli che verranno eseguiti nel browser dell'utente.;</li>
+<li>Solution: Validare e filtrare i dati in ingresso per rimuovere o neutralizzare eventuali script malevoli. Utilizzare funzioni specifiche per l'escape dei caratteri speciali.;</li>
+<li>Example Code:<code>import html
+
+input_data = '<script>alert("XSS")</script>'
+
+filtered_data = html.escape(input_data)
+print(filtered_data).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+split.py
+<ol>
+<li>Regex Injection<ul>
+<li>Line: 32;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza la funzione re.match senza validare l'input dell'utente. Questo può portare ad un'attacco di Regex Injection.;</li>
+<li>Solution: Validare l'input dell'utente prima di utilizzarlo in una funzione di regex.;</li>
+<li>Example Code:<code>pattern = re.compile('[a-zA-Z0-9]+')
+if pattern.match(input_string):
+    # esegui il codice.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Potenziale vulnerabilità di tipo injection<ul>
+<li>Line: 60;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice potrebbe essere vulnerabile ad attacchi di tipo injection, in particolare alla SQL injection.;</li>
+<li>Solution: Per evitare attacchi di tipo injection, è consigliato utilizzare metodi di interrogazione del database che supportano i parametri di query, come ad esempio i prepared statements o gli ORM.;</li>
+<li>Example Code:<code>Esempio di utilizzo di prepared statements con SQLite:
+
+import sqlite3
+
+conn = sqlite3.connect('database.db')
+cursor = conn.cursor()
+
+query = 'SELECT * FROM users WHERE username = ? AND password = ?'
+params = ('admin', 'password123')
+
+cursor.execute(query, params)
+result = cursor.fetchall()
+
+conn.close()
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 79;</li>
+<li>Severity: medium;</li>
+<li>Description: Il codice contiene una potenziale vulnerabilità di Cross-Site Scripting (XSS).;</li>
+<li>Solution: Per prevenire attacchi di XSS, è necessario filtrare e validare tutti gli input dell'utente prima di renderli nel codice HTML. È possibile utilizzare librerie come DOMPurify per filtrare gli input utente.;</li>
+<li>Example Code:<code>import DOMPurify
+
+user_input = input()
+filtered_input = DOMPurify.sanitize(user_input)
+
+# Utilizzare filtered_input nel codice HTML.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+utils.py
+<ol>
+<li>Vulnerabilità di Path Traversal<ul>
+<li>Line: 45;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice non effettua controlli sulla validità del percorso del file durante il caricamento o il salvataggio dei checkpoint o dei riassunti. Ciò potrebbe consentire a un utente malintenzionato di accedere a file arbitrari nel sistema.;</li>
+<li>Solution: Effettuare controlli sulla validità del percorso del file prima di caricare o salvare i checkpoint o i riassunti. Ad esempio, è possibile utilizzare la funzione 'os.path.abspath' per ottenere il percorso assoluto del file e verificare se si trova all'interno della directory consentita.;</li>
+<li>Example Code:<code>import os
+
+file_path = os.path.abspath(filename)
+if file_path.startswith(allowed_directory):
+    # procedi con il caricamento o il salvataggio del file
+else:
+    # gestisci l'errore di percorso non valido.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>Missing Input Validation<ul>
+<li>Line: 77;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not validate the input arguments;</li>
+<li>Solution: Validate the input arguments to ensure they meet the expected criteria;</li>
+<li>Example Code:<code>if args.epochs < 1:
+    raise ValueError('Number of epochs must be at least 1').</code></li>
+</ul>
+</li>
+<li>Insecure Deserialization<ul>
+<li>Line: 15;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses pickle.load to deserialize data from a file;</li>
+<li>Solution: Use a safer alternative to deserialize data, such as JSON or YAML;</li>
+<li>Example Code:<code>import json
+
+with open(dataset_config.vocab, mode='r') as io:
+    vocab = json.load(io).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_vocab.py
+<ol>
+<li>Pickle deserialization vulnerability<ul>
+<li>Line: 11;</li>
+<li>Severity: serious;</li>
+<li>Description: La libreria pickle permette la serializzazione e deserializzazione di oggetti Python. Tuttavia, l'utilizzo non sicuro di pickle può portare a vulnerabilità di deserializzazione, consentendo agli attaccanti di eseguire codice malevolo.;</li>
+<li>Solution: Evitare di utilizzare pickle per deserializzare oggetti non attendibili. Se necessario, utilizzare librerie di serializzazione più sicure come JSON o YAML.;</li>
+<li>Example Code:<code>import json
+
+with open(nsmc_dir / 'vocab.pkl', mode='rb') as io:
+    vocab = json.load(io).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+build_dataset.py
+<ol>
+<li>Path Traversal<ul>
+<li>Line: 8;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza una libreria per la gestione dei percorsi dei file senza effettuare controlli di sicurezza, consentendo potenziali attacchi di path traversal.;</li>
+<li>Solution: Verificare e validare i percorsi dei file prima di utilizzarli, in modo da prevenire attacchi di path traversal. Utilizzare metodi sicuri per la gestione dei percorsi dei file, come ad esempio l'utilizzo di percorsi assoluti invece di percorsi relativi.;</li>
+<li>Example Code:<code>nsmc_dir = Path("nsmc").resolve()
+filepath = nsmc_dir / "ratings_train.txt".</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

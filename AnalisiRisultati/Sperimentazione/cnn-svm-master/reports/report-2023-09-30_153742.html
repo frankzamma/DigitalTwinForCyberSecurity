@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T15:37:42.002422</h2><p>Total of  vulnerabilities founded 5</p>
+<ul>
+<li>
+cnn_svm.py
+<ol>
+<li>Insecure Dependency<ul>
+<li>Line: 12;</li>
+<li>Severity: medium;</li>
+<li>Description: The code imports the tensorflow library without specifying a specific version. This can lead to insecure dependencies being used, which may have known vulnerabilities.;</li>
+<li>Solution: Specify a specific version of the tensorflow library to use in the import statement.;</li>
+<li>Example Code:<code>import tensorflow==2.5.0.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+cnn_softmax.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 95;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice contiene una potenziale vulnerabilità di Cross-Site Scripting (XSS). Questo tipo di vulnerabilità si verifica quando i dati inseriti dagli utenti non vengono correttamente validati o filtrati e vengono visualizzati direttamente nella pagina web. Ciò consente agli attaccanti di inserire codice JavaScript malevolo che verrà eseguito nel browser degli utenti.;</li>
+<li>Solution: Per risolvere questa vulnerabilità, è necessario validare e filtrare correttamente i dati inseriti dagli utenti prima di visualizzarli nella pagina web. Ciò può essere fatto utilizzando librerie o framework di sicurezza che offrono funzionalità di filtraggio e validazione dei dati.;</li>
+<li>Example Code:<code>Utilizzare una libreria o un framework di sicurezza per filtrare e validare i dati inseriti dagli utenti prima di visualizzarli nella pagina web..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Missing Input Validation<ul>
+<li>Line: 27;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not validate the input for the 'name' parameter in the load_tfds function, which can lead to potential security vulnerabilities.;</li>
+<li>Solution: Validate the input for the 'name' parameter in the load_tfds function to prevent potential security vulnerabilities.;</li>
+<li>Example Code:<code>def load_tfds(name: str = 'mnist') -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    if name not in ['mnist', 'cifar10', 'imagenet']:
+        raise ValueError('Invalid dataset name')
+    # Rest of the code.</code></li>
+</ul>
+</li>
+<li>Hardcoded Credentials<ul>
+<li>Line: 33;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains hardcoded credentials, which can be a serious security vulnerability if the code is shared or deployed in a production environment.;</li>
+<li>Solution: Remove the hardcoded credentials and use a secure method for storing and retrieving credentials, such as environment variables or a secure configuration file.;</li>
+<li>Example Code:<code>import os
+
+api_key = os.environ.get('API_KEY')
+
+# Rest of the code.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+cnn.py
+<ol>
+<li>Utilizzo di una versione obsoleta di TensorFlow<ul>
+<li>Line: 13;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice utilizza una versione obsoleta di TensorFlow, che potrebbe contenere bug o vulnerabilità di sicurezza. È consigliabile aggiornare a una versione più recente di TensorFlow.;</li>
+<li>Solution: Aggiornare TensorFlow alla versione più recente disponibile.;</li>
+<li>Example Code:<code>pip install --upgrade tensorflow.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T17:23:11.076920200</h2><p>Total of  vulnerabilities founded 11</p>
+<ul>
+<li>
+extract_features_detectron.py
+<ol>
+<li>Insecure File Operations<ul>
+<li>Line: 64;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the os module to read and write files without proper validation and sanitization, which can lead to path traversal and arbitrary file access vulnerabilities.;</li>
+<li>Solution: Always validate and sanitize user input when performing file operations. Use absolute file paths instead of relative paths to prevent path traversal attacks. Limit the access permissions of the file system to prevent unauthorized access.;</li>
+<li>Example Code:<code>image_root = os.path.abspath(args.image_root)
+image_path = os.path.abspath(image_path)
+save_path = os.path.abspath(args.save_path).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+train.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 83;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice utilizza l'argomento `default_flow_style` nella funzione `yaml.dump` senza impostare un valore sicuro, consentendo l'esecuzione di codice JavaScript dannoso.;</li>
+<li>Solution: Imposta l'argomento `default_flow_style` nella funzione `yaml.dump` su `False` per evitare l'iniezione di codice JavaScript.;</li>
+<li>Example Code:<code>print(yaml.dump(config, default_flow_style=False)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+readers.py
+<ol>
+<li>Insecure Deserialization<ul>
+<li>Line: 46;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses json.load to deserialize user-provided data without validating it, which can lead to arbitrary code execution.;</li>
+<li>Solution: Validate and sanitize user-provided data before deserializing it.;</li>
+<li>Example Code:<code>import json
+
+user_data = input()
+
+try:
+    json_data = json.loads(user_data)
+    # Validate and sanitize json_data
+except json.JSONDecodeError:
+    # Handle error.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+vocabulary.py
+<ol>
+<li>Missing Input Validation<ul>
+<li>Line: 47;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not validate the input parameters;</li>
+<li>Solution: Add input validation to ensure that the input parameters are valid and meet the expected criteria.;</li>
+<li>Example Code:<code>if not os.path.exists(word_counts_path):
+    raise FileNotFoundError(
+        f"Word counts do not exist at {word_counts_path}"
+    ).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+checkpointing.py
+<ol>
+<li>Command Injection<ul>
+<li>Line: 54;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the subprocess.Popen function to execute a git command without properly validating the input. This can lead to command injection vulnerabilities, allowing an attacker to execute arbitrary commands on the system.;</li>
+<li>Solution: To fix this vulnerability, the code should properly validate and sanitize the input before passing it to the subprocess.Popen function. This can be done by using the shlex.quote function to escape any special characters in the command.;</li>
+<li>Example Code:<code>commit_sha_subprocess = Popen(
+    ['git', 'rev-parse', '--short', shlex.quote('HEAD')], stdout=PIPE, stderr=PIPE
+).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+gen.py
+<ol>
+<li>Vulnerabilità di sicurezza nell'uso di LSTM<ul>
+<li>Line: 16;</li>
+<li>Severity: medium;</li>
+<li>Description: L'utilizzo di LSTM senza specificare il parametro 'batch_first' potrebbe causare una vulnerabilità di sicurezza.;</li>
+<li>Solution: Impostare il parametro 'batch_first' su True durante la creazione dell'istanza LSTM.;</li>
+<li>Example Code:<code>self.answer_rnn = nn.LSTM(
+    config['word_embedding_size'],
+    config['lstm_hidden_size'],
+    config['lstm_num_layers'],
+    batch_first=True,
+    dropout=config['dropout'],
+).</code></li>
+</ul>
+</li>
+<li>Vulnerabilità di sicurezza nell'uso di nn.LogSoftmax<ul>
+<li>Line: 61;</li>
+<li>Severity: medium;</li>
+<li>Description: L'utilizzo di nn.LogSoftmax senza specificare la dimensione corretta potrebbe causare una vulnerabilità di sicurezza.;</li>
+<li>Solution: Specificare la dimensione corretta per il parametro 'dim' durante l'utilizzo di nn.LogSoftmax.;</li>
+<li>Example Code:<code>self.logsoftmax = nn.LogSoftmax(dim=-1).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+disc.py
+<ol>
+<li>Potential SQL Injection<ul>
+<li>Line: 55;</li>
+<li>Severity: medium;</li>
+<li>Description: The code concatenates user input directly into a SQL query, which can lead to SQL injection attacks.;</li>
+<li>Solution: Use parameterized queries or prepared statements to prevent SQL injection attacks.;</li>
+<li>Example Code:<code>query = 'SELECT * FROM users WHERE username = ?'
+cursor.execute(query, (username,)).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+lf.py
+<ol>
+<li>Potential information disclosure<ul>
+<li>Line: 13;</li>
+<li>Severity: potential;</li>
+<li>Description: The code uses the nn.Embedding function to create word embeddings, but it does not specify any padding index. This can potentially lead to information disclosure if the padding index is not handled properly.;</li>
+<li>Solution: Specify a padding index when creating the nn.Embedding object to handle padding properly.;</li>
+<li>Example Code:<code>self.word_embed = nn.Embedding(
+    len(vocabulary),
+    config["word_embedding_size"],
+    padding_idx=vocabulary.PAD_INDEX
+).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+metrics.py
+<ol>
+<li>Memory Leak<ul>
+<li>Line: 45;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not detach the output tensors, which can cause memory leaks.;</li>
+<li>Solution: Call `detach` on output tensors (like logits) to avoid memory leaks.;</li>
+<li>Example Code:<code>predicted_scores = predicted_scores.detach().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+evaluate.py
+<ol>
+<li>Potenziale vulnerabilità di accesso non autorizzato<ul>
+<li>Line: 77;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice non controlla l'autorizzazione dell'utente prima di eseguire determinate operazioni.;</li>
+<li>Solution: Aggiungere un controllo di autorizzazione prima di eseguire operazioni sensibili.;</li>
+<li>Example Code:<code>if not authorized_user:
+    return.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

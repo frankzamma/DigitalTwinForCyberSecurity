@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T15:53:05.321919400</h2><p>Total of  vulnerabilities founded 13</p>
+<ul>
+<li>
+make_plots.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 2;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non fa alcun controllo sugli input dell'utente, consentendo ad un attaccante di eseguire codice JavaScript malevolo nel browser delle vittime.;</li>
+<li>Solution: Implementare un meccanismo di validazione e sanitizzazione degli input dell'utente, ad esempio utilizzando librerie come DOMPurify o implementando controlli manuali per evitare l'inserimento di codice JavaScript dannoso.;</li>
+<li>Example Code:<code>import DOMPurify from 'dompurify';
+
+const userInput = '<script>alert("XSS attack")</script>';
+const sanitizedInput = DOMPurify.sanitize(userInput);
+
+console.log(sanitizedInput);.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+make_plots2.py
+<ol>
+<li>Potential Cross-Site Scripting (XSS) Vulnerability<ul>
+<li>Line: 88;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is generating HTML content without properly sanitizing user input, which can lead to a potential Cross-Site Scripting (XSS) vulnerability.;</li>
+<li>Solution: To prevent XSS attacks, user input should be properly sanitized or validated before being included in HTML content. This can be done by using a secure coding framework or library that provides input validation and output encoding functions.;</li>
+<li>Example Code:<code>import html
+
+user_input = input('Enter your name: ')
+sanitized_input = html.escape(user_input)
+
+# Use the sanitized input in HTML content
+html_content = f'<p>Welcome, {sanitized_input}!</p>'.</code></li>
+</ul>
+</li>
+<li>Potential SQL Injection Vulnerability<ul>
+<li>Line: 88;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is directly concatenating user input into an SQL query, which can lead to a potential SQL Injection vulnerability.;</li>
+<li>Solution: To prevent SQL Injection attacks, user input should be properly sanitized or parameterized before being included in SQL queries. This can be done by using prepared statements or parameterized queries, which separate the SQL code from the user input.;</li>
+<li>Example Code:<code>import sqlite3
+
+user_input = input('Enter a username: ')
+
+# Use parameterized query
+query = 'SELECT * FROM users WHERE username = ?'
+
+# Execute the query with the user input as a parameter
+cursor.execute(query, (user_input,))
+
+# Fetch the results
+results = cursor.fetchall().</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+main.py
+<ol>
+<li>Unvalidated Input<ul>
+<li>Line: 165;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not validate the input received from the user. This can lead to security vulnerabilities such as SQL injection or remote code execution.;</li>
+<li>Solution: Always validate and sanitize user input before using it in any part of the code. Use input validation techniques such as whitelisting, blacklisting, or regular expressions to ensure that the input is safe and does not contain any malicious code.;</li>
+<li>Example Code:<code>import re
+
+# Validate input using regular expressions
+if re.match(r'^[a-zA-Z0-9]+$', input):
+    # Input is valid
+    ...
+else:
+    # Input is invalid
+    ....</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+setup.py
+<ol>
+<li>Missing input validation<ul>
+<li>Line: 17;</li>
+<li>Severity: medium;</li>
+<li>Description: The code does not validate the input received from the user, which can lead to potential security vulnerabilities such as SQL injection or remote code execution.;</li>
+<li>Solution: Implement input validation by checking the user input for any malicious or unexpected characters. Use proper sanitization techniques or parameterized queries to prevent SQL injection attacks. Additionally, consider implementing a whitelist approach for input validation.;</li>
+<li>Example Code:<code>import re
+
+name = input('Enter your name: ')
+
+# Validate name
+if not re.match('^[A-Za-z]+$', name):
+    print('Invalid name')
+    exit()
+
+# Continue with the rest of the code.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+vgg.py
+<ol>
+<li>Insecure Model Loading<ul>
+<li>Line: 139;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the `model_zoo.load_url` function to load pre-trained models from the internet. This can be a security risk as it allows an attacker to potentially replace the model with a malicious one.;</li>
+<li>Solution: Instead of loading models from the internet, it is recommended to download the models and load them locally from a trusted source.;</li>
+<li>Example Code:<code>model.load_state_dict(torch.load('path/to/local/model.pth')).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+util.py
+<ol>
+<li>Controlled Variable Manipulation<ul>
+<li>Line: 8;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not validate the input parameters before using them in the copy_params and copy_buffers functions. This can allow an attacker to manipulate the variables and potentially execute arbitrary code.;</li>
+<li>Solution: Always validate the input parameters before using them. Use proper input validation techniques such as type checking, range checking, and input sanitization.;</li>
+<li>Example Code:<code>def copy_params(src_model, dest_model):
+    if not isinstance(src_model, torch.nn.Module) or not isinstance(dest_model, torch.nn.Module):
+        raise ValueError('Invalid input parameters')
+    ...
+
+
+def copy_buffers(src_model, dest_model):
+    if not isinstance(src_model, torch.nn.Module) or not isinstance(dest_model, torch.nn.Module):
+        raise ValueError('Invalid input parameters')
+    ....</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+alexnet.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 29;</li>
+<li>Severity: medium;</li>
+<li>Description: The code is using insecure URLs to download model weights.;</li>
+<li>Solution: Use secure URLs (HTTPS) to download model weights.;</li>
+<li>Example Code:<code>model_urls = {
+    'alexnet_lpf2': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf2-da8aca74.pth',
+    'alexnet_lpf3': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf3-f9bbc410.pth',
+    'alexnet_lpf4': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf4-0114fe25.pth',
+    'alexnet_lpf5': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf5-4fa3706a.pth',
+    'alexnet_lpf4_finetune': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/alexnet_lpf4_finetune-20598a7a.pth',
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+blurpool.py
+<ol>
+<li>Potenziale vulnerabilità di Iniezione di codice<ul>
+<li>Line: 59;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza l'input dell'utente per costruire un oggetto di tipo ReflectionPad2d o ReflectionPad1d senza effettuare alcun controllo sull'input. Questo potrebbe consentire a un utente malintenzionato di iniettare del codice dannoso nell'oggetto e compromettere la sicurezza del sistema.;</li>
+<li>Solution: Effettuare una validazione dell'input dell'utente prima di utilizzarlo per costruire l'oggetto ReflectionPad2d o ReflectionPad1d. Utilizzare metodi di sanitizzazione dell'input come l'escape dei caratteri speciali o la rimozione dei caratteri non consentiti.;</li>
+<li>Example Code:<code>pad_type = sanitize_input(pad_type).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+densenet.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 62;</li>
+<li>Severity: medium;</li>
+<li>Description: The code uses insecure URLs to download pre-trained models. This can lead to potential security risks if the URLs are compromised or manipulated.;</li>
+<li>Solution: Use secure URLs (HTTPS) to download pre-trained models.;</li>
+<li>Example Code:<code>model_urls = {
+    'densenet121_lpf2': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/densenet121_lpf2-7da7d4cd.pth',
+    'densenet121_lpf3': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/densenet121_lpf3-0f267ad8.pth',
+    ...
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+mobilenet.py
+<ol>
+<li>Caricamento di modelli preaddestrati da URL esterni<ul>
+<li>Line: 92;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione model_zoo.load_url per caricare modelli preaddestrati da URL esterni. Questo può essere un potenziale rischio di sicurezza, in quanto il codice può caricare modelli da fonti non attendibili o dannose.;</li>
+<li>Solution: Assicurarsi che i modelli vengano caricati solo da fonti attendibili e verificare che gli URL siano sicuri.;</li>
+<li>Example Code:<code>model.load_state_dict(model_zoo.load_url(model_urls['mobilenet_v2_lpf%i'%filter_size], map_location='cpu', check_hash=True)['state_dict']).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+example_usage.py
+<ol>
+<li>Importing Untrusted Module<ul>
+<li>Line: 6;</li>
+<li>Severity: serious;</li>
+<li>Description: The code imports a module called 'antialiased_cnns' without verifying its trustworthiness. This can lead to the execution of malicious code if the module is compromised.;</li>
+<li>Solution: Verify the trustworthiness of the 'antialiased_cnns' module before importing it. Use trusted sources and check for any security vulnerabilities or malicious code in the module.;</li>
+<li>Example Code:<code>Verify the trustworthiness of the 'antialiased_cnns' module by checking its source code, reading reviews or consulting with security experts. Only import the module if it is deemed safe..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+example_usage2.py
+<ol>
+<li>Uso di modelli preaddestrati senza verifica di sicurezza<ul>
+<li>Line: 8;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza modelli preaddestrati senza verificare la loro sicurezza.;</li>
+<li>Solution: Prima di utilizzare modelli preaddestrati, è necessario verificare la loro sicurezza e assicurarsi che siano affidabili.;</li>
+<li>Example Code:<code>Esempio di codice per verificare la sicurezza del modello preaddestrato:
+
+model = antialiased_cnns.resnet18(pretrained=True)
+
+if model.is_secure():
+    model.load_pretrained_model()
+else:
+    print('Il modello preaddestrato non è sicuro.').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

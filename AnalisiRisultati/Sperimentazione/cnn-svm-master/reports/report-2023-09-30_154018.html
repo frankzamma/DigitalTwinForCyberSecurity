@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T15:40:18.650207700</h2><p>Total of  vulnerabilities founded 4</p>
+<ul>
+<li>
+cnn_svm.py
+<ol>
+<li>Utilizzo di TensorFlow 1.x<ul>
+<li>Line: 7;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice utilizza la versione 1.x di TensorFlow, che è obsoleta e non riceve più aggiornamenti. Ciò potrebbe comportare problemi di sicurezza e compatibilità in futuro.;</li>
+<li>Solution: Aggiornare il codice per utilizzare la versione più recente di TensorFlow (2.x).;</li>
+<li>Example Code:<code>import tensorflow as tf
+
+# Codice aggiornato per utilizzare TensorFlow 2.x
+
+import tensorflow as tf.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+cnn_softmax.py
+<ol>
+<li>Manca la validazione dell'input<ul>
+<li>Line: 58;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice non valida l'input dell'utente, permettendo potenziali attacchi di tipo Iniezione di codice;</li>
+<li>Solution: Validare sempre l'input dell'utente per evitare potenziali attacchi. Utilizzare metodi come la validazione dei tipi di dati, la validazione delle dimensioni e la validazione delle stringhe per garantire che l'input sia sicuro.;</li>
+<li>Example Code:<code>if not isinstance(alpha, float):
+    raise ValueError('Il parametro alpha deve essere un float').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+data.py
+<ol>
+<li>Potential vulnerability<ul>
+<li>Line: 15;</li>
+<li>Severity: potential;</li>
+<li>Description: The code is using an outdated version of TensorFlow and TensorFlow Datasets. This may lead to security vulnerabilities as older versions may have known security issues.;</li>
+<li>Solution: Update TensorFlow and TensorFlow Datasets to the latest version to ensure that any security vulnerabilities are patched.;</li>
+<li>Example Code:<code>pip install --upgrade tensorflow tensorflow-datasets.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+cnn.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 75;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice contiene una potenziale vulnerabilità di Cross-Site Scripting (XSS) nella funzione 'forward'.;</li>
+<li>Solution: Per prevenire attacchi di XSS, è necessario validare e sanificare tutti gli input utente prima di utilizzarli nel codice.;</li>
+<li>Example Code:<code>import html
+
+features = html.escape(features)
+.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>

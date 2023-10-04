@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report 2023-09-30</title>
+</head>
+<body>
+<h2>Report Static Analysis 2023-09-30T15:38:41.755054800</h2><p>Total of  vulnerabilities founded 14</p>
+<ul>
+<li>
+make_plots.py
+<ol>
+<li>Cross-Site Scripting (XSS)<ul>
+<li>Line: 1;</li>
+<li>Severity: serious;</li>
+<li>Description: Il codice potrebbe essere vulnerabile a Cross-Site Scripting (XSS) se i dati non vengono correttamente sanitizzati prima di essere visualizzati nella pagina web.;</li>
+<li>Solution: Per prevenire attacchi XSS, è necessario assicurarsi che tutti i dati inseriti dagli utenti siano correttamente sanitizzati e validati prima di essere visualizzati nella pagina web. Ciò può essere fatto utilizzando librerie di sanitizzazione dei dati o implementando manualmente le funzioni di sanitizzazione e validazione.;</li>
+<li>Example Code:<code>import html
+
+user_input = '<script>alert("XSS attack")</script>'
+
+sanitized_input = html.escape(user_input)
+
+print(sanitized_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+make_plots2.py
+<ol>
+<li>Potential Code Injection<ul>
+<li>Line: 85;</li>
+<li>Severity: potential;</li>
+<li>Description: The code contains a potential vulnerability for code injection. The plt.savefig() function is vulnerable to code injection if the filename is not properly sanitized or validated.;</li>
+<li>Solution: To prevent code injection, always sanitize and validate user input before using it as a filename. Use a whitelist approach to only allow certain characters and prevent any special characters or sequences that could be interpreted as code.;</li>
+<li>Example Code:<code>filename = sanitize_filename(user_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+main.py
+<ol>
+<li>Hardcoded Secret<ul>
+<li>Line: 120;</li>
+<li>Severity: serious;</li>
+<li>Description: The code contains a hardcoded secret.;</li>
+<li>Solution: Remove the hardcoded secret and use a more secure method to store sensitive information, such as environment variables or a secure configuration file.;</li>
+<li>Example Code:<code>parser.add_argument('--secret', type=str, help='secret key').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+vgg.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 49;</li>
+<li>Severity: medium;</li>
+<li>Description: The code is using insecure URLs to download model weights.;</li>
+<li>Solution: Use secure URLs (HTTPS) to download model weights.;</li>
+<li>Example Code:<code>Replace the insecure URLs with secure URLs..</code></li>
+</ul>
+</li>
+<li>Insecure URL<ul>
+<li>Line: 51;</li>
+<li>Severity: medium;</li>
+<li>Description: The code is using insecure URLs to download model weights.;</li>
+<li>Solution: Use secure URLs (HTTPS) to download model weights.;</li>
+<li>Example Code:<code>Replace the insecure URLs with secure URLs..</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+util.py
+<ol>
+<li>Controlled Variable Manipulation<ul>
+<li>Line: 11;</li>
+<li>Severity: serious;</li>
+<li>Description: The code does not validate the input parameters before using them in the copy_params and copy_buffers functions, which can lead to controlled variable manipulation vulnerabilities.;</li>
+<li>Solution: Always validate the input parameters before using them in any function. Use appropriate input validation techniques such as type checking, range checking, and input sanitization.;</li>
+<li>Example Code:<code>def copy_params(src_model, dest_model):
+    if isinstance(src_model, torch.nn.Module) and isinstance(dest_model, torch.nn.Module):
+        src_params = list(src_model.parameters())
+        dest_params = list(dest_model.parameters())
+
+        # antialiasing shouldn't change number of parameters, so these lists should be identical
+        assert(len(src_params)==len(dest_params))
+        with torch.no_grad():
+            for params in zip(src_params, dest_params):
+                params[1][...] = params[0][...]
+    else:
+        raise ValueError('Invalid input parameters')
+
+
+def copy_buffers(src_model, dest_model):
+    if isinstance(src_model, torch.nn.Module) and isinstance(dest_model, torch.nn.Module):
+        src_buffers = list(src_model.buffers())
+        dest_buffers = list(dest_model.buffers())
+
+        cc = 0
+        for (bb,buffer) in enumerate(src_buffers):
+            cond = False
+            while(not cond): # antialiasing adds buffers, so these lists won't match
+                cond = buffer.shape==dest_buffers[cc].shape
+                cc+=1
+                if(cc==len(dest_buffers) and not cond):
+                    raise ValueError('Could not find matching buffer in [dest_model]')
+            with torch.no_grad():
+                dest_buffers[cc-1][...] = buffer[...]
+    else:
+        raise ValueError('Invalid input parameters')
+
+
+def copy_params_buffers(src_model, dest_model):
+    if isinstance(src_model, torch.nn.Module) and isinstance(dest_model, torch.nn.Module):
+        copy_params(src_model, dest_model)
+        copy_buffers(src_model, dest_model)
+    else:
+        raise ValueError('Invalid input parameters').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+resnet.py
+<ol>
+<li>Insecure URL<ul>
+<li>Line: 42;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses insecure URLs to download model weights. This can lead to potential security vulnerabilities as the downloaded files may be tampered with or replaced with malicious files.;</li>
+<li>Solution: Use secure URLs (https) to download model weights.;</li>
+<li>Example Code:<code>model_urls = {
+    'resnet18_lpf2': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/resnet18_lpf2-6e2ee76f.pth',
+    'resnet18_lpf3': 'https://antialiased-cnns.s3.us-east-2.amazonaws.com/weights_v0.1/resnet18_lpf3-449351b9.pth',
+    ...
+}.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+alexnet.py
+<ol>
+<li>Insecure use of model_zoo.load_url<ul>
+<li>Line: 101;</li>
+<li>Severity: serious;</li>
+<li>Description: The model_zoo.load_url function is used to load a model from a URL. However, it does not verify the integrity of the downloaded file, which could potentially lead to code execution vulnerabilities if an attacker is able to tamper with the file at the specified URL.;</li>
+<li>Solution: Always verify the integrity of downloaded files by checking their hash or using a secure method of file transfer.;</li>
+<li>Example Code:<code>import hashlib
+
+# Calculate the MD5 hash of the downloaded file
+md5_hash = hashlib.md5()
+with open('path/to/downloaded/file', 'rb') as f:
+    for chunk in iter(lambda: f.read(4096), b''):
+        md5_hash.update(chunk)
+
+# Compare the calculated hash with the expected hash
+if md5_hash.hexdigest() == 'expected_hash':
+    # File is valid
+    pass
+else:
+    # File is invalid
+    pass.</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+blurpool.py
+<ol>
+<li>Potenziale vulnerabilità di overflow dell'array<ul>
+<li>Line: 47;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Potenziale vulnerabilità di overflow dell'array nel metodo 'forward' della classe 'BlurPool'.;</li>
+<li>Solution: Verificare che la dimensione dell'array di input sia compatibile con la dimensione dell'array di output.;</li>
+<li>Example Code:<code>inp = torch.Tensor(inp)
+output = blurpool(inp).</code></li>
+</ul>
+</li>
+<li>Potenziale vulnerabilità di overflow dell'array<ul>
+<li>Line: 83;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Potenziale vulnerabilità di overflow dell'array nel metodo 'forward' della classe 'BlurPool1D'.;</li>
+<li>Solution: Verificare che la dimensione dell'array di input sia compatibile con la dimensione dell'array di output.;</li>
+<li>Example Code:<code>inp = torch.Tensor(inp)
+output = blurpool1d(inp).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+densenet.py
+<ol>
+<li>Potential Remote Code Execution<ul>
+<li>Line: 130;</li>
+<li>Severity: serious;</li>
+<li>Description: The code uses the 'eval' function which can execute arbitrary code and potentially allow remote code execution.;</li>
+<li>Solution: Avoid using the 'eval' function and instead use safer alternatives such as 'ast.literal_eval' or 'json.loads' to parse and evaluate user input.;</li>
+<li>Example Code:<code>import ast
+
+# Use ast.literal_eval instead of eval
+evaluated_value = ast.literal_eval(user_input).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+mobilenet.py
+<ol>
+<li>Potenziale vulnerabilità di sicurezza<ul>
+<li>Line: 103;</li>
+<li>Severity: potenziale;</li>
+<li>Description: Il codice utilizza la funzione model_zoo.load_url per caricare modelli pre-addestrati da un URL esterno. Questo potrebbe essere un rischio di sicurezza se l'URL fornito è compromesso o se il server remoto è stato compromesso.;</li>
+<li>Solution: Verificare l'URL fornito e assicurarsi che sia affidabile e sicuro. In alternativa, è possibile scaricare il modello pre-addestrato localmente e caricarlo da un percorso di file locale.;</li>
+<li>Example Code:<code>model.load_state_dict(torch.load('path/to/model.pth')).</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+example_usage.py
+<ol>
+<li>Utilizzo di modelli di rete neurale preaddestrati senza controllo<ul>
+<li>Line: 9;</li>
+<li>Severity: medio;</li>
+<li>Description: Il codice utilizza modelli di rete neurale preaddestrati senza effettuare controlli sulla loro provenienza o integrità.;</li>
+<li>Solution: Verificare la provenienza e l'integrità dei modelli di rete neurale preaddestrati utilizzati. Utilizzare solo modelli provenienti da fonti affidabili e verificare che non siano stati alterati o compromessi.;</li>
+<li>Example Code:<code>model = antialiased_cnns.alexnet(pretrained=True, source='https://example.com/alexnet.pth').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+example_usage2.py
+<ol>
+<li>Uso di modelli preaddestrati senza controllo delle origini<ul>
+<li>Line: 7;</li>
+<li>Severity: serio;</li>
+<li>Description: Il codice utilizza modelli preaddestrati senza verificare l'origine dei modelli.;</li>
+<li>Solution: Verificare l'origine dei modelli preaddestrati e utilizzare solo modelli provenienti da fonti affidabili.;</li>
+<li>Example Code:<code>model = antialiased_cnns.resnet18(pretrained=True, source='https://example.com/model.pth').</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</body>
+</html>
