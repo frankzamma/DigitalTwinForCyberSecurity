@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="200" src="https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/9d2ed0e8-d717-4ae2-bd48-7290b4be778e">
+    <img width="200" src="https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/2300d151-8c03-4552-9dd3-e6855a020330">
 </p>
 <h1 align="center">DigitalTwinForCyberSecurity</h1>
 This repository contains my bachelor degree project that is a prototype of Intellij plugin that rapresents a digital twin of a security expert that could help developers to perform cybersecurity checks on software projects.
@@ -9,10 +9,13 @@ This repository contains my bachelor degree project that is a prototype of Intel
 2. Clone this repository in Intellij.
 3. Wait to Gradle build.
 4.  Once the Gradle build is complete, you should have this in the top right:<br>
-   <img width="278" alt="image" src="https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/410b1f61-cd72-4261-912a-e1ceb8adfc59"><br>
+   <img width="278" alt="image" src="https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/0733f270-7cb0-4214-9e58-ece87f8a06cc">
+<br>
    To run project, click on play button. This action will open a new Intellij window where the plugin is available. If this is your first run you need to choose or create a project to open in intellij.
-5. To use project, you need create an account on <a href="openai.com">openai.com</a>, go to this [page](https://platform.openai.com/account/billing/overview) and charge the account with your credit card. Next, you should create a new API secret token at this [link](https://platform.openai.com/account/api-keys) and insert it in the settings of plugin in Intellij: <br>
-![Screenshot 2023-10-18 181838](https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/422d3901-699a-4529-8fb5-98896e16814a)
+5. To use project, you need create an account on <a href="openai.com">openai.com</a>, go to this [page](https://platform.openai.com/account/billing/overview) and charge the account with your credit card. Next, you should create a new API secret token at this [link](https://platform.openai.com/account/api-keys) and insert it in the settings of plugin in Intellij: <br><br>
+
+![Screenshot 2023-10-18 181838](https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/a7c3414d-495e-4993-a42c-5b06c1289db5)
+
 # Functionality
 There are three major functionality available in the first version of plugin:
 1. Static analysis: The digital twin analyzes the current file (or the entire project) and describes to you the vulnerabilities it finds in it.
