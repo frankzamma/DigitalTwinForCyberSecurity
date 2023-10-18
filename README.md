@@ -1,5 +1,7 @@
-![cyber-attack](https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/9d2ed0e8-d717-4ae2-bd48-7290b4be778e)
-# DigitalTwinForCyberSecurity
+<p align="center">
+    <img width="200" src="https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/9d2ed0e8-d717-4ae2-bd48-7290b4be778e">
+</p>
+<h1 align="center">DigitalTwinForCyberSecurity</h1>
 This repository contains my bachelor degree project that is a prototype of Intellij plugin that rapresents a digital twin of a security expert that could help developers to perform cybersecurity checks on software projects.
 
 # How to Run project
