@@ -12,7 +12,7 @@ This repository contains my bachelor degree project that is a prototype of Intel
    <img width="278" alt="image" src="https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/0733f270-7cb0-4214-9e58-ece87f8a06cc">
 <br>
    To run project, click on play button. This action will open a new Intellij window where the plugin is available. If this is your first run you need to choose or create a project to open in intellij.
-5. To use project, you need create an account on <a href="openai.com">openai.com</a>, go to this [page](https://platform.openai.com/account/billing/overview) and charge the account with your credit card. Next, you should create a new API secret token at this [link](https://platform.openai.com/account/api-keys) and insert it in the settings of plugin in Intellij: <br><br>
+5. To use project, you need create an account on <a href="openai.com">openai.com</a>, go to this <a href="https://platform.openai.com/account/billing/overview/"> page</a>  and charge the account with your credit card. Next, you should create a new API secret token at this <a href="https://platform.openai.com/account/api-keys/">link</a> and insert it in the settings of plugin in Intellij: <br><br>
 
 ![Screenshot 2023-10-18 181838](https://github.com/frankzamma/DigitalTwinForCyberSecurity/assets/65612000/a7c3414d-495e-4993-a42c-5b06c1289db5)
 
