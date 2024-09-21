@@ -24,7 +24,7 @@ There are three major functionality available in the first version of plugin:
 3. Support to Dynamic Analysis: the digital twin can help you to choose, install and configure a tool to execute dynamic analysis on your project.
 
 # Results
-In my thesis, which will be available soon, I research a study around the development of this project. The results of the experiments, discussed in the thesis, can be viewed in the folder [AnalisiRisultati](https://github.com/frankzamma/DigitalTwinForCyberSecurity/).
+In my thesis, I research a study around the development of this project. The results of the experiments, discussed in the thesis, can be viewed in the folder on Google Drive [AnalisiRisultati](https://drive.google.com/drive/folders/1S7vvFhB4_ipv4qQqj-lC-ZWW4rt8R2NL?usp=sharing).
 
 # Credits
 The icon of this project is <a href="https://www.flaticon.com/free-icons/cyber-attack" title="cyber attack icons">Cyber attack icons created by Assia Benkerroum  - Flaticon</a>
